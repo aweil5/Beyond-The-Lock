@@ -59,6 +59,7 @@
     <UnityVersion>2022.3.43f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Analyzer Include="/Users/andrewweil/.vscode/extensions/visualstudiotoolsforunity.vstuc-1.0.4/Analyzers/Microsoft.Unity.Analyzers.dll" />
     <Analyzer Include="/Applications/Unity/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll" />
     <Analyzer Include="/Applications/Unity/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
@@ -68,7 +69,9 @@
     <Compile Include="Assets/Scripts/DungeonCreator.cs" />
     <Compile Include="Assets/Scripts/DungeonGenerator.cs" />
     <Compile Include="Assets/Scripts/BinarySpacePartitioner.cs" />
+    <Compile Include="Assets/Scripts/StructureHelper.cs" />
     <Compile Include="Assets/Scripts/Node.cs" />
+    <Compile Include="Assets/Scripts/RoomGenerator.cs" />
     <Compile Include="Assets/Scripts/MoveCamera.cs" />
     <Compile Include="Assets/Scripts/Line.cs" />
     <Compile Include="Assets/Scripts/PlayerMovement.cs" />

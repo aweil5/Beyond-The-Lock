@@ -65,7 +65,6 @@ public class PlayerMovement : MonoBehaviour
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
-        bool jumped = false;
         // when to jump for a first jump
         if(Input.GetKey(jumpKey) && readyToJump && grounded)
         {
