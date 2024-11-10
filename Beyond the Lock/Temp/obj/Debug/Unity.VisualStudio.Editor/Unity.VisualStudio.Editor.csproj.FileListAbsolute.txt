@@ -1,0 +1,14 @@
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/bin/Debug/Unity.VisualStudio.Editor.deps.json
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/bin/Debug/Unity.VisualStudio.Editor.dll
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/bin/Debug/Unity.VisualStudio.Editor.pdb
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/bin/Debug/UnityEditor.UI.pdb
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/bin/Debug/UnityEngine.UI.pdb
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/bin/Debug/UnityEngine.TestRunner.pdb
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/bin/Debug/UnityEditor.TestRunner.pdb
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/Unity.VisualStudio.Editor/Unity.VisualStudio.Editor.csproj.AssemblyReference.cache
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/Unity.VisualStudio.Editor/Unity.VisualStudio.Editor.GeneratedMSBuildEditorConfig.editorconfig
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/Unity.VisualStudio.Editor/Unity.VisualStudio.Editor.csproj.CoreCompileInputs.cache
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/Unity.VisualStudio.Editor/Unity.VisualStudio.Editor.sourcelink.json
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/Unity.VisualStudio.Editor/Unity.Vi.22C8F97C.Up2Date
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/Unity.VisualStudio.Editor/Unity.VisualStudio.Editor.dll
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/Unity.VisualStudio.Editor/Unity.VisualStudio.Editor.pdb

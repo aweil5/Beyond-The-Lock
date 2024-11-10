@@ -1,0 +1,14 @@
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/bin/Debug/Unity.PlasticSCM.Editor.deps.json
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/bin/Debug/Unity.PlasticSCM.Editor.dll
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/bin/Debug/Unity.PlasticSCM.Editor.pdb
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/bin/Debug/UnityEditor.UI.pdb
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/bin/Debug/UnityEngine.UI.pdb
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/bin/Debug/UnityEngine.TestRunner.pdb
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/bin/Debug/UnityEditor.TestRunner.pdb
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/Unity.PlasticSCM.Editor/Unity.PlasticSCM.Editor.csproj.AssemblyReference.cache
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/Unity.PlasticSCM.Editor/Unity.PlasticSCM.Editor.GeneratedMSBuildEditorConfig.editorconfig
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/Unity.PlasticSCM.Editor/Unity.PlasticSCM.Editor.csproj.CoreCompileInputs.cache
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/Unity.PlasticSCM.Editor/Unity.PlasticSCM.Editor.sourcelink.json
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/Unity.PlasticSCM.Editor/Unity.Pl.E83E23B1.Up2Date
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/Unity.PlasticSCM.Editor/Unity.PlasticSCM.Editor.dll
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/Unity.PlasticSCM.Editor/Unity.PlasticSCM.Editor.pdb

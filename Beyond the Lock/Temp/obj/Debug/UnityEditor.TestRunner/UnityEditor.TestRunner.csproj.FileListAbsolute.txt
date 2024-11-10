@@ -1,0 +1,11 @@
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/bin/Debug/UnityEditor.TestRunner.deps.json
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/bin/Debug/UnityEditor.TestRunner.dll
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/bin/Debug/UnityEditor.TestRunner.pdb
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/bin/Debug/UnityEngine.TestRunner.pdb
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/UnityEditor.TestRunner/UnityEditor.TestRunner.csproj.AssemblyReference.cache
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/UnityEditor.TestRunner/UnityEditor.TestRunner.GeneratedMSBuildEditorConfig.editorconfig
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/UnityEditor.TestRunner/UnityEditor.TestRunner.csproj.CoreCompileInputs.cache
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/UnityEditor.TestRunner/UnityEditor.TestRunner.sourcelink.json
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/UnityEditor.TestRunner/UnityEdi.DE457AB0.Up2Date
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/UnityEditor.TestRunner/UnityEditor.TestRunner.dll
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/UnityEditor.TestRunner/UnityEditor.TestRunner.pdb

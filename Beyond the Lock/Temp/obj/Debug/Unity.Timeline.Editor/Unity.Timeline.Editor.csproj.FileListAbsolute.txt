@@ -1,0 +1,15 @@
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/bin/Debug/Unity.Timeline.Editor.deps.json
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/bin/Debug/Unity.Timeline.Editor.dll
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/bin/Debug/Unity.Timeline.Editor.pdb
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/bin/Debug/Unity.Timeline.pdb
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/bin/Debug/UnityEditor.UI.pdb
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/bin/Debug/UnityEngine.UI.pdb
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/bin/Debug/UnityEngine.TestRunner.pdb
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/bin/Debug/UnityEditor.TestRunner.pdb
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/Unity.Timeline.Editor/Unity.Timeline.Editor.csproj.AssemblyReference.cache
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/Unity.Timeline.Editor/Unity.Timeline.Editor.GeneratedMSBuildEditorConfig.editorconfig
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/Unity.Timeline.Editor/Unity.Timeline.Editor.csproj.CoreCompileInputs.cache
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/Unity.Timeline.Editor/Unity.Timeline.Editor.sourcelink.json
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/Unity.Timeline.Editor/Unity.Ti.5D0259EF.Up2Date
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/Unity.Timeline.Editor/Unity.Timeline.Editor.dll
+/Users/andrewweil/Beyond-The-Lock/Beyond the Lock/Temp/obj/Debug/Unity.Timeline.Editor/Unity.Timeline.Editor.pdb
