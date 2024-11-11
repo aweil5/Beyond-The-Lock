@@ -99,6 +99,7 @@ public class DungeonCreator : MonoBehaviour
         CreateWalls(wallParent);
 
 
+
         // Instantiate the player in the middle of the first room
         var firstRoom = listOfRooms[0];
         Vector2 firstRoomCenter = (firstRoom.BottomLeftAreaCorner + firstRoom.TopRightAreaCorner) / 2;
@@ -117,6 +118,8 @@ public class DungeonCreator : MonoBehaviour
         {
             CreateWall(wallParent, wallPosition, wallVertical);
         }
+
+
     }
 
     private void CreateWall(GameObject wallParent, Vector3Int wallPosition, GameObject wallPrefab)
@@ -126,8 +129,14 @@ public class DungeonCreator : MonoBehaviour
         // {
         //     wallPosition = Vector3Int.CeilToInt((Vector3)wallPosition + new Vector3(2, 0, -1));
         // }
-        Instantiate(wallPrefab, wallPosition, rotation, wallParent.transform);
-
+        GameObject wall = Instantiate(wallPrefab, wallPosition, rotation, wallParent.transform);
+        // Add MeshCollider to the instantiated wall
+        if (wallPrefab.TryGetComponent<MeshCollider>(out MeshCollider meshCollider))
+        {
+            MeshCollider instantiatedCollider = wallParent.transform.GetChild(wallParent.transform.childCount - 1).gameObject.AddComponent<MeshCollider>();
+            instantiatedCollider.sharedMesh = meshCollider.sharedMesh;
+        }
+        
     }
 
     // Update is called once per frame
