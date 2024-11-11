@@ -364,6 +364,7 @@
 "Assets/Scripts/World Gen Scripts/RoomGenerator.cs"
 "Assets/Scripts/World Gen Scripts/RoomNode.cs"
 "Assets/Scripts/World Gen Scripts/StructureHelper.cs"
+"Assets/Scripts/World Gen Scripts/Teleporter.cs"
 -langversion:9.0
 /deterministic
 /optimize+

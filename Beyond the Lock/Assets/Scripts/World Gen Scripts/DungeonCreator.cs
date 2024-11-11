@@ -48,7 +48,9 @@ public class DungeonCreator : MonoBehaviour
         // Assign Each Room an index
 
         // Create teleporters that teleport a user from one room to the next
-
+        GameObject currSender = null;
+        GameObject currReceiver = null;
+        GameObject temp = null;
         // Instantiate Teleporters in each Room
         foreach (var room in listOfRooms)
         {
@@ -59,6 +61,7 @@ public class DungeonCreator : MonoBehaviour
             float roomHeight = topRight.y - bottomLeft.y;
 
             Vector3 teleporterPosition1, teleporterPosition2;
+
 
             if (roomWidth > roomHeight)
             {
@@ -73,9 +76,43 @@ public class DungeonCreator : MonoBehaviour
             teleporterPosition2 = new Vector3((bottomLeft.x + topRight.x) / 2, 0, topRight.y - 3);
             }
 
-            Instantiate(teleporter, teleporterPosition1, Quaternion.identity, transform);
-            Instantiate(teleporter, teleporterPosition2, Quaternion.identity, transform);
+            currReceiver = Instantiate(teleporter, teleporterPosition1, Quaternion.identity, transform);
+            temp = Instantiate(teleporter, teleporterPosition2, Quaternion.identity, transform);
+
+            // Ensure both teleporters have BoxColliders with isTrigger enabled
+
+
+            
+            if (currReceiver != null && currSender != null)
+            {
+                BoxCollider receiverCollider = currReceiver.GetComponent<BoxCollider>();
+                if (receiverCollider == null)
+                {
+                    receiverCollider = currReceiver.AddComponent<BoxCollider>();
+                }
+                receiverCollider.isTrigger = true;
+
+                BoxCollider senderCollider = currSender.GetComponent<BoxCollider>();
+                if (senderCollider == null)
+                {
+                    senderCollider = currSender.AddComponent<BoxCollider>();
+                }
+                senderCollider.isTrigger = true;
+
+                Teleporter senderTeleporter = currSender.AddComponent<Teleporter>();
+                senderTeleporter.SetReceiver(currReceiver);
+                senderTeleporter.SetSender(currSender);
+
+                Teleporter receiverTeleporter = currReceiver.AddComponent<Teleporter>();
+                receiverTeleporter.SetReceiver(currSender);
+                receiverTeleporter.SetSender(currReceiver);
+            
+            }
+
+            currSender = temp;
         }
+
+
 
 
 
@@ -125,10 +162,7 @@ public class DungeonCreator : MonoBehaviour
     private void CreateWall(GameObject wallParent, Vector3Int wallPosition, GameObject wallPrefab)
     {
         Quaternion rotation = wallPrefab == wallHorizontal ? Quaternion.Euler(0, 90, 0) : Quaternion.identity;
-        // if (wallPrefab == wallHorizontal)
-        // {
-        //     wallPosition = Vector3Int.CeilToInt((Vector3)wallPosition + new Vector3(2, 0, -1));
-        // }
+
         GameObject wall = Instantiate(wallPrefab, wallPosition, rotation, wallParent.transform);
         // Add MeshCollider to the instantiated wall
         if (wallPrefab.TryGetComponent<MeshCollider>(out MeshCollider meshCollider))
@@ -225,3 +259,4 @@ public class DungeonCreator : MonoBehaviour
         wallList.Add(point);
     }
 }
+
