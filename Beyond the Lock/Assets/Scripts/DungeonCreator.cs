@@ -8,6 +8,9 @@ public class DungeonCreator : MonoBehaviour
     public int roomWidthMin, roomLengthMin;
     public int maxIterations;
     public int corridorWidth;
+
+    // Material for our meshes. Can prob split this into floor mesh wall mesh etc.
+    public Material material;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,11 +22,64 @@ public class DungeonCreator : MonoBehaviour
         DungeonGenerator generator = new DungeonGenerator(dungeonWidth, dungeonLength);
 
         var listOfRooms = generator.CalculateRooms(maxIterations, roomWidthMin, roomLengthMin);
+
+        for (int i = 0; i < listOfRooms.Count; i++)
+        {
+            CreateMesh(listOfRooms[i].BottomLeftAreaCorner, listOfRooms[i].TopRightAreaCorner);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    private void CreateMesh(Vector2 bottomLeftCorner, Vector2 topRightCorner)
+    {
+        // Learn from codeMonkey Youtube how to create mesh programattically
+        Vector3 bottomLeftV = new Vector3(bottomLeftCorner.x, 0, bottomLeftCorner.y);
+        Vector3 bottomRightV = new Vector3(topRightCorner.x, 0, bottomLeftCorner.y);
+        Vector3 topLeftV = new Vector3(bottomLeftCorner.x, 0, topRightCorner.y);
+        Vector3 topRightV = new Vector3(topRightCorner.x, 0, topRightCorner.y);
+
+
+        // ORDER IMPORTANT HERE TO ENSURE VALID NORMALS
+        Vector3[] vertices = new Vector3[]
+        {
+            topLeftV,
+            topRightV,
+            bottomLeftV,
+            bottomRightV
+        };
+        Vector2[] uvs = new Vector2[vertices.Length];
+        for (int i = 0; i < uvs.Length; i++)
+        {
+            uvs[i] = new Vector2(vertices[i].x, vertices[i].z);
+        }
+
+        // Create triangles in clockwise order
+        int[] triangles = new int[]
+        {
+            0, 
+            1, 
+            2,
+            2, 
+            1, 
+            3,
+        };
+
+        Mesh mesh = new Mesh();
+        mesh.vertices = vertices;
+        mesh.uv = uvs;
+        mesh.triangles = triangles;
+
+        GameObject dungeonFloor = new GameObject("Mesh" + bottomLeftCorner, typeof(MeshFilter), typeof(MeshRenderer));
+        dungeonFloor.transform.position = Vector3.zero;
+        dungeonFloor.transform.localScale = Vector3.one;
+
+        dungeonFloor.GetComponent<MeshFilter>().mesh = mesh;
+        dungeonFloor.GetComponent<MeshRenderer>().material = material;
+
     }
 }
