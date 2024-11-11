@@ -27,9 +27,9 @@ public class DungeonGenerator
         
         // Handles Connecting the Rooms
 
-        CorridorsGenerator corridorsGenerator = new CorridorsGenerator();
-        var corridorList = corridorsGenerator.CreateCorridor(allNodesCollection, corridorWidth);
+        // CorridorsGenerator corridorsGenerator = new CorridorsGenerator();
+        // var corridorList = corridorsGenerator.CreateCorridor(allNodesCollection, corridorWidth);
         
-        return new List<Node>(roomList).Concat(corridorList).ToList();
+        return new List<Node>(roomList);
     }
 }
