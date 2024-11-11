@@ -25,8 +25,8 @@ public class DungeonCreator : MonoBehaviour
 
     public GameObject wallVertical, wallHorizontal;
 
-    List<Vector3Int> possibleDoorVericalPosition;
-    List<Vector3Int> possibleDoorHorizontalPosition;
+    public GameObject teleporter;
+
 
     List<Vector3Int> possibleWallHorizontalPosition;
 
@@ -43,12 +43,41 @@ public class DungeonCreator : MonoBehaviour
 
         var listOfRooms = generator.CalculateDungeon(maxIterations, roomWidthMin, roomLengthMin, roomBottomCornerModifier, roomTopCornerModifier, roomOffset, corridorWidth);
         
+        // Assign Each Room an index
+
+        // Create teleporters that teleport a user from one room to the next
+
+        // Instantiate Teleporters in each Room
+        foreach (var room in listOfRooms)
+        {
+            Vector2 bottomLeft = room.BottomLeftAreaCorner;
+            Vector2 topRight = room.TopRightAreaCorner;
+
+            float roomWidth = topRight.x - bottomLeft.x;
+            float roomHeight = topRight.y - bottomLeft.y;
+
+            Vector3 teleporterPosition1, teleporterPosition2;
+
+            if (roomWidth > roomHeight)
+            {
+            // Place teleporters on the left and right walls
+            teleporterPosition1 = new Vector3(bottomLeft.x + 3, 0, (bottomLeft.y + topRight.y) / 2);
+            teleporterPosition2 = new Vector3(topRight.x - 3, 0, (bottomLeft.y + topRight.y) / 2);
+            }
+            else
+            {
+            // Place teleporters on the top and bottom walls
+            teleporterPosition1 = new Vector3((bottomLeft.x + topRight.x) / 2, 0, bottomLeft.y + 3);
+            teleporterPosition2 = new Vector3((bottomLeft.x + topRight.x) / 2, 0, topRight.y - 3);
+            }
+
+            Instantiate(teleporter, teleporterPosition1, Quaternion.identity, transform);
+            Instantiate(teleporter, teleporterPosition2, Quaternion.identity, transform);
+        }
         GameObject wallParent = new GameObject("Walls");
         wallParent.transform.parent = transform;
         // INSTEAD OF DOORS WE WILL DO TELEPORTERS LATER
-        possibleDoorVericalPosition = new List<Vector3Int>();
 
-        possibleDoorHorizontalPosition = new List<Vector3Int>();
 
         possibleWallHorizontalPosition = new List<Vector3Int>();
 
@@ -140,26 +169,26 @@ public class DungeonCreator : MonoBehaviour
         for (int row = (int)bottomLeftV.x; row < (int)bottomRightV.x; row++)
         {
             var wallPosition = new Vector3(row + 2, 0, bottomLeftV.z);
-            AddWallPositonToList(wallPosition, possibleWallHorizontalPosition, possibleDoorHorizontalPosition);
+            AddWallPositonToList(wallPosition, possibleWallHorizontalPosition);
         }
         for (int row = (int)topLeftV.x; row < (int)topRightV.x; row++)
         {
             var wallPosition = new Vector3(row + 2, 0, topRightV.z);
-            AddWallPositonToList(wallPosition, possibleWallHorizontalPosition, possibleDoorHorizontalPosition);
+            AddWallPositonToList(wallPosition, possibleWallHorizontalPosition);
         }
         for (int col = (int)bottomLeftV.z; col < (int)topLeftV.z; col++)
         {
             var wallPosition = new Vector3(bottomLeftV.x, 0, col + 2);
-            AddWallPositonToList(wallPosition, possibleWallVerticalPosition, possibleDoorVericalPosition);
+            AddWallPositonToList(wallPosition, possibleWallVerticalPosition);
         }
         for (int col = (int)bottomRightV.z; col < (int)topRightV.z; col++)
         {
             var wallPosition = new Vector3(bottomRightV.x, 0, col + 2);
-            AddWallPositonToList(wallPosition, possibleWallVerticalPosition, possibleDoorVericalPosition);
+            AddWallPositonToList(wallPosition, possibleWallVerticalPosition);
         }
     }
 
-    private void AddWallPositonToList(Vector3 wallPosition, List<Vector3Int> wallList, List<Vector3Int> doorList)
+    private void AddWallPositonToList(Vector3 wallPosition, List<Vector3Int> wallList)
     {
         // Rooms are surrounded by walls, if a corridor is added it is at the same position of the wall
         // Delete previous wall because we know that the corridor is there
