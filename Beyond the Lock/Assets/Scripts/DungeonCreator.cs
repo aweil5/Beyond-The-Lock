@@ -27,6 +27,8 @@ public class DungeonCreator : MonoBehaviour
 
     public GameObject teleporter;
 
+    public GameObject player;
+    public GameObject playerCam;
 
     List<Vector3Int> possibleWallHorizontalPosition;
 
@@ -74,6 +76,14 @@ public class DungeonCreator : MonoBehaviour
             Instantiate(teleporter, teleporterPosition1, Quaternion.identity, transform);
             Instantiate(teleporter, teleporterPosition2, Quaternion.identity, transform);
         }
+
+
+
+        // // Instantiate the player camera and set its transform to the player
+        // GameObject playerCamInstance = Instantiate(playerCam, playerPosition, Quaternion.identity, transform);
+        // playerCamInstance.transform.SetParent(playerInstance.transform);
+
+
         GameObject wallParent = new GameObject("Walls");
         wallParent.transform.parent = transform;
         // INSTEAD OF DOORS WE WILL DO TELEPORTERS LATER
@@ -87,6 +97,13 @@ public class DungeonCreator : MonoBehaviour
             CreateMesh(listOfRooms[i].BottomLeftAreaCorner, listOfRooms[i].TopRightAreaCorner);
         }
         CreateWalls(wallParent);
+
+
+        // Instantiate the player in the middle of the first room
+        var firstRoom = listOfRooms[0];
+        Vector2 firstRoomCenter = (firstRoom.BottomLeftAreaCorner + firstRoom.TopRightAreaCorner) / 2;
+        Vector3 playerPosition = new Vector3(firstRoomCenter.x, 5, firstRoomCenter.y);
+        GameObject playerInstance = Instantiate(player, playerPosition, Quaternion.identity, transform);
     }
 
     private void CreateWalls(GameObject wallParent)
@@ -158,12 +175,14 @@ public class DungeonCreator : MonoBehaviour
         mesh.uv = uvs;
         mesh.triangles = triangles;
 
-        GameObject dungeonFloor = new GameObject("Mesh" + bottomLeftCorner, typeof(MeshFilter), typeof(MeshRenderer));
+        GameObject dungeonFloor = new GameObject("Mesh" + bottomLeftCorner, typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider));
+        
         dungeonFloor.transform.position = Vector3.zero;
         dungeonFloor.transform.localScale = Vector3.one;
 
         dungeonFloor.GetComponent<MeshFilter>().mesh = mesh;
         dungeonFloor.GetComponent<MeshRenderer>().material = material;
+        dungeonFloor.GetComponent<MeshCollider>().sharedMesh = mesh;
 
         // Add an offset to align everything to the grid
         for (int row = (int)bottomLeftV.x; row < (int)bottomRightV.x; row++)

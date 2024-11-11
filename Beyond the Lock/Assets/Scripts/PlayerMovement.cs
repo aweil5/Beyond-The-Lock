@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("Movement")]
+     [Header("Movement")]
     public float moveSpeed;
 
     public float groundDrag;
@@ -14,7 +14,8 @@ public class PlayerMovement : MonoBehaviour
     public float airMultiplier;
     bool readyToJump;
 
-    public float walkSpeed;
+    [HideInInspector] public float walkSpeed;
+    [HideInInspector] public float sprintSpeed;
 
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
@@ -65,16 +66,16 @@ public class PlayerMovement : MonoBehaviour
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
-        // when to jump for a first jump
+
+        // when to jump
         if(Input.GetKey(jumpKey) && readyToJump && grounded)
         {
-            
             readyToJump = false;
+
             Jump();
+
             Invoke(nameof(ResetJump), jumpCooldown);
-
         }
-
     }
 
     private void MovePlayer()
@@ -110,7 +111,6 @@ public class PlayerMovement : MonoBehaviour
 
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
-    
     private void ResetJump()
     {
         readyToJump = true;
