@@ -15,7 +15,7 @@ public class RoomGenerator
         this.roomWidthMin = roomWidthMin;
     }
 
-    public List<RoomNode> GenerateRoomsInGivenSpaces(List<Node> roomSpaces)
+    public List<RoomNode> GenerateRoomsInGivenSpaces(List<Node> roomSpaces, float roomBottomCornerModifier, float roomTopCornerModifier, int roomOffset)
     {
         List<RoomNode> listToReturn = new List<RoomNode>();
         foreach (var space in roomSpaces)
@@ -23,9 +23,9 @@ public class RoomGenerator
 
             // Last two Parameters are the Offset and Point Modifiers to make the rooms more random
             Vector2Int newBottomLeftPoint = StrucutureHelper.GenerateBottomLeftCornerBetween(
-                space.BottomLeftAreaCorner, space.TopRightAreaCorner, 0.1f, 1);
+                space.BottomLeftAreaCorner, space.TopRightAreaCorner, roomBottomCornerModifier, roomOffset);
             Vector2Int newTopRightPoint = StrucutureHelper.GenerateTopRightCornerBetween(space.BottomLeftAreaCorner,
-                space.TopRightAreaCorner, 0.9f, 1);
+                space.TopRightAreaCorner, roomTopCornerModifier, roomOffset);
 
             // Reassign bottom left and right points
             space.BottomLeftAreaCorner = newBottomLeftPoint;

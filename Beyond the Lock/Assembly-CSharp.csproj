@@ -68,9 +68,11 @@
     <Compile Include="Assets/Scripts/PlayerCam.cs" />
     <Compile Include="Assets/Scripts/DungeonCreator.cs" />
     <Compile Include="Assets/Scripts/DungeonGenerator.cs" />
+    <Compile Include="Assets/Scripts/CorridorsGenerator.cs" />
     <Compile Include="Assets/Scripts/BinarySpacePartitioner.cs" />
     <Compile Include="Assets/Scripts/StructureHelper.cs" />
     <Compile Include="Assets/Scripts/Node.cs" />
+    <Compile Include="Assets/Scripts/CorridorNode.cs" />
     <Compile Include="Assets/Scripts/RoomGenerator.cs" />
     <Compile Include="Assets/Scripts/MoveCamera.cs" />
     <Compile Include="Assets/Scripts/Line.cs" />

@@ -9,6 +9,16 @@ public class DungeonCreator : MonoBehaviour
     public int maxIterations;
     public int corridorWidth;
 
+    // These need to have ranges or the entire world generation will be a mess
+
+    [Range(0.0f, 0.3f)]
+    public float roomBottomCornerModifier;
+    
+    [Range(0.7f, 1.0f)]
+    public float roomTopCornerModifier;
+
+    [Range(0, 2)]
+    public int roomOffset;
     // Material for our meshes. Can prob split this into floor mesh wall mesh etc.
     public Material material;
     // Start is called before the first frame update
@@ -21,7 +31,7 @@ public class DungeonCreator : MonoBehaviour
     {
         DungeonGenerator generator = new DungeonGenerator(dungeonWidth, dungeonLength);
 
-        var listOfRooms = generator.CalculateRooms(maxIterations, roomWidthMin, roomLengthMin);
+        var listOfRooms = generator.CalculateDungeon(maxIterations, roomWidthMin, roomLengthMin, roomBottomCornerModifier, roomTopCornerModifier, roomOffset, corridorWidth);
 
         for (int i = 0; i < listOfRooms.Count; i++)
         {

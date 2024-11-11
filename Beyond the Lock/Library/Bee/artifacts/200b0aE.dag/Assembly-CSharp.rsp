@@ -352,6 +352,8 @@
 -analyzer:"/Applications/Unity/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll"
 -analyzer:"/Applications/Unity/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
 "Assets/Scripts/BinarySpacePartitioner.cs"
+"Assets/Scripts/CorridorNode.cs"
+"Assets/Scripts/CorridorsGenerator.cs"
 "Assets/Scripts/DungeonCreator.cs"
 "Assets/Scripts/DungeonGenerator.cs"
 "Assets/Scripts/Line.cs"
