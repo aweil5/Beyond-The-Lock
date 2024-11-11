@@ -71,7 +71,7 @@
     <Compile Include="Assets/Scripts/World Gen Scripts/BinarySpacePartitioner.cs" />
     <Compile Include="Assets/Scripts/World Gen Scripts/RoomNode.cs" />
     <Compile Include="Assets/Scripts/World Gen Scripts/RoomGenerator.cs" />
-    <Compile Include="Assets/Scripts/World Gen Scripts/Teleporter.cs" />
+    <Compile Include="Assets/Scripts/Teleport.cs" />
     <Compile Include="Assets/Scripts/World Gen Scripts/CorridorsGenerator.cs" />
     <Compile Include="Assets/Scripts/World Gen Scripts/Node.cs" />
     <Compile Include="Assets/Scripts/MoveCamera.cs" />

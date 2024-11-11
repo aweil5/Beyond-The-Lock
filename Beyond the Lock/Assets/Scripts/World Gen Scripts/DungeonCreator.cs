@@ -75,41 +75,33 @@ public class DungeonCreator : MonoBehaviour
             teleporterPosition1 = new Vector3((bottomLeft.x + topRight.x) / 2, 0, bottomLeft.y + 3);
             teleporterPosition2 = new Vector3((bottomLeft.x + topRight.x) / 2, 0, topRight.y - 3);
             }
-
-            currReceiver = Instantiate(teleporter, teleporterPosition1, Quaternion.identity, transform);
-            temp = Instantiate(teleporter, teleporterPosition2, Quaternion.identity, transform);
-
             // Ensure both teleporters have BoxColliders with isTrigger enabled
 
 
+            currReceiver = Instantiate(teleporter, teleporterPosition1, Quaternion.identity, transform);
+            temp = Instantiate(teleporter, teleporterPosition2, Quaternion.identity, transform);
             
-            if (currReceiver != null && currSender != null)
+            if (!currReceiver.TryGetComponent<BoxCollider>(out BoxCollider receiverCollider))
             {
-                BoxCollider receiverCollider = currReceiver.GetComponent<BoxCollider>();
-                if (receiverCollider == null)
-                {
-                    receiverCollider = currReceiver.AddComponent<BoxCollider>();
-                }
-                receiverCollider.isTrigger = true;
+                receiverCollider = currReceiver.AddComponent<BoxCollider>();
+            }
+            receiverCollider.isTrigger = true;
 
-                BoxCollider senderCollider = currSender.GetComponent<BoxCollider>();
-                if (senderCollider == null)
-                {
-                    senderCollider = currSender.AddComponent<BoxCollider>();
-                }
-                senderCollider.isTrigger = true;
-
-                Teleporter senderTeleporter = currSender.AddComponent<Teleporter>();
-                senderTeleporter.SetReceiver(currReceiver);
-                senderTeleporter.SetSender(currSender);
-
-                Teleporter receiverTeleporter = currReceiver.AddComponent<Teleporter>();
-                receiverTeleporter.SetReceiver(currSender);
-                receiverTeleporter.SetSender(currReceiver);
+            if (!temp.TryGetComponent<BoxCollider>(out BoxCollider senderCollider))
+            {
+                senderCollider = temp.AddComponent<BoxCollider>();
+            }
+            senderCollider.isTrigger = true;
+            // Ensure both teleporters have BoxColliders with isTrigger enabled
             
+            if (currSender != null)
+            {
+                currSender.AddComponent<Teleport>();
+                currSender.GetComponent<Teleport>().reciever = currReceiver;
             }
 
             currSender = temp;
+            
         }
 
 
