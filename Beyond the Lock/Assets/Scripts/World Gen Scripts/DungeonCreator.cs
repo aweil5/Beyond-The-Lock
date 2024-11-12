@@ -36,6 +36,10 @@ public class DungeonCreator : MonoBehaviour
     List<Vector3Int> possibleWallVerticalPosition;
 
     public List<GameObject> randomWorldSpawns;
+
+    public GameObject roomPillar1;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -128,12 +132,14 @@ public class DungeonCreator : MonoBehaviour
 
         GameObject wallParent = new GameObject("Walls");
         GameObject randomItemParent = new GameObject("RandomItems");
+        GameObject roomParent = new GameObject("Rooms");
         wallParent.transform.parent = transform;
         // INSTEAD OF DOORS WE WILL DO TELEPORTERS LATER
 
         foreach (var room in listOfRooms)
         {
-            spawnRandomItems(room, randomItemParent);
+            // spawnRandomItems(room, randomItemParent);
+            buildRoom(room, roomParent);
         }
         possibleWallHorizontalPosition = new List<Vector3Int>();
 
@@ -148,9 +154,38 @@ public class DungeonCreator : MonoBehaviour
 
         // Instantiate the player in the middle of the first room
         var firstRoom = listOfRooms[0];
-        Vector2 firstRoomCenter = (firstRoom.BottomLeftAreaCorner + firstRoom.TopRightAreaCorner) / 2;
-        Vector3 playerPosition = new Vector3(firstRoomCenter.x, 1, firstRoomCenter.y);
+        Vector2 firstRoomSpawn = firstRoom.BottomLeftAreaCorner + new Vector2((firstRoom.TopRightAreaCorner.x - firstRoom.BottomLeftAreaCorner.x) / 3, (firstRoom.TopRightAreaCorner.y - firstRoom.BottomLeftAreaCorner.y) / 2);
+        Vector3 playerPosition = new Vector3(firstRoomSpawn.x, 1, firstRoomSpawn.y);
         GameObject playerInstance = Instantiate(player, playerPosition, Quaternion.identity, transform);
+    }
+
+    private void buildRoom(Node room, GameObject roomParent)
+    {
+        Vector2 bottomLeft = room.BottomLeftAreaCorner;
+        Vector2 topRight = room.TopRightAreaCorner;
+
+        Vector3 roomCenter = new Vector3((bottomLeft.x + topRight.x) / 2, 0, (bottomLeft.y + topRight.y) / 2);
+        Vector3 upperLeft = new Vector3(bottomLeft.x + (topRight.x - bottomLeft.x) / 4, 0, bottomLeft.y + (topRight.y - bottomLeft.y) * 3 / 4);
+        Vector3 lowerLeft = new Vector3(bottomLeft.x + (topRight.x - bottomLeft.x) / 4, 0, bottomLeft.y + (topRight.y - bottomLeft.y) / 4);
+        Vector3 upperRight = new Vector3(bottomLeft.x + (topRight.x - bottomLeft.x) * 3 / 4, 0, bottomLeft.y + (topRight.y - bottomLeft.y) * 3 / 4);
+        Vector3 lowerRight = new Vector3(bottomLeft.x + (topRight.x - bottomLeft.x) * 3 / 4, 0, bottomLeft.y + (topRight.y - bottomLeft.y) / 4);
+
+        GameObject[] pillars = new GameObject[5];
+        pillars[0] = Instantiate(roomPillar1, roomCenter, Quaternion.identity, roomParent.transform);
+        pillars[0].transform.localScale = new Vector3(5, pillars[0].transform.localScale.y, 5);
+
+        pillars[1] = Instantiate(roomPillar1, upperLeft, Quaternion.identity, roomParent.transform);
+        pillars[2] = Instantiate(roomPillar1, lowerLeft, Quaternion.identity, roomParent.transform);
+        pillars[3] = Instantiate(roomPillar1, upperRight, Quaternion.identity, roomParent.transform);
+        pillars[4] = Instantiate(roomPillar1, lowerRight, Quaternion.identity, roomParent.transform);
+
+        foreach (var pillar in pillars)
+        {
+            if (!pillar.TryGetComponent<MeshCollider>(out MeshCollider meshCollider))
+            {
+            pillar.AddComponent<MeshCollider>();
+            }
+        }
     }
 
     private void spawnRandomItems(Node room, GameObject randomItemParent)
@@ -262,6 +297,11 @@ public class DungeonCreator : MonoBehaviour
         dungeonFloor.GetComponent<MeshFilter>().mesh = mesh;
         dungeonFloor.GetComponent<MeshRenderer>().material = material;
         dungeonFloor.GetComponent<MeshCollider>().sharedMesh = mesh;
+
+
+        // Instantiate the room rug at the lower right corner
+        // Scale the floor to the size of the room
+        // floorInstance.transform.localScale = new Vector3(topRightCorner.x - bottomLeftCorner.x, floorInstance.transform.localScale.y, topRightCorner.y - bottomLeftCorner.y);
 
 
         // Create ceiling mesh
