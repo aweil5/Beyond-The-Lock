@@ -14,7 +14,7 @@ public class DungeonCreator : MonoBehaviour
 
     [Range(0.0f, 0.3f)]
     public float roomBottomCornerModifier;
-    
+
     [Range(0.7f, 1.0f)]
     public float roomTopCornerModifier;
 
@@ -34,6 +34,8 @@ public class DungeonCreator : MonoBehaviour
     List<Vector3Int> possibleWallHorizontalPosition;
 
     List<Vector3Int> possibleWallVerticalPosition;
+
+    public List<GameObject> randomWorldSpawns;
     // Start is called before the first frame update
     void Start()
     {
@@ -45,7 +47,7 @@ public class DungeonCreator : MonoBehaviour
         DungeonGenerator generator = new DungeonGenerator(dungeonWidth, dungeonLength);
 
         var listOfRooms = generator.CalculateDungeon(maxIterations, roomWidthMin, roomLengthMin, roomBottomCornerModifier, roomTopCornerModifier, roomOffset, corridorWidth);
-        
+
         // Assign Each Room an index
 
         // Create teleporters that teleport a user from one room to the next
@@ -66,22 +68,22 @@ public class DungeonCreator : MonoBehaviour
 
             if (roomWidth > roomHeight)
             {
-            // Place teleporters on the left and right walls
-            teleporterPosition1 = new Vector3(bottomLeft.x + 3, 0, (bottomLeft.y + topRight.y) / 2);
-            teleporterPosition2 = new Vector3(topRight.x - 3, 0, (bottomLeft.y + topRight.y) / 2);
+                // Place teleporters on the left and right walls
+                teleporterPosition1 = new Vector3(bottomLeft.x + 3, 0, (bottomLeft.y + topRight.y) / 2);
+                teleporterPosition2 = new Vector3(topRight.x - 3, 0, (bottomLeft.y + topRight.y) / 2);
             }
             else
             {
-            // Place teleporters on the top and bottom walls
-            teleporterPosition1 = new Vector3((bottomLeft.x + topRight.x) / 2, 0, bottomLeft.y + 3);
-            teleporterPosition2 = new Vector3((bottomLeft.x + topRight.x) / 2, 0, topRight.y - 3);
+                // Place teleporters on the top and bottom walls
+                teleporterPosition1 = new Vector3((bottomLeft.x + topRight.x) / 2, 0, bottomLeft.y + 3);
+                teleporterPosition2 = new Vector3((bottomLeft.x + topRight.x) / 2, 0, topRight.y - 3);
             }
             // Ensure both teleporters have BoxColliders with isTrigger enabled
 
 
             currReceiver = Instantiate(teleporter, teleporterPosition1, Quaternion.identity, transform);
             temp = Instantiate(teleporter, teleporterPosition2, Quaternion.identity, transform);
-            
+
             if (!currReceiver.TryGetComponent<BoxCollider>(out BoxCollider receiverCollider))
             {
                 receiverCollider = currReceiver.AddComponent<BoxCollider>();
@@ -94,7 +96,7 @@ public class DungeonCreator : MonoBehaviour
             }
             senderCollider.isTrigger = true;
             // Ensure both teleporters have BoxColliders with isTrigger enabled
-            
+
             if (currSender != null)
             {
                 currSender.AddComponent<Teleport>();
@@ -109,6 +111,9 @@ public class DungeonCreator : MonoBehaviour
             // }
 
             currSender = temp;
+
+
+            // NOW WE ARE GOING TO SPAWN ITEMS IN THE ROOMS
             
         }
 
@@ -122,10 +127,14 @@ public class DungeonCreator : MonoBehaviour
 
 
         GameObject wallParent = new GameObject("Walls");
+        GameObject randomItemParent = new GameObject("RandomItems");
         wallParent.transform.parent = transform;
         // INSTEAD OF DOORS WE WILL DO TELEPORTERS LATER
 
-
+        foreach (var room in listOfRooms)
+        {
+            spawnRandomItems(room, randomItemParent);
+        }
         possibleWallHorizontalPosition = new List<Vector3Int>();
 
         possibleWallVerticalPosition = new List<Vector3Int>();
@@ -142,6 +151,33 @@ public class DungeonCreator : MonoBehaviour
         Vector2 firstRoomCenter = (firstRoom.BottomLeftAreaCorner + firstRoom.TopRightAreaCorner) / 2;
         Vector3 playerPosition = new Vector3(firstRoomCenter.x, 1, firstRoomCenter.y);
         GameObject playerInstance = Instantiate(player, playerPosition, Quaternion.identity, transform);
+    }
+
+    private void spawnRandomItems(Node room, GameObject randomItemParent)
+    {
+        // Spawn random items in the room
+        // We will spawn a random number of items in the room
+        // We need to turn rooms into grid. Then for each section determine an item to spawn in that section
+        
+        int numItems = UnityEngine.Random.Range(1, 10);
+        for (int i = 0; i < numItems; i++)
+        {
+            // Randomly select a position in the room
+            Vector2 randomPosition = new Vector2(UnityEngine.Random.Range(room.BottomLeftAreaCorner.x + 3, room.TopRightAreaCorner.x - 3), UnityEngine.Random.Range(room.BottomLeftAreaCorner.y + 3, room.TopRightAreaCorner.y + 3));
+            Vector3 itemPosition = new Vector3(randomPosition.x, 0, randomPosition.y);
+            // Randomly select an item to spawn
+            int itemIndex = UnityEngine.Random.Range(0, randomWorldSpawns.Count);
+            GameObject item = Instantiate(randomWorldSpawns[itemIndex], itemPosition, Quaternion.identity, randomItemParent.transform);
+            item.transform.localScale *= 6;
+            item.AddComponent<MeshCollider>();
+
+
+            if (randomWorldSpawns[itemIndex].TryGetComponent<MeshCollider>(out MeshCollider meshCollider))
+            {
+            MeshCollider instantiatedCollider = item.GetComponent<MeshCollider>();
+            instantiatedCollider.sharedMesh = meshCollider.sharedMesh;
+            }
+        }
     }
 
     private void CreateWalls(GameObject wallParent)
@@ -170,13 +206,13 @@ public class DungeonCreator : MonoBehaviour
             MeshCollider instantiatedCollider = wallParent.transform.GetChild(wallParent.transform.childCount - 1).gameObject.AddComponent<MeshCollider>();
             instantiatedCollider.sharedMesh = meshCollider.sharedMesh;
         }
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     private void CreateMesh(Vector2 bottomLeftCorner, Vector2 topRightCorner)
@@ -205,11 +241,11 @@ public class DungeonCreator : MonoBehaviour
         // Create triangles in clockwise order
         int[] triangles = new int[]
         {
-            0, 
-            1, 
+            0,
+            1,
             2,
-            2, 
-            1, 
+            2,
+            1,
             3,
         };
 
@@ -219,7 +255,7 @@ public class DungeonCreator : MonoBehaviour
         mesh.triangles = triangles;
 
         GameObject dungeonFloor = new GameObject("Mesh" + bottomLeftCorner, typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider));
-        
+
         dungeonFloor.transform.position = Vector3.zero;
         dungeonFloor.transform.localScale = Vector3.one;
 
@@ -299,7 +335,7 @@ public class DungeonCreator : MonoBehaviour
         // Rooms are surrounded by walls, if a corridor is added it is at the same position of the wall
         // Delete previous wall because we know that the corridor is there
         Vector3Int point = Vector3Int.CeilToInt(wallPosition);
-        
+
         wallList.Add(point);
     }
 }
