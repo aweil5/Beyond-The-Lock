@@ -75,6 +75,7 @@
     <Compile Include="Assets/Scripts/World Gen Scripts/CorridorsGenerator.cs" />
     <Compile Include="Assets/Scripts/World Gen Scripts/Node.cs" />
     <Compile Include="Assets/Scripts/MoveCamera.cs" />
+    <Compile Include="Assets/Scripts/World Gen Scripts/RoomGrid.cs" />
     <Compile Include="Assets/Scripts/World Gen Scripts/StructureHelper.cs" />
     <Compile Include="Assets/Scripts/World Gen Scripts/DungeonGenerator.cs" />
     <Compile Include="Assets/Scripts/PlayerMovement.cs" />

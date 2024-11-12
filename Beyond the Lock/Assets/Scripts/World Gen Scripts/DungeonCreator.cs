@@ -37,7 +37,12 @@ public class DungeonCreator : MonoBehaviour
 
     public List<GameObject> randomWorldSpawns;
 
+
+    [Header("Start Room Prefabs")]
     public GameObject roomPillar1;
+    public GameObject office;
+    // public GameObject clerkOffice;
+    // public GameObject spaceWindows;
 
 
     // Start is called before the first frame update
@@ -51,6 +56,7 @@ public class DungeonCreator : MonoBehaviour
         DungeonGenerator generator = new DungeonGenerator(dungeonWidth, dungeonLength);
 
         var listOfRooms = generator.CalculateDungeon(maxIterations, roomWidthMin, roomLengthMin, roomBottomCornerModifier, roomTopCornerModifier, roomOffset, corridorWidth);
+        GameObject roomParent = new GameObject("Rooms");
 
         // Assign Each Room an index
 
@@ -58,9 +64,31 @@ public class DungeonCreator : MonoBehaviour
         GameObject currSender = null;
         GameObject currReceiver = null;
         GameObject temp = null;
+        RoomType roomType;
         // Instantiate Teleporters in each Room
         foreach (var room in listOfRooms)
         {
+            // Bulding main Event Rooms
+            if (room != listOfRooms[0] && room != listOfRooms[listOfRooms.Count - 1])
+            {
+                roomType = (RoomType)UnityEngine.Random.Range(2, 5);
+            }
+            // Building Start Room
+            else if (room == listOfRooms[0])
+            {
+                roomType = RoomType.Start;
+                
+
+            }
+            else
+            {
+                roomType = RoomType.Treasure;
+            }
+            buildRoomInterior(room, roomParent, roomType);
+               
+
+
+            // This will be for every room
             Vector2 bottomLeft = room.BottomLeftAreaCorner;
             Vector2 topRight = room.TopRightAreaCorner;
 
@@ -132,15 +160,10 @@ public class DungeonCreator : MonoBehaviour
 
         GameObject wallParent = new GameObject("Walls");
         GameObject randomItemParent = new GameObject("RandomItems");
-        GameObject roomParent = new GameObject("Rooms");
         wallParent.transform.parent = transform;
         // INSTEAD OF DOORS WE WILL DO TELEPORTERS LATER
 
-        foreach (var room in listOfRooms)
-        {
-            // spawnRandomItems(room, randomItemParent);
-            buildRoom(room, roomParent);
-        }
+
         possibleWallHorizontalPosition = new List<Vector3Int>();
 
         possibleWallVerticalPosition = new List<Vector3Int>();
@@ -159,33 +182,44 @@ public class DungeonCreator : MonoBehaviour
         GameObject playerInstance = Instantiate(player, playerPosition, Quaternion.identity, transform);
     }
 
-    private void buildRoom(Node room, GameObject roomParent)
+    private void buildRoomInterior(Node room, GameObject roomParent, RoomType roomType)
     {
-        Vector2 bottomLeft = room.BottomLeftAreaCorner;
-        Vector2 topRight = room.TopRightAreaCorner;
-
-        Vector3 roomCenter = new Vector3((bottomLeft.x + topRight.x) / 2, 0, (bottomLeft.y + topRight.y) / 2);
-        Vector3 upperLeft = new Vector3(bottomLeft.x + (topRight.x - bottomLeft.x) / 4, 0, bottomLeft.y + (topRight.y - bottomLeft.y) * 3 / 4);
-        Vector3 lowerLeft = new Vector3(bottomLeft.x + (topRight.x - bottomLeft.x) / 4, 0, bottomLeft.y + (topRight.y - bottomLeft.y) / 4);
-        Vector3 upperRight = new Vector3(bottomLeft.x + (topRight.x - bottomLeft.x) * 3 / 4, 0, bottomLeft.y + (topRight.y - bottomLeft.y) * 3 / 4);
-        Vector3 lowerRight = new Vector3(bottomLeft.x + (topRight.x - bottomLeft.x) * 3 / 4, 0, bottomLeft.y + (topRight.y - bottomLeft.y) / 4);
-
-        GameObject[] pillars = new GameObject[5];
-        pillars[0] = Instantiate(roomPillar1, roomCenter, Quaternion.identity, roomParent.transform);
-        pillars[0].transform.localScale = new Vector3(5, pillars[0].transform.localScale.y, 5);
-
-        pillars[1] = Instantiate(roomPillar1, upperLeft, Quaternion.identity, roomParent.transform);
-        pillars[2] = Instantiate(roomPillar1, lowerLeft, Quaternion.identity, roomParent.transform);
-        pillars[3] = Instantiate(roomPillar1, upperRight, Quaternion.identity, roomParent.transform);
-        pillars[4] = Instantiate(roomPillar1, lowerRight, Quaternion.identity, roomParent.transform);
-
-        foreach (var pillar in pillars)
+        if (roomType == RoomType.Start)
         {
-            if (!pillar.TryGetComponent<MeshCollider>(out MeshCollider meshCollider))
+            // Add specific logic for Start room
+            buildStartRoom(room, roomParent);
+        }
+        else
+        {
+            return;
+        }
+    
+    }
+
+
+    // public GameObject roomPillar1;
+    // public GameObject office;
+    // public GameObject clerkOffice;
+    // public GameObject spaceWindows;
+    private void buildStartRoom(Node room, GameObject roomParent)
+    {
+        // Spawn in the 
+        RoomGrid gridRoom = new RoomGrid((RoomNode)room);
+        int rowCount = gridRoom.grid.GetLength(0);
+        int colCount = gridRoom.grid.GetLength(1);
+
+
+        int officeRowCount = rowCount / 2;
+        for (int row = 0; row < officeRowCount; row++)
+        {
+            for (int col = colCount / 2; col < colCount; col += 2)
             {
-            pillar.AddComponent<MeshCollider>();
+            Vector3 position = new Vector3(gridRoom.grid[row, col].BottomLeftAreaCorner.x, 0, gridRoom.grid[row, col].BottomLeftAreaCorner.y);
+            Instantiate(office, position, Quaternion.identity, roomParent.transform);
             }
         }
+
+
     }
 
     private void spawnRandomItems(Node room, GameObject randomItemParent)
@@ -380,3 +414,14 @@ public class DungeonCreator : MonoBehaviour
     }
 }
 
+
+
+public enum RoomType
+{
+    Start = 0,
+    Treasure = 1,
+    CameraRoom = 2,
+    LaserRoom = 3,
+    FightRoom = 4,
+
+}
