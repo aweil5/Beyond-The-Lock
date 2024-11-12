@@ -1,11 +1,12 @@
-Shader "Custom/OscillatingFloorShader"
+Shader "Custom/LargeWhiteSquaresWithPulsingOutline"
 {
     Properties
     {
-        _MainColor ("Main Color", Color) = (1, 1, 1, 1) // White
-        _SquareColor ("Square Color", Color) = (1, 0, 1, 1) // Neon purple
+        _MainColor ("Main Color", Color) = (1, 1, 1, 1) // White color for the floor
+        _OutlineColor ("Outline Color", Color) = (1, 0, 1, 1) // Neon purple for outline
         _Frequency ("Oscillation Frequency", Float) = 1.0
-        _SquareSize ("Square Size", Float) = 0.2
+        _OutlineThickness ("Outline Thickness", Float) = 0.02
+        _SquareSize ("Square Size", Float) = 1.0 // Controls the total size of each square
     }
     SubShader
     {
@@ -34,8 +35,9 @@ Shader "Custom/OscillatingFloorShader"
 
             float _Frequency;
             float _SquareSize;
+            float _OutlineThickness;
             float4 _MainColor;
-            float4 _SquareColor;
+            float4 _OutlineColor;
 
             v2f vert (appdata v)
             {
@@ -47,18 +49,18 @@ Shader "Custom/OscillatingFloorShader"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                // Get the fractional part of the UVs for tiling
+                // Calculate the tiled UV coordinates
                 float2 uv = frac(i.uv / _SquareSize);
 
-                // Calculate brightness oscillation
+                // Oscillate brightness of the outline color
                 float oscillation = 0.5 + 0.5 * sin(_Time.y * _Frequency);
-                float4 color = _MainColor;
 
-                // Check if within square and apply oscillating color
-                if (uv.x < 0.5 && uv.y < 0.5)
-                {
-                    color = lerp(_MainColor, _SquareColor, oscillation);
-                }
+                // Define the outline area by thickness at the borders of each square
+                bool isOutline = (uv.x < _OutlineThickness || uv.x > 1.0 - _OutlineThickness ||
+                                  uv.y < _OutlineThickness || uv.y > 1.0 - _OutlineThickness);
+
+                // Set color based on whether in outline or main area
+                float4 color = isOutline ? _OutlineColor * oscillation : _MainColor;
 
                 return color;
             }
