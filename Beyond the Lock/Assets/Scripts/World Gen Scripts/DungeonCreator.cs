@@ -22,6 +22,7 @@ public class DungeonCreator : MonoBehaviour
     public int roomOffset;
     // Material for our meshes. Can prob split this into floor mesh wall mesh etc.
     public Material material;
+    public Material ceilingMaterial;
 
     public GameObject wallVertical, wallHorizontal;
 
@@ -100,6 +101,13 @@ public class DungeonCreator : MonoBehaviour
                 currSender.GetComponent<Teleport>().reciever = currReceiver;
             }
 
+            // IF we want to add undirected teleportation
+            // if (currReceiver != null)
+            // {
+            //     currReceiver.AddComponent<Teleport>();
+            //     currReceiver.GetComponent<Teleport>().reciever = temp;
+            // }
+
             currSender = temp;
             
         }
@@ -132,7 +140,7 @@ public class DungeonCreator : MonoBehaviour
         // Instantiate the player in the middle of the first room
         var firstRoom = listOfRooms[0];
         Vector2 firstRoomCenter = (firstRoom.BottomLeftAreaCorner + firstRoom.TopRightAreaCorner) / 2;
-        Vector3 playerPosition = new Vector3(firstRoomCenter.x, 5, firstRoomCenter.y);
+        Vector3 playerPosition = new Vector3(firstRoomCenter.x, 1, firstRoomCenter.y);
         GameObject playerInstance = Instantiate(player, playerPosition, Quaternion.identity, transform);
     }
 
@@ -218,6 +226,50 @@ public class DungeonCreator : MonoBehaviour
         dungeonFloor.GetComponent<MeshFilter>().mesh = mesh;
         dungeonFloor.GetComponent<MeshRenderer>().material = material;
         dungeonFloor.GetComponent<MeshCollider>().sharedMesh = mesh;
+
+
+        // Create ceiling mesh
+        Vector3[] ceilingVertices = new Vector3[]
+        {
+            topLeftV + Vector3.up * 6,
+            topRightV + Vector3.up * 6,
+            bottomLeftV + Vector3.up * 6,
+            bottomRightV + Vector3.up * 6
+        };
+
+        Vector2[] ceilingUVs = new Vector2[ceilingVertices.Length];
+        for (int i = 0; i < ceilingUVs.Length; i++)
+        {
+            ceilingUVs[i] = new Vector2(ceilingVertices[i].x, ceilingVertices[i].z);
+        }
+
+        int[] ceilingTriangles = new int[]
+        {
+            0, 2, 1,
+            2, 3, 1
+        };
+
+        Mesh ceilingMesh = new Mesh();
+        ceilingMesh.vertices = ceilingVertices;
+        ceilingMesh.uv = ceilingUVs;
+        ceilingMesh.triangles = ceilingTriangles;
+
+        GameObject dungeonCeiling = new GameObject("Ceiling" + bottomLeftCorner, typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider));
+        dungeonCeiling.transform.position = Vector3.zero;
+        dungeonCeiling.transform.localScale = Vector3.one;
+
+        dungeonCeiling.GetComponent<MeshFilter>().mesh = ceilingMesh;
+        dungeonCeiling.GetComponent<MeshRenderer>().material = ceilingMaterial;
+        dungeonCeiling.GetComponent<MeshCollider>().sharedMesh = ceilingMesh;
+
+        // Add lighting
+
+        // WE SHOULD MAKE THIS A FUNCTION AND THEN CHANGE LIGHTING BASED ON THE ROOM TYPE
+        GameObject lightGameObject = new GameObject("RoomLight");
+        Light lightComp = lightGameObject.AddComponent<Light>();
+        lightComp.color = Color.white;
+        lightComp.intensity = 1.0f;
+        lightGameObject.transform.position = (bottomLeftV + topRightV) / 2 + Vector3.up * 2;
 
         // Add an offset to align everything to the grid
         for (int row = (int)bottomLeftV.x; row < (int)bottomRightV.x; row++)
