@@ -45,12 +45,15 @@ public class GridSquare{
     public Vector2Int TopRightAreaCorner { get; set; }
     public Vector2Int TopLeftAreaCorner { get; set; }
 
+    public Vector2Int Center { get; set; }
     public GridSquare(Vector2Int bottomLeftAreaCorner, Vector2Int bottomRightAreaCorner, Vector2Int topRightAreaCorner, Vector2Int topLeftAreaCorner)
     {
         this.BottomLeftAreaCorner = bottomLeftAreaCorner;
         this.BottomRightAreaCorner = bottomRightAreaCorner;
         this.TopRightAreaCorner = topRightAreaCorner;
         this.TopLeftAreaCorner = topLeftAreaCorner;
+
+        this.Center = new Vector2Int((bottomLeftAreaCorner.x + topRightAreaCorner.x) / 2, (bottomLeftAreaCorner.y + topRightAreaCorner.y) / 2);
     }
 
 }

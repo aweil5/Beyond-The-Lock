@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class DungeonCreator : MonoBehaviour
 {
@@ -41,6 +42,7 @@ public class DungeonCreator : MonoBehaviour
     [Header("Start Room Prefabs")]
     public GameObject roomPillar1;
     public GameObject office;
+    public GameObject clerkDesk;
     // public GameObject clerkOffice;
     // public GameObject spaceWindows;
 
@@ -175,11 +177,47 @@ public class DungeonCreator : MonoBehaviour
 
 
 
+        // FIRST ROOM SPAWN
+
         // Instantiate the player in the middle of the first room
         var firstRoom = listOfRooms[0];
-        Vector2 firstRoomSpawn = firstRoom.BottomLeftAreaCorner + new Vector2((firstRoom.TopRightAreaCorner.x - firstRoom.BottomLeftAreaCorner.x) / 3, (firstRoom.TopRightAreaCorner.y - firstRoom.BottomLeftAreaCorner.y) / 2);
-        Vector3 playerPosition = new Vector3(firstRoomSpawn.x, 1, firstRoomSpawn.y);
-        GameObject playerInstance = Instantiate(player, playerPosition, Quaternion.identity, transform);
+        
+        Vector2 bottomLeftFirst = firstRoom.BottomLeftAreaCorner;
+        Vector2 topRightFirst = firstRoom.TopRightAreaCorner;
+
+        float roomWidthFirst = topRightFirst.x - bottomLeftFirst.x;
+        float roomHeightFirst = topRightFirst.y - bottomLeftFirst.y;
+        
+        Vector3 playerPosition;
+        Quaternion lookRotation = Quaternion.identity;
+        if (roomWidthFirst < roomHeightFirst)
+        {
+            // Place player in the middle of the room
+            Vector2 firstRoomSpawn = new Vector2((bottomLeftFirst.x + topRightFirst.x) / 2, bottomLeftFirst.y + 3);
+            playerPosition = new Vector3(firstRoomSpawn.x, 1, firstRoomSpawn.y);
+
+            
+            Vector3 lookDirection = (topRightFirst - bottomLeftFirst).normalized;
+            lookRotation = Quaternion.LookRotation(lookDirection);
+            
+        
+        }
+        else
+        {
+            // Place player in the middle of the room
+            Vector2 firstRoomSpawn = new Vector2(bottomLeftFirst.x + 3, (bottomLeftFirst.y + topRightFirst.y) / 2);
+            
+            playerPosition = new Vector3(firstRoomSpawn.x, 1, firstRoomSpawn.y);
+            Vector3 lookDirection = (topRightFirst - bottomLeftFirst).normalized;
+            lookRotation = Quaternion.LookRotation(lookDirection);
+        }
+        
+        
+        Vector3 lookAtPosition = new Vector3((bottomLeftFirst.x + topRightFirst.x) / 2, playerPosition.y, (bottomLeftFirst.y + topRightFirst.y) / 2);
+        lookRotation = Quaternion.LookRotation(lookAtPosition - playerPosition);
+
+        GameObject playerInstance = Instantiate(player, playerPosition, lookRotation, transform);
+
     }
 
     private void buildRoomInterior(Node room, GameObject roomParent, RoomType roomType)
@@ -208,17 +246,75 @@ public class DungeonCreator : MonoBehaviour
         int rowCount = gridRoom.grid.GetLength(0);
         int colCount = gridRoom.grid.GetLength(1);
 
+        int xStart;
+        int xEnd;
 
-        int officeRowCount = rowCount / 2;
-        for (int row = 0; row < officeRowCount; row++)
+        int yStart;
+        int yEnd;
+        bool ColBigger = colCount > rowCount; 
+        
+        // Building Office Rooms
+        if (rowCount > colCount)
         {
-            for (int col = colCount / 2; col < colCount; col += 2)
+            xStart = rowCount / 2 - 1;
+            xEnd = rowCount;
+            yStart = colCount - 1;
+            yEnd = colCount / 2;
+        }else{
+
+            xStart = colCount / 2 - 1;
+            xEnd = colCount;
+            yStart = rowCount - 1;
+            yEnd = rowCount / 2;
+        }
+       
+        
+        for (int row = xStart; row < xEnd; row++)
+        {
+            for (int col = yStart; col > yEnd; col -= 2)
             {
-            Vector3 position = new Vector3(gridRoom.grid[row, col].BottomLeftAreaCorner.x, 0, gridRoom.grid[row, col].BottomLeftAreaCorner.y);
-            Instantiate(office, position, Quaternion.identity, roomParent.transform);
+                if (ColBigger)
+                {
+                    
+                    Vector3 position = new Vector3(gridRoom.grid[col, row].Center.x, 0, gridRoom.grid[col, row].Center.y);
+                    Instantiate(office, position, Quaternion.identity, roomParent.transform);
+                }
+                else{
+                    Vector3 position = new Vector3(gridRoom.grid[row, col].Center.x, 0, gridRoom.grid[row, col].Center.y);
+                    Instantiate(office, position, Quaternion.identity, roomParent.transform);
+                }
+
+            
             }
         }
 
+
+        // Building Clerk Desk
+        // NEEED TO FIX THIS
+        GameObject clerkOffice;
+        Vector3 clerkPosition;
+        Quaternion clerkLookRotation = Quaternion.identity;
+        Vector3 lookAtPosition;
+        if (ColBigger)
+        {
+            int colLocation = colCount / 2;
+            int rowLocation = 0;
+            clerkPosition = new Vector3(gridRoom.grid[rowLocation, colLocation].Center.x, 0, gridRoom.grid[yEnd, xEnd - 1].Center.y);
+            lookAtPosition = new Vector3(gridRoom.grid[rowLocation + 1, colLocation].Center.x, 0 , gridRoom.grid[rowLocation + 1, colLocation].Center.y);
+        }
+        else
+        {
+            int colLocation = 0;
+            int rowLocation = rowCount / 2;
+            clerkPosition = new Vector3(gridRoom.grid[rowLocation, colLocation].Center.x, 0, gridRoom.grid[xStart, yStart].Center.y);
+            lookAtPosition = new Vector3(gridRoom.grid[rowLocation, colLocation + 1].Center.x, 0 , gridRoom.grid[rowLocation, colLocation + 1].Center.y);
+
+        }
+        clerkLookRotation = Quaternion.LookRotation(lookAtPosition - clerkPosition);
+        clerkOffice = Instantiate(clerkDesk, clerkPosition, clerkLookRotation, roomParent.transform);
+    // lookRotation = Quaternion.LookRotation(lookAtPosition - playerPosition);
+
+        // Build Space Bank Sign
 
     }
 
