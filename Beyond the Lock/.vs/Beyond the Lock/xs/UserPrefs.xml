@@ -1,0 +1,25 @@
+﻿<Properties StartupConfiguration="{8FEA481B-C3AF-A9D3-D9E9-B5816619FC6C}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/EnemyDetection.cs">
+    <Files>
+      <File FileName="Assets/EnemyDetection.cs" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="Beyond the Lock" expanded="True">
+            <Node name="Assets" expanded="True">
+              <Node name="EnemyDetection.cs" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="1a22805d-cfe6-450e-bc00-95b38ee9c621" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

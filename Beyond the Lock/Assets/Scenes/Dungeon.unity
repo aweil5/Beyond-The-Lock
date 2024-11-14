@@ -261,6 +261,8 @@ MonoBehaviour:
   teleporter: {fileID: 919132149155446097, guid: 14c533e38104e4a1985714a46264862d, type: 3}
   player: {fileID: 8098600702571518752, guid: 862f872dbb53e4edc9751cc10306f087, type: 3}
   playerCam: {fileID: 5707146213100495530, guid: 779050744bfc0449bb16e4e4e29b6d69, type: 3}
+  randomWorldSpawns:
+  - {fileID: 919132149155446097, guid: 3faa7de1827c143eca664563d351a1bf, type: 3}
 --- !u!4 &880362355
 Transform:
   m_ObjectHideFlags: 0
@@ -276,9 +278,67 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &3943126661985782742
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1617411349141146167, guid: 0ec1a5859d75341209a21a646974dc35, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1617411349141146167, guid: 0ec1a5859d75341209a21a646974dc35, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 6.33
+      objectReference: {fileID: 0}
+    - target: {fileID: 1617411349141146167, guid: 0ec1a5859d75341209a21a646974dc35, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 14.81
+      objectReference: {fileID: 0}
+    - target: {fileID: 1617411349141146167, guid: 0ec1a5859d75341209a21a646974dc35, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1617411349141146167, guid: 0ec1a5859d75341209a21a646974dc35, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1617411349141146167, guid: 0ec1a5859d75341209a21a646974dc35, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1617411349141146167, guid: 0ec1a5859d75341209a21a646974dc35, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1617411349141146167, guid: 0ec1a5859d75341209a21a646974dc35, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1617411349141146167, guid: 0ec1a5859d75341209a21a646974dc35, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1617411349141146167, guid: 0ec1a5859d75341209a21a646974dc35, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6268232487969613949, guid: 0ec1a5859d75341209a21a646974dc35, type: 3}
+      propertyPath: m_Name
+      value: TOTALPLAYERKAI
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0ec1a5859d75341209a21a646974dc35, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 280603907}
   - {fileID: 880362355}
+  - {fileID: 3943126661985782742}
