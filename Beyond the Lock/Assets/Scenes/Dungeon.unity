@@ -254,7 +254,7 @@ MonoBehaviour:
   roomBottomCornerModifier: 0.151
   roomTopCornerModifier: 0.9
   roomOffset: 1
-  material: {fileID: 2100000, guid: 02bcc3de19e7a4a9999e3b17994f7947, type: 2}
+  material: {fileID: 2100000, guid: c131aa9fcbd2642f0a78a3e7e0f11045, type: 2}
   ceilingMaterial: {fileID: 2100000, guid: 770abdfd38eca4e7e846eb2e627a5009, type: 2}
   wallVertical: {fileID: 370895085197114751, guid: dd9e087844c994657b04453d160d758c, type: 3}
   wallHorizontal: {fileID: 459516420540396512, guid: 30c2d159d35ff41ab8ce3cbcf2cea4b7, type: 3}
@@ -262,7 +262,16 @@ MonoBehaviour:
   player: {fileID: 8098600702571518752, guid: 862f872dbb53e4edc9751cc10306f087, type: 3}
   playerCam: {fileID: 5707146213100495530, guid: 779050744bfc0449bb16e4e4e29b6d69, type: 3}
   randomWorldSpawns:
-  - {fileID: 919132149155446097, guid: 3faa7de1827c143eca664563d351a1bf, type: 3}
+  - {fileID: 919132149155446097, guid: b67db3a5b24774c57bb47d6004ad3a82, type: 3}
+  - {fileID: 919132149155446097, guid: 5832df903b58b4570a2daf304255579d, type: 3}
+  - {fileID: 919132149155446097, guid: 783abb3bf518145c39f7c0c8e7444c82, type: 3}
+  - {fileID: 919132149155446097, guid: caf18f981148941e7a47f206af52e32b, type: 3}
+  - {fileID: 919132149155446097, guid: 466525fb7f6b649b9af1dc95636391e3, type: 3}
+  - {fileID: 919132149155446097, guid: cde3ac54ea93241bd906bb0cd8746a0c, type: 3}
+  - {fileID: 919132149155446097, guid: 5559607f9a49c40fab2a8c173b584b18, type: 3}
+  roomPillar1: {fileID: 1582307718022064056, guid: dcd7d3397469e416f9f32e62fbf3f942, type: 3}
+  office: {fileID: 1247890777124513973, guid: 136a0cf5e521e4f8aaca798e2ed2090e, type: 3}
+  clerkDesk: {fileID: 4003578148122634862, guid: c2e2b3cb87cf04a979c9eb12347aa48f, type: 3}
 --- !u!4 &880362355
 Transform:
   m_ObjectHideFlags: 0
@@ -278,67 +287,9 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &3943126661985782742
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1617411349141146167, guid: 0ec1a5859d75341209a21a646974dc35, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1617411349141146167, guid: 0ec1a5859d75341209a21a646974dc35, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 6.33
-      objectReference: {fileID: 0}
-    - target: {fileID: 1617411349141146167, guid: 0ec1a5859d75341209a21a646974dc35, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 14.81
-      objectReference: {fileID: 0}
-    - target: {fileID: 1617411349141146167, guid: 0ec1a5859d75341209a21a646974dc35, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1617411349141146167, guid: 0ec1a5859d75341209a21a646974dc35, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1617411349141146167, guid: 0ec1a5859d75341209a21a646974dc35, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1617411349141146167, guid: 0ec1a5859d75341209a21a646974dc35, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1617411349141146167, guid: 0ec1a5859d75341209a21a646974dc35, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1617411349141146167, guid: 0ec1a5859d75341209a21a646974dc35, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1617411349141146167, guid: 0ec1a5859d75341209a21a646974dc35, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6268232487969613949, guid: 0ec1a5859d75341209a21a646974dc35, type: 3}
-      propertyPath: m_Name
-      value: TOTALPLAYERKAI
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 0ec1a5859d75341209a21a646974dc35, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 280603907}
   - {fileID: 880362355}
-  - {fileID: 3943126661985782742}

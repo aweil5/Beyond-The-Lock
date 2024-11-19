@@ -366,6 +366,7 @@
 "Assets/Scripts/World Gen Scripts/Line.cs"
 "Assets/Scripts/World Gen Scripts/Node.cs"
 "Assets/Scripts/World Gen Scripts/RoomGenerator.cs"
+"Assets/Scripts/World Gen Scripts/RoomGrid.cs"
 "Assets/Scripts/World Gen Scripts/RoomNode.cs"
 "Assets/Scripts/World Gen Scripts/StructureHelper.cs"
 -langversion:9.0
