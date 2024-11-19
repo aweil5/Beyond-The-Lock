@@ -64,14 +64,14 @@
     <Compile Include="Assets/Scripts/World Gen Scripts/CorridorNode.cs" />
     <Compile Include="Assets/Scripts/PlayerCam.cs" />
     <Compile Include="Assets/Scripts/World Gen Scripts/DungeonCreator.cs" />
-    <Compile Include="Assets/Enemy_Detection.cs" />
     <Compile Include="Assets/Scripts/EnemyDetection.cs" />
     <Compile Include="Assets/Scripts/World Gen Scripts/BinarySpacePartitioner.cs" />
-    <Compile Include="Assets/EnemyDetection.cs" />
+    <Compile Include="Assets/CameraDetectPlayer.cs" />
     <Compile Include="Assets/Scripts/World Gen Scripts/RoomNode.cs" />
     <Compile Include="Assets/Scripts/World Gen Scripts/RoomGenerator.cs" />
     <Compile Include="Assets/Scripts/Teleport.cs" />
     <Compile Include="Assets/Scripts/World Gen Scripts/CorridorsGenerator.cs" />
+    <Compile Include="Assets/CameraRotation.cs" />
     <Compile Include="Assets/Scripts/World Gen Scripts/Node.cs" />
     <Compile Include="Assets/Scripts/MoveCamera.cs" />
     <Compile Include="Assets/Scripts/World Gen Scripts/RoomGrid.cs" />

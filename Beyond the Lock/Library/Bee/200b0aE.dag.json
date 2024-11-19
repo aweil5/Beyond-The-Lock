@@ -19387,8 +19387,13 @@
       "Annotation": "WriteText Library/Bee/artifacts/200b0aE.dag/Assembly-CSharp.rsp",
       "DisplayName": "Writing Assembly-CSharp.rsp",
       "ActionType": "WriteFile",
+<<<<<<< Updated upstream
       "PayloadOffset": 1336104,
       "PayloadLength": 29171,
+=======
+      "PayloadOffset": 1469289,
+      "PayloadLength": 34001,
+>>>>>>> Stashed changes
       "PayloadDebugContentSnippet": "-target:library\n-out:\"Library/",
       "Inputs": [],
       "Outputs": [
@@ -19400,7 +19405,11 @@
       "Annotation": "WriteText Library/Bee/artifacts/200b0aE.dag/Assembly-CSharp.rsp2",
       "DisplayName": "Writing Assembly-CSharp.rsp2",
       "ActionType": "WriteFile",
+<<<<<<< Updated upstream
       "PayloadOffset": 1365361,
+=======
+      "PayloadOffset": 1503376,
+>>>>>>> Stashed changes
       "PayloadLength": 0,
       "PayloadDebugContentSnippet": "",
       "Inputs": [],
@@ -19645,6 +19654,12 @@
         "Library/Bee/artifacts/200b0aE.dag/Unity.VSCode.Editor.ref.dll",
         "Library/Bee/artifacts/200b0aE.dag/UnityEditor.UI.ref.dll",
         "Library/Bee/artifacts/200b0aE.dag/UnityEngine.UI.ref.dll",
+<<<<<<< Updated upstream
+=======
+        "Assets/CameraDetectPlayer.cs",
+        "Assets/CameraRotation.cs",
+        "Assets/Scripts/EnemyDetection.cs",
+>>>>>>> Stashed changes
         "Assets/Scripts/MoveCamera.cs",
         "Assets/Scripts/PlayerCam.cs",
         "Assets/Scripts/PlayerMovement.cs",
@@ -19898,7 +19913,11 @@
       "Annotation": "WriteText Library/Bee/artifacts/200b0aE.dag/Assembly-CSharp.dll.mvfrm.rsp",
       "DisplayName": "Writing Assembly-CSharp.dll.mvfrm.rsp",
       "ActionType": "WriteFile",
+<<<<<<< Updated upstream
       "PayloadOffset": 1365456,
+=======
+      "PayloadOffset": 1503471,
+>>>>>>> Stashed changes
       "PayloadLength": 9349,
       "PayloadDebugContentSnippet": "Library/Bee/artifacts/mvdfrm/U",
       "Inputs": [],
