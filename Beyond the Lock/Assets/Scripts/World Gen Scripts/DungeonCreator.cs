@@ -291,6 +291,8 @@ public class DungeonCreator : MonoBehaviour
 
         // Building Clerk Desk
         // NEEED TO FIX THIS
+        // It should be facing normal to its position plus a few in the x or z direction depending
+        // the wall its placed on
         GameObject clerkOffice;
         Vector3 clerkPosition;
         Quaternion clerkLookRotation = Quaternion.identity;
