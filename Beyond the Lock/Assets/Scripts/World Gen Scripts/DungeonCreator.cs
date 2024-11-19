@@ -67,6 +67,7 @@ public class DungeonCreator : MonoBehaviour
         GameObject currReceiver = null;
         GameObject temp = null;
         RoomType roomType;
+        RoomOrientation roomOrientation;
         // Instantiate Teleporters in each Room
         foreach (var room in listOfRooms)
         {
@@ -86,7 +87,6 @@ public class DungeonCreator : MonoBehaviour
             {
                 roomType = RoomType.Treasure;
             }
-            buildRoomInterior(room, roomParent, roomType);
 
 
 
@@ -102,18 +102,21 @@ public class DungeonCreator : MonoBehaviour
 
             if (roomWidth > roomHeight)
             {
+                roomOrientation = RoomOrientation.Horizontal;
                 // Place teleporters on the left and right walls
                 teleporterPosition1 = new Vector3(bottomLeft.x + 3, 0, (bottomLeft.y + topRight.y) / 2);
                 teleporterPosition2 = new Vector3(topRight.x - 3, 0, (bottomLeft.y + topRight.y) / 2);
             }
             else
             {
+                roomOrientation = RoomOrientation.Vertical;
                 // Place teleporters on the top and bottom walls
                 teleporterPosition1 = new Vector3((bottomLeft.x + topRight.x) / 2, 0, bottomLeft.y + 3);
                 teleporterPosition2 = new Vector3((bottomLeft.x + topRight.x) / 2, 0, topRight.y - 3);
             }
             // Ensure both teleporters have BoxColliders with isTrigger enabled
 
+            buildRoomInterior(room, roomParent, roomType, roomOrientation);
 
             currReceiver = Instantiate(teleporter, teleporterPosition1, Quaternion.identity, transform);
             if (room != listOfRooms[listOfRooms.Count - 1])
@@ -223,12 +226,12 @@ public class DungeonCreator : MonoBehaviour
 
     }
 
-    private void buildRoomInterior(Node room, GameObject roomParent, RoomType roomType)
+    private void buildRoomInterior(Node room, GameObject roomParent, RoomType roomType, RoomOrientation roomOrientation)
     {
         if (roomType == RoomType.Start)
         {
             // Add specific logic for Start room
-            buildStartRoom(room, roomParent);
+            buildStartRoom(room, roomParent, roomOrientation);
         }
         else
         {
@@ -242,7 +245,7 @@ public class DungeonCreator : MonoBehaviour
     // public GameObject office;
     // public GameObject clerkOffice;
     // public GameObject spaceWindows;
-    private void buildStartRoom(Node room, GameObject roomParent)
+    private void buildStartRoom(Node room, GameObject roomParent, RoomOrientation roomOrientation)
     {
         // Spawn in the 
         RoomGrid gridRoom = new RoomGrid((RoomNode)room);
@@ -257,7 +260,7 @@ public class DungeonCreator : MonoBehaviour
         bool ColBigger = colCount > rowCount;
 
         // Building Office Rooms
-        if (rowCount > colCount)
+        if (roomOrientation == RoomOrientation.Vertical)
         {
             xStart = rowCount / 2 - 1;
             xEnd = rowCount;
@@ -278,7 +281,7 @@ public class DungeonCreator : MonoBehaviour
         {
             for (int col = yStart; col > yEnd; col -= 2)
             {
-                if (ColBigger)
+                if (roomOrientation == RoomOrientation.Horizontal)
                 {
 
                     Vector3 position = new Vector3(gridRoom.grid[col, row].Center.x, 0, gridRoom.grid[col, row].Center.y);
@@ -299,27 +302,39 @@ public class DungeonCreator : MonoBehaviour
         // NEEED TO FIX THIS
         // It should be facing normal to its position plus a few in the x or z direction depending
         // the wall its placed on
-        GameObject clerkOffice;
+        // GameObject clerkOffice;
         Vector3 clerkPosition;
         Quaternion clerkLookRotation = Quaternion.identity;
         Vector3 lookAtPosition;
-        if (ColBigger)
+        if (roomOrientation == RoomOrientation.Horizontal)
         {
             int colLocation = colCount / 2;
-            int rowLocation = 0;
-            clerkPosition = new Vector3(gridRoom.grid[rowLocation, colLocation].Center.x, 0, gridRoom.grid[yEnd, xEnd - 1].Center.y);
-            lookAtPosition = new Vector3(gridRoom.grid[rowLocation + 1, colLocation].Center.x, 0, gridRoom.grid[rowLocation + 1, colLocation].Center.y);
+            int rowLocation = 1;
+            for (int i = colLocation; i < colCount-1; i+=2)
+            {
+                clerkPosition = new Vector3(gridRoom.grid[rowLocation, i].Center.x, 0, gridRoom.grid[rowLocation, i].Center.y);
+                lookAtPosition = clerkPosition + Vector3.forward * 0.1f; // Slightly offset forward
+                clerkLookRotation = Quaternion.LookRotation(lookAtPosition - clerkPosition) * Quaternion.Euler(0, 180, 0);
+                Instantiate(clerkDesk, clerkPosition, clerkLookRotation, roomParent.transform);
+            }
+
         }
         else
         {
-            int colLocation = 0;
+            int colLocation = 1;
             int rowLocation = rowCount / 2;
-            clerkPosition = new Vector3(gridRoom.grid[rowLocation, colLocation].Center.x, 0, gridRoom.grid[xStart, yStart].Center.y);
-            lookAtPosition = new Vector3(gridRoom.grid[rowLocation, colLocation + 1].Center.x, 0, gridRoom.grid[rowLocation, colLocation + 1].Center.y);
+
+            for (int j = rowLocation; j < rowCount-1; j+=2)
+            {
+                clerkPosition = new Vector3(gridRoom.grid[j, colLocation].Center.x, 0, gridRoom.grid[j, colLocation].Center.y);
+                lookAtPosition = clerkPosition + Vector3.right * 0.1f; // Slightly offset to the right
+                clerkLookRotation = Quaternion.LookRotation(lookAtPosition - clerkPosition) * Quaternion.Euler(0, 180, 0);
+                Instantiate(clerkDesk, clerkPosition, clerkLookRotation, roomParent.transform);
+            }
+
 
         }
-        clerkLookRotation = Quaternion.LookRotation(lookAtPosition - clerkPosition);
-        clerkOffice = Instantiate(clerkDesk, clerkPosition, clerkLookRotation, roomParent.transform);
+
         // lookRotation = Quaternion.LookRotation(lookAtPosition - playerPosition);
 
         // Build Space Bank Sign
@@ -528,4 +543,13 @@ public enum RoomType
     LaserRoom = 3,
     FightRoom = 4,
 
+}
+
+
+// IF HORIZONTAL: The player spawns on the left and right walls
+// IF VERTICAL: The player spawns on the top and bottom walls
+public enum RoomOrientation
+{
+    Horizontal = 0,
+    Vertical = 1
 }
