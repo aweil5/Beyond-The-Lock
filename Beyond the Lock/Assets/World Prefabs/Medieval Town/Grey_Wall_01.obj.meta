@@ -8,7 +8,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Dark_Stone
-    second: {fileID: -4660651839558579860, guid: 68eac8b82c8694ee38785f8024a544f6, type: 3}
+    second: {fileID: -4660651839558579860, guid: e7da6a406286d41f48f07d22cda1dd08, type: 3}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
