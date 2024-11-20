@@ -30,7 +30,6 @@ public class DungeonCreator : MonoBehaviour
     public GameObject teleporter;
 
     public GameObject player;
-    public GameObject playerCam;
 
     List<Vector3Int> possibleWallHorizontalPosition;
 
@@ -43,6 +42,10 @@ public class DungeonCreator : MonoBehaviour
     public GameObject roomPillar1;
     public GameObject office;
     public GameObject clerkDesk;
+
+    [Header("Vault Room Prefabs")]
+    public GameObject diamond;
+
     // public GameObject clerkOffice;
     // public GameObject spaceWindows;
 
@@ -118,7 +121,17 @@ public class DungeonCreator : MonoBehaviour
 
             buildRoomInterior(room, roomParent, roomType, roomOrientation);
 
-            currReceiver = Instantiate(teleporter, teleporterPosition1, Quaternion.identity, transform);
+            if (room != listOfRooms[0])
+            {
+                currReceiver = Instantiate(teleporter, teleporterPosition1, Quaternion.identity, transform);
+                if (!currReceiver.TryGetComponent<BoxCollider>(out BoxCollider receiverCollider))
+                {
+                    receiverCollider = currReceiver.AddComponent<BoxCollider>();
+                }
+                receiverCollider.isTrigger = true;
+            }
+
+
             if (room != listOfRooms[listOfRooms.Count - 1])
             {
                 temp = Instantiate(teleporter, teleporterPosition2, Quaternion.identity, transform);
@@ -128,11 +141,8 @@ public class DungeonCreator : MonoBehaviour
                 }
                 senderCollider.isTrigger = true;
             }
-            if (!currReceiver.TryGetComponent<BoxCollider>(out BoxCollider receiverCollider))
-            {
-                receiverCollider = currReceiver.AddComponent<BoxCollider>();
-            }
-            receiverCollider.isTrigger = true;
+
+
 
 
             // Ensure both teleporters have BoxColliders with isTrigger enabled
@@ -257,9 +267,8 @@ public class DungeonCreator : MonoBehaviour
 
         int yStart;
         int yEnd;
-        bool ColBigger = colCount > rowCount;
 
-        // Building Office Rooms
+        // Building Offices
         if (roomOrientation == RoomOrientation.Vertical)
         {
             xStart = rowCount / 2 - 1;
@@ -310,7 +319,7 @@ public class DungeonCreator : MonoBehaviour
         {
             int colLocation = colCount / 2;
             int rowLocation = 1;
-            for (int i = colLocation; i < colCount-1; i+=2)
+            for (int i = colLocation; i < colCount - 1; i += 2)
             {
                 clerkPosition = new Vector3(gridRoom.grid[rowLocation, i].Center.x, 0, gridRoom.grid[rowLocation, i].Center.y);
                 lookAtPosition = clerkPosition + Vector3.forward * 0.1f; // Slightly offset forward
@@ -324,7 +333,7 @@ public class DungeonCreator : MonoBehaviour
             int colLocation = 1;
             int rowLocation = rowCount / 2;
 
-            for (int j = rowLocation; j < rowCount-1; j+=2)
+            for (int j = rowLocation; j < rowCount - 1; j += 2)
             {
                 clerkPosition = new Vector3(gridRoom.grid[j, colLocation].Center.x, 0, gridRoom.grid[j, colLocation].Center.y);
                 lookAtPosition = clerkPosition + Vector3.right * 0.1f; // Slightly offset to the right
@@ -334,6 +343,50 @@ public class DungeonCreator : MonoBehaviour
 
 
         }
+
+
+        // Bulding Pillars in bottom left and right quadrants of the room
+
+        if (roomOrientation == RoomOrientation.Horizontal)
+        {
+            int colLocation = colCount / 4;
+            int rowLocationOne = rowCount / 4;
+            int rowLocationTwo = 3 * rowCount / 4;
+
+            Vector3 positionOne = new Vector3(gridRoom.grid[rowLocationOne, colLocation].Center.x, 0, gridRoom.grid[rowLocationOne, colLocation].Center.y);
+            Vector3 positionTwo = new Vector3(gridRoom.grid[rowLocationTwo, colLocation].Center.x, 0, gridRoom.grid[rowLocationTwo, colLocation].Center.y);
+            GameObject pillarOne = Instantiate(roomPillar1, positionOne, Quaternion.identity, roomParent.transform);
+            pillarOne.transform.localScale = new Vector3(10, pillarOne.transform.localScale.y, 10);
+
+            GameObject pillarTwo = Instantiate(roomPillar1, positionTwo, Quaternion.identity, roomParent.transform);
+            pillarTwo.transform.localScale = new Vector3(10, pillarTwo.transform.localScale.y, 10);
+        }
+        else
+        {
+
+
+            // The front of the room is earlier in the grid
+            int rowLocation = 1;
+
+
+            Vector3 firstThirdPosition = new Vector3(room.BottomLeftAreaCorner.x + (room.TopRightAreaCorner.x - room.BottomLeftAreaCorner.x) / 3, 0, room.BottomLeftAreaCorner.y + (room.TopRightAreaCorner.y - room.BottomLeftAreaCorner.y) / 3);
+            Vector3 secondThirdPosition = new Vector3(room.BottomLeftAreaCorner.x + 2 * (room.TopRightAreaCorner.x - room.BottomLeftAreaCorner.x) / 3, 0, room.BottomLeftAreaCorner.y + 2 * (room.TopRightAreaCorner.y - room.BottomLeftAreaCorner.y) / 3);
+            for (int i = rowLocation; i < (rowCount / 2) - 1; i += 3)
+            {
+                Vector3 positionOne = new Vector3(firstThirdPosition.x, 0, gridRoom.grid[i, 0].Center.y);
+                Vector3 positionTwo = new Vector3(secondThirdPosition.x, 0, gridRoom.grid[i, 0].Center.y);
+                GameObject pillarOne = Instantiate(roomPillar1, positionOne, Quaternion.identity, roomParent.transform);
+                pillarOne.transform.localScale = new Vector3(15, pillarOne.transform.localScale.y * 2, 15);
+
+                GameObject pillarTwo = Instantiate(roomPillar1, positionTwo, Quaternion.identity, roomParent.transform);
+                pillarTwo.transform.localScale = new Vector3(15, pillarTwo.transform.localScale.y * 2, 15);
+            }
+
+
+
+        }
+
+
 
         // lookRotation = Quaternion.LookRotation(lookAtPosition - playerPosition);
 
@@ -450,7 +503,9 @@ public class DungeonCreator : MonoBehaviour
         dungeonFloor.GetComponent<MeshFilter>().mesh = mesh;
         dungeonFloor.GetComponent<MeshRenderer>().material = material;
         dungeonFloor.GetComponent<MeshCollider>().sharedMesh = mesh;
-
+        dungeonFloor.tag = "Ground";
+        dungeonFloor.layer = LayerMask.NameToLayer("Ground");
+        
 
         // Instantiate the room rug at the lower right corner
         // Scale the floor to the size of the room

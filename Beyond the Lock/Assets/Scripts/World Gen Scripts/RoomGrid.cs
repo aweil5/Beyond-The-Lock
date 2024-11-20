@@ -14,21 +14,23 @@ public class RoomGrid
 
 
 
+
+
     public RoomGrid(RoomNode roomNode)
     {
         int roomWidth = Mathf.FloorToInt((roomNode.BottomRightAreaCorner.x - roomNode.BottomLeftAreaCorner.x) / 10f);
         int roomHeight = Mathf.FloorToInt((roomNode.TopRightAreaCorner.y - roomNode.BottomRightAreaCorner.y) / 10f);
 
-        this.grid = new GridSquare[roomHeight, roomWidth];
-
+        grid = new GridSquare[roomHeight, roomWidth];
+        
         for (int y = 0; y < roomHeight; y++)
         {
             for (int x = 0; x < roomWidth; x++)
             {
-            Vector2Int bottomLeft = new Vector2Int(roomNode.BottomLeftAreaCorner.x + x * 10, roomNode.BottomLeftAreaCorner.y + y * 10);
-            Vector2Int bottomRight = new Vector2Int(bottomLeft.x + 10, bottomLeft.y);
-            Vector2Int topLeft = new Vector2Int(bottomLeft.x, bottomLeft.y + 10);
-            Vector2Int topRight = new Vector2Int(bottomLeft.x + 10, bottomLeft.y + 10);
+            var bottomLeft = new Vector2Int(roomNode.BottomLeftAreaCorner.x + x * 10, roomNode.BottomLeftAreaCorner.y + y * 10);
+            var bottomRight = new Vector2Int(bottomLeft.x + 10, bottomLeft.y);
+            var topLeft = new Vector2Int(bottomLeft.x, bottomLeft.y + 10);
+            var topRight = new Vector2Int(bottomLeft.x + 10, bottomLeft.y + 10);
 
             grid[y, x] = new GridSquare(bottomLeft, bottomRight, topRight, topLeft);
             }
