@@ -255,12 +255,11 @@ MonoBehaviour:
   roomTopCornerModifier: 0.9
   roomOffset: 1
   material: {fileID: 2100000, guid: c131aa9fcbd2642f0a78a3e7e0f11045, type: 2}
-  ceilingMaterial: {fileID: 2100000, guid: 770abdfd38eca4e7e846eb2e627a5009, type: 2}
+  ceilingMaterial: {fileID: 2100000, guid: 28f909f6e7a2d4b7da8822a32e5bc5dc, type: 2}
   wallVertical: {fileID: 370895085197114751, guid: dd9e087844c994657b04453d160d758c, type: 3}
   wallHorizontal: {fileID: 459516420540396512, guid: 30c2d159d35ff41ab8ce3cbcf2cea4b7, type: 3}
-  teleporter: {fileID: 919132149155446097, guid: 14c533e38104e4a1985714a46264862d, type: 3}
-  player: {fileID: 8098600702571518752, guid: 862f872dbb53e4edc9751cc10306f087, type: 3}
-  playerCam: {fileID: 5707146213100495530, guid: 779050744bfc0449bb16e4e4e29b6d69, type: 3}
+  teleporter: {fileID: 4276388314644269922, guid: 2c0a7480c2f7c4abdbf84ebfcca86511, type: 3}
+  player: {fileID: 4363494102249985022, guid: 3b558faf8c807410aa87d22520c6062c, type: 3}
   randomWorldSpawns:
   - {fileID: 919132149155446097, guid: b67db3a5b24774c57bb47d6004ad3a82, type: 3}
   - {fileID: 919132149155446097, guid: 5832df903b58b4570a2daf304255579d, type: 3}
@@ -272,6 +271,7 @@ MonoBehaviour:
   roomPillar1: {fileID: 1582307718022064056, guid: dcd7d3397469e416f9f32e62fbf3f942, type: 3}
   office: {fileID: 1247890777124513973, guid: 136a0cf5e521e4f8aaca798e2ed2090e, type: 3}
   clerkDesk: {fileID: 4003578148122634862, guid: c2e2b3cb87cf04a979c9eb12347aa48f, type: 3}
+  diamond: {fileID: 0}
 --- !u!4 &880362355
 Transform:
   m_ObjectHideFlags: 0

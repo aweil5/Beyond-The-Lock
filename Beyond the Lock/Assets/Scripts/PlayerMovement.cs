@@ -13,7 +13,6 @@ public class PlayerMovement : MonoBehaviour
 
     Vector3 velocity;
     bool isGrounded;
-    bool isMoving;
 
     private Vector3 lastPos = new Vector3(0f,0f,0f);
     // Start is called before the first frame update
@@ -42,14 +41,7 @@ public class PlayerMovement : MonoBehaviour
         velocity.y += gravity * Time.deltaTime;
 
         controller.Move(velocity * Time.deltaTime);
-        if(lastPos != gameObject.transform.position && isGrounded == true)
-        {
-            isMoving = true;
-        } 
-        else 
-        {
-            isMoving = false;
-        }
+
 
         lastPos = gameObject.transform.position;
         
