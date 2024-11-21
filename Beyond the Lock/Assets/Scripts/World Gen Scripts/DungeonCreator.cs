@@ -150,7 +150,7 @@ public class DungeonCreator : MonoBehaviour
             if (currSender != null)
             {
                 currSender.AddComponent<Teleport>();
-                currSender.GetComponent<Teleport>().reciever = currReceiver;
+                currSender.GetComponent<Teleport>().receiver = currReceiver;
             }
 
             // IF we want to add undirected teleportation
