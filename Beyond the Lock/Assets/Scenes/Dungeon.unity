@@ -271,7 +271,9 @@ MonoBehaviour:
   roomPillar1: {fileID: 1582307718022064056, guid: dcd7d3397469e416f9f32e62fbf3f942, type: 3}
   office: {fileID: 1247890777124513973, guid: 136a0cf5e521e4f8aaca798e2ed2090e, type: 3}
   clerkDesk: {fileID: 4003578148122634862, guid: c2e2b3cb87cf04a979c9eb12347aa48f, type: 3}
-  diamond: {fileID: 0}
+  diamond: {fileID: 123613523652395669, guid: c3f1b366006cc452fa12ffe430ce2478, type: 3}
+  mainCam: {fileID: 4805421632163160354, guid: 4d8d5806e981f4354a5e78dcb796f40f, type: 3}
+  cameraPillar: {fileID: 0}
 --- !u!4 &880362355
 Transform:
   m_ObjectHideFlags: 0

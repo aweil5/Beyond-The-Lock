@@ -10,6 +10,7 @@ public class CameraDetectPlayer : MonoBehaviour
     private Color originalColor;            // To store the original color of the camera
     private Renderer cameraRenderer;        // Renderer for the camera object
 
+
     private void Start()
     {
         // Get the Renderer component and save the original color
@@ -18,6 +19,11 @@ public class CameraDetectPlayer : MonoBehaviour
         {
             originalColor = cameraRenderer.material.color;
         }
+
+
+
+
+
     }
 
     private void Update()

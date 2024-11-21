@@ -26,6 +26,7 @@ public class DungeonCreator : MonoBehaviour
     public Material ceilingMaterial;
 
     public GameObject wallVertical, wallHorizontal;
+    public int wallScale;
 
     public GameObject teleporter;
 
@@ -46,6 +47,12 @@ public class DungeonCreator : MonoBehaviour
     [Header("Vault Room Prefabs")]
     public GameObject diamond;
 
+    [Header("Camera Room Prefabs")]
+    public GameObject mainCam;
+    public GameObject cameraPillar;
+
+
+
     // public GameObject clerkOffice;
     // public GameObject spaceWindows;
 
@@ -64,6 +71,47 @@ public class DungeonCreator : MonoBehaviour
         GameObject roomParent = new GameObject("Rooms");
 
         // Assign Each Room an index
+
+                // FIRST ROOM SPAWN
+
+        // Instantiate the player in the middle of the first room
+        var firstRoom = listOfRooms[0];
+
+        Vector2 bottomLeftFirst = firstRoom.BottomLeftAreaCorner;
+        Vector2 topRightFirst = firstRoom.TopRightAreaCorner;
+
+        float roomWidthFirst = topRightFirst.x - bottomLeftFirst.x;
+        float roomHeightFirst = topRightFirst.y - bottomLeftFirst.y;
+
+        Vector3 playerPosition;
+        Quaternion lookRotation = Quaternion.identity;
+        if (roomWidthFirst < roomHeightFirst)
+        {
+            // Place player in the middle of the room
+            Vector2 firstRoomSpawn = new Vector2((bottomLeftFirst.x + topRightFirst.x) / 2, bottomLeftFirst.y + 3);
+            playerPosition = new Vector3(firstRoomSpawn.x, 1, firstRoomSpawn.y);
+
+
+            Vector3 lookDirection = (topRightFirst - bottomLeftFirst).normalized;
+            lookRotation = Quaternion.LookRotation(lookDirection);
+
+
+        }
+        else
+        {
+            // Place player in the middle of the room
+            Vector2 firstRoomSpawn = new Vector2(bottomLeftFirst.x + 3, (bottomLeftFirst.y + topRightFirst.y) / 2);
+
+            playerPosition = new Vector3(firstRoomSpawn.x, 1, firstRoomSpawn.y);
+            Vector3 lookDirection = (topRightFirst - bottomLeftFirst).normalized;
+            lookRotation = Quaternion.LookRotation(lookDirection);
+        }
+
+
+        Vector3 lookAtPosition = new Vector3((bottomLeftFirst.x + topRightFirst.x) / 2, playerPosition.y, (bottomLeftFirst.y + topRightFirst.y) / 2);
+        lookRotation = Quaternion.LookRotation(lookAtPosition - playerPosition);
+
+        GameObject playerInstance = Instantiate(player, playerPosition, lookRotation, transform);
 
         // Create teleporters that teleport a user from one room to the next
         GameObject currSender = null;
@@ -119,7 +167,7 @@ public class DungeonCreator : MonoBehaviour
             }
             // Ensure both teleporters have BoxColliders with isTrigger enabled
 
-            buildRoomInterior(room, roomParent, roomType, roomOrientation);
+            buildRoomInterior(room, roomParent, roomType, roomOrientation, playerInstance);
 
             if (room != listOfRooms[0])
             {
@@ -193,55 +241,16 @@ public class DungeonCreator : MonoBehaviour
 
 
 
-        // FIRST ROOM SPAWN
 
-        // Instantiate the player in the middle of the first room
-        var firstRoom = listOfRooms[0];
-
-        Vector2 bottomLeftFirst = firstRoom.BottomLeftAreaCorner;
-        Vector2 topRightFirst = firstRoom.TopRightAreaCorner;
-
-        float roomWidthFirst = topRightFirst.x - bottomLeftFirst.x;
-        float roomHeightFirst = topRightFirst.y - bottomLeftFirst.y;
-
-        Vector3 playerPosition;
-        Quaternion lookRotation = Quaternion.identity;
-        if (roomWidthFirst < roomHeightFirst)
-        {
-            // Place player in the middle of the room
-            Vector2 firstRoomSpawn = new Vector2((bottomLeftFirst.x + topRightFirst.x) / 2, bottomLeftFirst.y + 3);
-            playerPosition = new Vector3(firstRoomSpawn.x, 1, firstRoomSpawn.y);
-
-
-            Vector3 lookDirection = (topRightFirst - bottomLeftFirst).normalized;
-            lookRotation = Quaternion.LookRotation(lookDirection);
-
-
-        }
-        else
-        {
-            // Place player in the middle of the room
-            Vector2 firstRoomSpawn = new Vector2(bottomLeftFirst.x + 3, (bottomLeftFirst.y + topRightFirst.y) / 2);
-
-            playerPosition = new Vector3(firstRoomSpawn.x, 1, firstRoomSpawn.y);
-            Vector3 lookDirection = (topRightFirst - bottomLeftFirst).normalized;
-            lookRotation = Quaternion.LookRotation(lookDirection);
-        }
-
-
-        Vector3 lookAtPosition = new Vector3((bottomLeftFirst.x + topRightFirst.x) / 2, playerPosition.y, (bottomLeftFirst.y + topRightFirst.y) / 2);
-        lookRotation = Quaternion.LookRotation(lookAtPosition - playerPosition);
-
-        GameObject playerInstance = Instantiate(player, playerPosition, lookRotation, transform);
 
     }
 
-    private void buildRoomInterior(Node room, GameObject roomParent, RoomType roomType, RoomOrientation roomOrientation)
+    private void buildRoomInterior(Node room, GameObject roomParent, RoomType roomType, RoomOrientation roomOrientation, GameObject player = null)
     {
         if (roomType == RoomType.Start)
         {
             // Add specific logic for Start room
-            buildStartRoom(room, roomParent, roomOrientation);
+            buildStartRoom(room, roomParent, roomOrientation, player);
         }
         else
         {
@@ -255,7 +264,7 @@ public class DungeonCreator : MonoBehaviour
     // public GameObject office;
     // public GameObject clerkOffice;
     // public GameObject spaceWindows;
-    private void buildStartRoom(Node room, GameObject roomParent, RoomOrientation roomOrientation)
+    private void buildStartRoom(Node room, GameObject roomParent, RoomOrientation roomOrientation, GameObject player)
     {
         // Spawn in the 
         RoomGrid gridRoom = new RoomGrid((RoomNode)room);
@@ -267,6 +276,14 @@ public class DungeonCreator : MonoBehaviour
 
         int yStart;
         int yEnd;
+
+        // Instantiate the camera in the middle of the room
+        Vector3 roomCenter = new Vector3((room.BottomLeftAreaCorner.x + room.TopRightAreaCorner.x) / 2, 2, (room.BottomLeftAreaCorner.y + room.TopRightAreaCorner.y) / 2);
+        GameObject cameraInstance = Instantiate(mainCam, roomCenter, Quaternion.identity, roomParent.transform);
+        cameraInstance.transform.localScale = new Vector3(1, 1, 1);
+        // Attach DetectPlayer component to the main player
+        CameraDetectPlayer detectPlayer = cameraInstance.GetComponentInChildren<CameraDetectPlayer>();
+        detectPlayer.player = player.transform;
 
         // Building Offices
         if (roomOrientation == RoomOrientation.Vertical)
@@ -441,6 +458,7 @@ public class DungeonCreator : MonoBehaviour
         Quaternion rotation = wallPrefab == wallHorizontal ? Quaternion.Euler(0, 90, 0) : Quaternion.identity;
 
         GameObject wall = Instantiate(wallPrefab, wallPosition, rotation, wallParent.transform);
+        wall.transform.localScale = new Vector3(wall.transform.localScale.x, wallScale, wall.transform.localScale.z);
         // Add MeshCollider to the instantiated wall
         if (wallPrefab.TryGetComponent<MeshCollider>(out MeshCollider meshCollider))
         {
@@ -515,10 +533,10 @@ public class DungeonCreator : MonoBehaviour
         // Create ceiling mesh
         Vector3[] ceilingVertices = new Vector3[]
         {
-            topLeftV + Vector3.up * 6,
-            topRightV + Vector3.up * 6,
-            bottomLeftV + Vector3.up * 6,
-            bottomRightV + Vector3.up * 6
+            topLeftV + Vector3.up * wallScale,
+            topRightV + Vector3.up * wallScale,
+            bottomLeftV + Vector3.up * wallScale,
+            bottomRightV + Vector3.up * wallScale
         };
 
         Vector2[] ceilingUVs = new Vector2[ceilingVertices.Length];
