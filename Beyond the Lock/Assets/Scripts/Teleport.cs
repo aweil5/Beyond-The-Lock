@@ -1,32 +1,18 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Teleport : MonoBehaviour
 {
-    public GameObject reciever;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public GameObject receiver; // Assign the receiver GameObject in the Inspector
 
     private void OnTriggerEnter(Collider other)
     {
-        Transform parentTransform = other.transform.parent;
-        if (parentTransform != null)
-        {
-            parentTransform.position = reciever.transform.position;
-        }
-        else
-        {
-            other.transform.position = reciever.transform.position;
-        }
+        Debug.Log("Player entered");
+
+        // Get the highest parent in the hierarchy (root transform)
+        Transform rootTransform = other.transform.root;
+
+        // Teleport the root GameObject to the receiver's position
+        rootTransform.position = receiver.transform.position;
     }
 }
