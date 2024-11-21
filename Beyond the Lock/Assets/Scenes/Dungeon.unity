@@ -258,6 +258,7 @@ MonoBehaviour:
   ceilingMaterial: {fileID: 2100000, guid: 28f909f6e7a2d4b7da8822a32e5bc5dc, type: 2}
   wallVertical: {fileID: 370895085197114751, guid: dd9e087844c994657b04453d160d758c, type: 3}
   wallHorizontal: {fileID: 459516420540396512, guid: 30c2d159d35ff41ab8ce3cbcf2cea4b7, type: 3}
+  wallScale: 15
   teleporter: {fileID: 4276388314644269922, guid: 2c0a7480c2f7c4abdbf84ebfcca86511, type: 3}
   player: {fileID: 4363494102249985022, guid: 3b558faf8c807410aa87d22520c6062c, type: 3}
   randomWorldSpawns:
