@@ -278,8 +278,9 @@ public class DungeonCreator : MonoBehaviour
         int yEnd;
 
         // Instantiate the camera in the middle of the room
-        Vector3 roomCenter = new Vector3((room.BottomLeftAreaCorner.x + room.TopRightAreaCorner.x) / 2, 2, (room.BottomLeftAreaCorner.y + room.TopRightAreaCorner.y) / 2);
-        GameObject cameraInstance = Instantiate(mainCam, roomCenter, Quaternion.identity, roomParent.transform);
+        Vector3 upperRightCorner = new Vector3(room.TopRightAreaCorner.x - 1, wallScale - 2, room.TopRightAreaCorner.y - 1);
+        Quaternion cameraRotation = Quaternion.LookRotation(upperRightCorner - new Vector3(room.BottomLeftAreaCorner.x, wallScale - 2, room.BottomLeftAreaCorner.y)) * Quaternion.Euler(-28, 0, 0);
+        GameObject cameraInstance = Instantiate(mainCam, upperRightCorner, cameraRotation, roomParent.transform);
         cameraInstance.transform.localScale = new Vector3(1, 1, 1);
         // Attach DetectPlayer component to the main player
         CameraDetectPlayer detectPlayer = cameraInstance.GetComponentInChildren<CameraDetectPlayer>();
@@ -335,10 +336,10 @@ public class DungeonCreator : MonoBehaviour
         if (roomOrientation == RoomOrientation.Horizontal)
         {
             int colLocation = colCount / 2;
-            int rowLocation = 1;
+            int rowLocation = 0;
             for (int i = colLocation; i < colCount - 1; i += 2)
             {
-                clerkPosition = new Vector3(gridRoom.grid[rowLocation, i].Center.x, 0, gridRoom.grid[rowLocation, i].Center.y);
+                clerkPosition = new Vector3(gridRoom.grid[rowLocation, i].Center.x + 1, 0, gridRoom.grid[rowLocation, i].Center.y);
                 lookAtPosition = clerkPosition + Vector3.forward * 0.1f; // Slightly offset forward
                 clerkLookRotation = Quaternion.LookRotation(lookAtPosition - clerkPosition) * Quaternion.Euler(0, 180, 0);
                 Instantiate(clerkDesk, clerkPosition, clerkLookRotation, roomParent.transform);
@@ -347,12 +348,12 @@ public class DungeonCreator : MonoBehaviour
         }
         else
         {
-            int colLocation = 1;
+            int colLocation = 0;
             int rowLocation = rowCount / 2;
 
             for (int j = rowLocation; j < rowCount - 1; j += 2)
             {
-                clerkPosition = new Vector3(gridRoom.grid[j, colLocation].Center.x, 0, gridRoom.grid[j, colLocation].Center.y);
+                clerkPosition = new Vector3(gridRoom.grid[j, colLocation].Center.x + 1, 0, gridRoom.grid[j, colLocation].Center.y);
                 lookAtPosition = clerkPosition + Vector3.right * 0.1f; // Slightly offset to the right
                 clerkLookRotation = Quaternion.LookRotation(lookAtPosition - clerkPosition) * Quaternion.Euler(0, 180, 0);
                 Instantiate(clerkDesk, clerkPosition, clerkLookRotation, roomParent.transform);
@@ -373,10 +374,10 @@ public class DungeonCreator : MonoBehaviour
             Vector3 positionOne = new Vector3(gridRoom.grid[rowLocationOne, colLocation].Center.x, 0, gridRoom.grid[rowLocationOne, colLocation].Center.y);
             Vector3 positionTwo = new Vector3(gridRoom.grid[rowLocationTwo, colLocation].Center.x, 0, gridRoom.grid[rowLocationTwo, colLocation].Center.y);
             GameObject pillarOne = Instantiate(roomPillar1, positionOne, Quaternion.identity, roomParent.transform);
-            pillarOne.transform.localScale = new Vector3(10, pillarOne.transform.localScale.y, 10);
+            pillarOne.transform.localScale = new Vector3(10, wallScale, 10);
 
             GameObject pillarTwo = Instantiate(roomPillar1, positionTwo, Quaternion.identity, roomParent.transform);
-            pillarTwo.transform.localScale = new Vector3(10, pillarTwo.transform.localScale.y, 10);
+            pillarTwo.transform.localScale = new Vector3(10, wallScale, 10);
         }
         else
         {
@@ -393,10 +394,10 @@ public class DungeonCreator : MonoBehaviour
                 Vector3 positionOne = new Vector3(firstThirdPosition.x, 0, gridRoom.grid[i, 0].Center.y);
                 Vector3 positionTwo = new Vector3(secondThirdPosition.x, 0, gridRoom.grid[i, 0].Center.y);
                 GameObject pillarOne = Instantiate(roomPillar1, positionOne, Quaternion.identity, roomParent.transform);
-                pillarOne.transform.localScale = new Vector3(15, pillarOne.transform.localScale.y * 2, 15);
+                pillarOne.transform.localScale = new Vector3(15, wallScale, 15);
 
                 GameObject pillarTwo = Instantiate(roomPillar1, positionTwo, Quaternion.identity, roomParent.transform);
-                pillarTwo.transform.localScale = new Vector3(15, pillarTwo.transform.localScale.y * 2, 15);
+                pillarTwo.transform.localScale = new Vector3(15, wallScale, 15);
             }
 
 
