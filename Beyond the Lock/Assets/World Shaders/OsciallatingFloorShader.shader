@@ -1,7 +1,8 @@
-Shader "Custom/LargeWhiteSquaresWithPulsingOutline"
+Shader "Custom/LargeWhiteSquaresWithPulsingOutline_Lit"
 {
     Properties
     {
+        _MainTex ("Texture", 2D) = "white" {} // Dummy texture to access UVs
         _MainColor ("Main Color", Color) = (1, 1, 1, 1) // White color for the floor
         _OutlineColor ("Outline Color", Color) = (1, 0, 1, 1) // Neon purple for outline
         _Frequency ("Oscillation Frequency", Float) = 1.0
@@ -11,61 +12,49 @@ Shader "Custom/LargeWhiteSquaresWithPulsingOutline"
     SubShader
     {
         Tags { "RenderType"="Opaque" }
-        LOD 100
+        LOD 200
 
-        Pass
+        CGPROGRAM
+        // Use Surface Shader with Standard lighting model
+        #pragma surface surf Standard fullforwardshadows
+
+        // Include necessary Unity shader files
+        #include "UnityCG.cginc"
+
+        sampler2D _MainTex;
+
+        struct Input
         {
-            CGPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
+            float2 uv_MainTex; // UV coordinates from the mesh
+        };
 
-            #include "UnityCG.cginc"
+        // Shader properties
+        float _Frequency;
+        float _SquareSize;
+        float _OutlineThickness;
+        fixed4 _MainColor;
+        fixed4 _OutlineColor;
 
-            struct appdata
-            {
-                float4 vertex : POSITION;
-                float2 uv : TEXCOORD0;
-            };
+        void surf (Input IN, inout SurfaceOutputStandard o)
+        {
+            // Calculate the tiled UV coordinates
+            float2 uv = frac(IN.uv_MainTex / _SquareSize);
 
-            struct v2f
-            {
-                float2 uv : TEXCOORD0;
-                float4 pos : SV_POSITION;
-            };
+            // Oscillate brightness of the outline color
+            float oscillation = 0.5 + 0.5 * sin(_Time.y * _Frequency);
 
-            float _Frequency;
-            float _SquareSize;
-            float _OutlineThickness;
-            float4 _MainColor;
-            float4 _OutlineColor;
+            // Define the outline area by thickness at the borders of each square
+            bool isOutline = (uv.x < _OutlineThickness || uv.x > 1.0 - _OutlineThickness ||
+                              uv.y < _OutlineThickness || uv.y > 1.0 - _OutlineThickness);
 
-            v2f vert (appdata v)
-            {
-                v2f o;
-                o.pos = UnityObjectToClipPos(v.vertex);
-                o.uv = v.uv;
-                return o;
-            }
+            // Set color based on whether in outline or main area
+            fixed4 color = isOutline ? _OutlineColor * oscillation : _MainColor;
 
-            fixed4 frag (v2f i) : SV_Target
-            {
-                // Calculate the tiled UV coordinates
-                float2 uv = frac(i.uv / _SquareSize);
-
-                // Oscillate brightness of the outline color
-                float oscillation = 0.5 + 0.5 * sin(_Time.y * _Frequency);
-
-                // Define the outline area by thickness at the borders of each square
-                bool isOutline = (uv.x < _OutlineThickness || uv.x > 1.0 - _OutlineThickness ||
-                                  uv.y < _OutlineThickness || uv.y > 1.0 - _OutlineThickness);
-
-                // Set color based on whether in outline or main area
-                float4 color = isOutline ? _OutlineColor * oscillation : _MainColor;
-
-                return color;
-            }
-            ENDCG
+            // Assign the color to the shader outputs
+            o.Albedo = color.rgb; // Base color of the surface
+            o.Alpha = color.a;    // Alpha value (transparency)
         }
+        ENDCG
     }
     FallBack "Diffuse"
 }

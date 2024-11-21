@@ -7,7 +7,7 @@ public class CameraRotation : MonoBehaviour
     public float rotationSpeed = 20f; // Speed of rotation
     private float currentAngle = 0f; // Track the current angle of rotation
     private int direction = 1; // Track the rotation direction (1 for clockwise, -1 for counterclockwise)
-    private const float maxAngle = 60f; // Maximum rotation angle in either direction
+    public float maxAngle = 60f; // Maximum rotation angle in either direction
 
     private void Update()
     {
