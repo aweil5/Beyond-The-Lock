@@ -44,6 +44,8 @@ public class DungeonCreator : MonoBehaviour
     public GameObject office;
     public GameObject clerkDesk;
 
+    public GameObject doNotEnter;
+
     [Header("Vault Room Prefabs")]
     public GameObject diamond;
 
@@ -278,6 +280,11 @@ public class DungeonCreator : MonoBehaviour
         int yStart;
         int yEnd;
 
+
+
+
+
+        // TESTING INFO
         // Instantiate the camera in the middle of the room
         Vector3 upperRightCorner = new Vector3(room.TopRightAreaCorner.x - 1, wallScale - 2, room.TopRightAreaCorner.y - 1);
         Quaternion cameraRotation = Quaternion.LookRotation(upperRightCorner - new Vector3(room.BottomLeftAreaCorner.x, wallScale - 2, room.BottomLeftAreaCorner.y)) * Quaternion.Euler(-28, 0, 0);
@@ -295,6 +302,32 @@ public class DungeonCreator : MonoBehaviour
             detectPlayer.player = player;
             Debug.LogError("Child with name 'PLayer' not found in player GameObject.");
         }
+
+        // Build DNE Room
+
+        // Instantiate the DoNotEnter GameObject
+        Vector3 doNotEnterPosition;
+        Quaternion doNotEnterRotation = Quaternion.identity;
+        Vector3 doNotEnterScale;
+
+        if (roomOrientation == RoomOrientation.Horizontal)
+        {
+            doNotEnterPosition = new Vector3(gridRoom.grid[rowCount-1, colCount / 4].Center.x, 0, gridRoom.grid[rowCount-1, colCount / 4].Center.y);
+            doNotEnterRotation = Quaternion.LookRotation(Vector3.right);
+            doNotEnterScale = new Vector3((room.TopRightAreaCorner.x - room.BottomLeftAreaCorner.x) / 2, wallScale, 1);
+        }
+        else
+        {
+            Debug.Log("Vertical Room");
+            doNotEnterPosition = new Vector3(room.TopLeftAreaCorner.x + 16, -3, room.TopLeftAreaCorner.y - 32 );
+            doNotEnterRotation = Quaternion.LookRotation(Vector3.back);
+            doNotEnterScale = new Vector3(2.5f, 2.5f, 2.5f);
+        }
+
+        GameObject doNotEnterInstance = Instantiate(doNotEnter, doNotEnterPosition, doNotEnterRotation, roomParent.transform);
+        // Normalize the GameObject before scaling
+        doNotEnterInstance.transform.localScale = Vector3.one;
+        doNotEnterInstance.transform.localScale = doNotEnterScale;
 
 
         // Building Offices
