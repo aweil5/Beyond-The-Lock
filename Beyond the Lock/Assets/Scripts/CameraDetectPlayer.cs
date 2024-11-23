@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraDetectPlayer : MonoBehaviour
 {
-    public Transform player;               // Reference to the player object
+    public GameObject player;               // Reference to the player object
     public float detectionAngle = 45f;      // Field of view angle in degrees
     public float detectionDistance = 10f;   // Maximum distance for detection
     private Color originalColor;            // To store the original color of the camera
@@ -32,6 +32,7 @@ public class CameraDetectPlayer : MonoBehaviour
         {
             // Change color to red if the player is in view
             cameraRenderer.material.color = Color.red;
+            Debug.Log("Found the plauyer");
         }
         else
         {
@@ -43,9 +44,9 @@ public class CameraDetectPlayer : MonoBehaviour
     private bool IsPlayerInView()
     {
         // Calculate direction to the player
-        Vector3 directionToPlayer = player.position - transform.position;
-        float distanceToPlayer = directionToPlayer.magnitude;
+        Vector3 directionToPlayer = player.transform.position - transform.position;
 
+        float distanceToPlayer = directionToPlayer.magnitude;
         // Check if the player is within detection distance
         if (distanceToPlayer > detectionDistance)
         {

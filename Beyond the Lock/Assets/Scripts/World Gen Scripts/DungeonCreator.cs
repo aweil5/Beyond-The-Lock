@@ -251,6 +251,7 @@ public class DungeonCreator : MonoBehaviour
         {
             // Add specific logic for Start room
             buildStartRoom(room, roomParent, roomOrientation, player);
+            
         }
         else
         {
@@ -284,7 +285,17 @@ public class DungeonCreator : MonoBehaviour
         cameraInstance.transform.localScale = new Vector3(1, 1, 1);
         // Attach DetectPlayer component to the main player
         CameraDetectPlayer detectPlayer = cameraInstance.GetComponentInChildren<CameraDetectPlayer>();
-        detectPlayer.player = player.transform;
+        Transform playerChild = player.transform.Find("Player");
+        if (playerChild != null)
+        {
+            detectPlayer.player = playerChild.gameObject;
+        }
+        else
+        {
+            detectPlayer.player = player;
+            Debug.LogError("Child with name 'PLayer' not found in player GameObject.");
+        }
+
 
         // Building Offices
         if (roomOrientation == RoomOrientation.Vertical)

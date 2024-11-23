@@ -800,8 +800,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-  detectionAngle: 45
-  detectionDistance: 10
+  detectionAngle: 360
+  detectionDistance: 100
 --- !u!1001 &4412124023697364940
 PrefabInstance:
   m_ObjectHideFlags: 0
