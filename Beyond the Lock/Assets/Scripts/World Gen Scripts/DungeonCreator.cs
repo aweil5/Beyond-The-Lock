@@ -113,7 +113,16 @@ public class DungeonCreator : MonoBehaviour
         Vector3 lookAtPosition = new Vector3((bottomLeftFirst.x + topRightFirst.x) / 2, playerPosition.y, (bottomLeftFirst.y + topRightFirst.y) / 2);
         lookRotation = Quaternion.LookRotation(lookAtPosition - playerPosition);
 
-        GameObject playerInstance = Instantiate(player, playerPosition, lookRotation, transform);
+        GameObject playerInstance = GameObject.Find("MainPlayerNew");
+        if (playerInstance != null)
+        {
+            playerInstance.transform.position = playerPosition;
+            playerInstance.transform.rotation = lookRotation;
+        }
+        else
+        {
+            Debug.LogError("MainPlayerNew not found in the scene.");
+        }
 
         // Create teleporters that teleport a user from one room to the next
         GameObject currSender = null;
