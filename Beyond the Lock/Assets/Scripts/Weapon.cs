@@ -8,8 +8,8 @@ public class Weapon : MonoBehaviour
     public float shootingDelay = 2f; // Delay between shots in seconds
 
     public GameObject bulletPrefab;
-    public Transform bulletSpawn;
-    public float bulletVelocity = 30;
+    public Transform bulletSpawn; // Ensure this Transform is positioned at the front of the gun
+    public float bulletVelocity = 30f;
     public float bulletPrefabLifeTime = 3f;
 
     // Update is called once per frame
@@ -23,11 +23,12 @@ public class Weapon : MonoBehaviour
 
     private void FireWeapon()
     {
-        // Instantiate Bullet
-        GameObject bullet = Instantiate(bulletPrefab, bulletSpawn.position, Quaternion.identity);
+        // Instantiate Bullet with the same rotation as bulletSpawn
+        GameObject bullet = Instantiate(bulletPrefab, bulletSpawn.position, bulletSpawn.rotation);
 
-        // Shoot Mechanism
-        bullet.GetComponent<Rigidbody>().AddForce(bulletSpawn.forward.normalized * bulletVelocity, ForceMode.Impulse);
+        // Apply force in the forward direction of bulletSpawn
+        Rigidbody bulletRigidbody = bullet.GetComponent<Rigidbody>();
+        bulletRigidbody.velocity = bulletSpawn.forward * bulletVelocity;
 
         // Destroy the Bullet After its Lifetime
         StartCoroutine(DestroyBulletAfterTime(bullet, bulletPrefabLifeTime));
