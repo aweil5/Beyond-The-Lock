@@ -260,7 +260,7 @@ MonoBehaviour:
   wallHorizontal: {fileID: 459516420540396512, guid: 30c2d159d35ff41ab8ce3cbcf2cea4b7, type: 3}
   wallScale: 15
   teleporter: {fileID: 4276388314644269922, guid: 2c0a7480c2f7c4abdbf84ebfcca86511, type: 3}
-  player: {fileID: 1711832612333671377, guid: 1ce4a315f3c0d4251a650662e5668d2b, type: 3}
+  player: {fileID: 7322656583498622455, guid: 28f79e7704024435eb6b72f8cd55fbf7, type: 3}
   randomWorldSpawns:
   - {fileID: 919132149155446097, guid: b67db3a5b24774c57bb47d6004ad3a82, type: 3}
   - {fileID: 919132149155446097, guid: 5832df903b58b4570a2daf304255579d, type: 3}

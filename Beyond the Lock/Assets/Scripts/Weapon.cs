@@ -12,6 +12,14 @@ public class Weapon : MonoBehaviour
     public float bulletVelocity = 30f;
     public float bulletPrefabLifeTime = 3f;
 
+    private Rigidbody playerRigidbody;
+
+    void Start()
+    {
+        // Get the Rigidbody component from the parent player object
+        playerRigidbody = GetComponentInParent<Rigidbody>();
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -26,9 +34,16 @@ public class Weapon : MonoBehaviour
         // Instantiate Bullet with the same rotation as bulletSpawn
         GameObject bullet = Instantiate(bulletPrefab, bulletSpawn.position, bulletSpawn.rotation);
 
-        // Apply force in the forward direction of bulletSpawn
+        // Apply force in the forward direction of bulletSpawn, plus player's velocity
         Rigidbody bulletRigidbody = bullet.GetComponent<Rigidbody>();
-        bulletRigidbody.velocity = bulletSpawn.forward * bulletVelocity;
+
+        Vector3 playerVelocity = Vector3.zero;
+        if (playerRigidbody != null)
+        {
+            playerVelocity = playerRigidbody.velocity;
+        }
+
+        bulletRigidbody.velocity = playerVelocity + bulletSpawn.forward * bulletVelocity;
 
         // Destroy the Bullet After its Lifetime
         StartCoroutine(DestroyBulletAfterTime(bullet, bulletPrefabLifeTime));

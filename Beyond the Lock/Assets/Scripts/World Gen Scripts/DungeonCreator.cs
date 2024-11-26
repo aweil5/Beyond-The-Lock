@@ -91,7 +91,7 @@ public class DungeonCreator : MonoBehaviour
         {
             // Place player in the middle of the room
             Vector2 firstRoomSpawn = new Vector2((bottomLeftFirst.x + topRightFirst.x) / 2, bottomLeftFirst.y + 3);
-            playerPosition = new Vector3(firstRoomSpawn.x, 1, firstRoomSpawn.y);
+            playerPosition = new Vector3(firstRoomSpawn.x, 5f, firstRoomSpawn.y);
 
 
             Vector3 lookDirection = (topRightFirst - bottomLeftFirst).normalized;
