@@ -19,11 +19,6 @@ public class CameraDetectPlayer : MonoBehaviour
         {
             originalColor = cameraRenderer.material.color;
         }
-
-
-
-
-
     }
 
     private void Update()
