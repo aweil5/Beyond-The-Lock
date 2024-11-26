@@ -4,37 +4,56 @@ using UnityEngine;
 public class Teleport : MonoBehaviour
 {
     public GameObject receiver; // Assign the receiver GameObject in the Inspector
+    public GameObject player;
 
-    private void OnTriggerEnter(Collider other)
+    public void Start()
     {
-        Debug.Log($"Triggered by: {other.name}");
+        player = GameObject.Find("Player");
+    }   
 
-        // Check the receiver
-        if (receiver == null)
+    void OnTriggerEnter(Collider other)
+
+    {
+
+        Debug.Log("Teleporting player");
+        Transform parent = other.transform.parent;
+        if (parent != null)
         {
-            Debug.LogError("Receiver GameObject is not assigned!");
-            return;
+            parent.position = receiver.transform.position;
         }
-
-        // Get the root transform
-        Transform rootTransform = other.transform.root;
-        Debug.Log($"Teleporting {rootTransform.name} to {receiver.transform.position}");
-
-        // Check if the object has a Rigidbody
-        Rigidbody rb = other.GetComponent<Rigidbody>();
-        if (rb != null)
+        else
         {
-            Debug.Log($"Found Rigidbody on {other.name}, disabling physics temporarily.");
-            rb.isKinematic = true;
+            other.transform.position = receiver.transform.position;
         }
+        
 
-        // Teleport the object
-        rootTransform.position = receiver.transform.position;
-
-        // Re-enable physics
-        if (rb != null)
-        {
-            rb.isKinematic = false;
-        }
     }
+
+    // private IEnumerator TeleportPlayer(Collider other)
+    // {
+    //     // Add a delay if needed
+
+    //     Transform parentTransform = other.transform.parent;
+    //     if (parentTransform != null)
+    //     {
+    //         GameObject parentObject = parentTransform.gameObject;
+    //         foreach (Transform child in parentObject.transform)
+    //         {
+    //             child.position = receiver.transform.position;
+    //         }
+    //         parentObject.transform.position = receiver.transform.position;
+            
+
+    //     }
+    //     else
+    //     {
+    //         foreach (Transform child in other.transform)
+    //         {
+    //             child.position = receiver.transform.position;
+    //         }
+    //     }
+        
+    //     yield return new WaitForSeconds(0.1f); // Add a small delay
+    // }
+
 }
