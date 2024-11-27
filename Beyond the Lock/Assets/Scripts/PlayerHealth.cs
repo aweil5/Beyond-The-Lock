@@ -26,6 +26,6 @@ public class PlayerHealth : MonoBehaviour
     private void Die()
     {
         Time.timeScale = 1;
-        SceneManager.LoadScene("DeathScreen");
+        SceneManager.LoadScene("DeathScreen", LoadSceneMode.Single);
     }
 }
