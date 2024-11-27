@@ -514,7 +514,7 @@ public class DungeonCreator : MonoBehaviour
         Quaternion rotation = wallPrefab == wallHorizontal ? Quaternion.identity : Quaternion.Euler(0, 90, 0) ;
 
         GameObject wall = Instantiate(wallPrefab, wallPosition, rotation, wallParent.transform);
-        wall.transform.localScale = new Vector3(wall.transform.localScale.x, wallScale, wall.transform.localScale.z);
+        wall.transform.localScale = new Vector3(wall.transform.localScale.x, wall.transform.localScale.y * wallScale, wall.transform.localScale.z);
         // Add MeshCollider to the instantiated wall
         if (wallPrefab.TryGetComponent<MeshCollider>(out MeshCollider meshCollider))
         {
