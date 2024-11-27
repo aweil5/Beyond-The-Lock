@@ -264,6 +264,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5258296867502769596, guid: 28f79e7704024435eb6b72f8cd55fbf7, type: 3}
+      propertyPath: fireRate
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7322656583498622455, guid: 28f79e7704024435eb6b72f8cd55fbf7, type: 3}
       propertyPath: m_Name
       value: MainPlayer3
@@ -317,7 +321,7 @@ MonoBehaviour:
   wallVertical: {fileID: 4744168285973638961, guid: a2fe68c7dbcf44a53bbf3e0f4c07627d, type: 3}
   wallHorizontal: {fileID: 4744168285973638961, guid: a2fe68c7dbcf44a53bbf3e0f4c07627d, type: 3}
   wallScale: 15
-  teleporter: {fileID: 4276388314644269922, guid: 2c0a7480c2f7c4abdbf84ebfcca86511, type: 3}
+  teleporter: {fileID: 2044862951137027080, guid: f1c907ce41d604a6db4e991bcf863f17, type: 3}
   player: {fileID: 7322656583498622455, guid: 28f79e7704024435eb6b72f8cd55fbf7, type: 3}
   randomWorldSpawns:
   - {fileID: 919132149155446097, guid: b67db3a5b24774c57bb47d6004ad3a82, type: 3}

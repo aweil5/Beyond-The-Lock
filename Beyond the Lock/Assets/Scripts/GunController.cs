@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class GunController : MonoBehaviour
 {
-    public GameObject bulletPrefab; // Assign your bullet prefab
+    public GameObject bulletPrefab; // Assign bullet prefab
     public Transform bulletSpawnPoint; // The point where bullets are spawned
     public float bulletSpeed = 20f; // Speed of the bullet
     public float fireRate = 0.1f; // Time between shots

@@ -168,17 +168,19 @@ public class DungeonCreator : MonoBehaviour
 
             if (roomWidth > roomHeight)
             {
+                float higher = 6f;
                 roomOrientation = RoomOrientation.Horizontal;
                 // Place teleporters on the left and right walls
-                teleporterPosition1 = new Vector3(bottomLeft.x + 3, 1f, (bottomLeft.y + topRight.y) / 2);
-                teleporterPosition2 = new Vector3(topRight.x - 3, 1f, (bottomLeft.y + topRight.y) / 2);
+                teleporterPosition1 = new Vector3(bottomLeft.x + 3, higher, (bottomLeft.y + topRight.y) / 2);
+                teleporterPosition2 = new Vector3(topRight.x - 3, higher, (bottomLeft.y + topRight.y) / 2);
             }
             else
             {
+                float higher = 6f;
                 roomOrientation = RoomOrientation.Vertical;
                 // Place teleporters on the top and bottom walls
-                teleporterPosition1 = new Vector3((bottomLeft.x + topRight.x) / 2, 1f, bottomLeft.y + 3);
-                teleporterPosition2 = new Vector3((bottomLeft.x + topRight.x) / 2, 1f, topRight.y - 3);
+                teleporterPosition1 = new Vector3((bottomLeft.x + topRight.x) / 2, higher, bottomLeft.y + 3);
+                teleporterPosition2 = new Vector3((bottomLeft.x + topRight.x) / 2, higher, topRight.y - 3);
             }
             // Ensure both teleporters have BoxColliders with isTrigger enabled
 
