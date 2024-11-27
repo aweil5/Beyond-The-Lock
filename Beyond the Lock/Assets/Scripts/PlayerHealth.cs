@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -24,6 +25,7 @@ public class PlayerHealth : MonoBehaviour
 
     private void Die()
     {
-        Destroy(gameObject);
+        Time.timeScale = 1;
+        SceneManager.LoadScene("DeathScreen");
     }
 }
