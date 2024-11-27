@@ -78,7 +78,7 @@ public class DungeonCreator : MonoBehaviour
     }
     private void CreateDungeon()
     {
-        backgroundMusic.SetActive(true);
+        // backgroundMusic.SetActive(true);
         DungeonGenerator generator = new DungeonGenerator(dungeonWidth, dungeonLength);
 
         var listOfRooms = generator.CalculateDungeon(maxIterations, roomWidthMin, roomLengthMin, roomBottomCornerModifier, roomTopCornerModifier, roomOffset, corridorWidth);
@@ -175,22 +175,22 @@ public class DungeonCreator : MonoBehaviour
 
             Vector3 teleporterPosition1, teleporterPosition2;
 
-
+            
             if (roomWidth > roomHeight)
             {
-                float higher = 6f;
+                float higher = 5.4f;
                 roomOrientation = RoomOrientation.Horizontal;
                 // Place teleporters on the left and right walls
-                teleporterPosition1 = new Vector3(bottomLeft.x + 3, higher, (bottomLeft.y + topRight.y) / 2);
-                teleporterPosition2 = new Vector3(topRight.x - 3, higher, (bottomLeft.y + topRight.y) / 2);
+                teleporterPosition1 = new Vector3(bottomLeft.x + 8, higher, (bottomLeft.y + topRight.y) / 2);
+                teleporterPosition2 = new Vector3(topRight.x - 8, higher, (bottomLeft.y + topRight.y) / 2);
             }
             else
             {
-                float higher = 6f;
+                float higher = 5.4f;
                 roomOrientation = RoomOrientation.Vertical;
                 // Place teleporters on the top and bottom walls
-                teleporterPosition1 = new Vector3((bottomLeft.x + topRight.x) / 2, higher, bottomLeft.y + 3);
-                teleporterPosition2 = new Vector3((bottomLeft.x + topRight.x) / 2, higher, topRight.y - 3);
+                teleporterPosition1 = new Vector3((bottomLeft.x + topRight.x) / 2, higher, bottomLeft.y + 8);
+                teleporterPosition2 = new Vector3((bottomLeft.x + topRight.x) / 2, higher, topRight.y - 8);
             }
             // Ensure both teleporters have BoxColliders with isTrigger enabled
 
@@ -198,7 +198,10 @@ public class DungeonCreator : MonoBehaviour
 
             if (room != listOfRooms[0])
             {
-                currReceiver = Instantiate(teleporter, teleporterPosition1, Quaternion.identity, transform);
+                Vector3 directionToCenter = (new Vector3((bottomLeft.x + topRight.x) / 2, 0, (bottomLeft.y + topRight.y) / 2) - teleporterPosition1).normalized;
+                Quaternion teleporterRotation = Quaternion.LookRotation(directionToCenter);
+                currReceiver = Instantiate(teleporter, teleporterPosition1, teleporterRotation, transform);
+                // currReceiver = Instantiate(teleporter, teleporterPosition1, Quaternion.identity, transform);
                 if (!currReceiver.TryGetComponent<BoxCollider>(out BoxCollider receiverCollider))
                 {
                     receiverCollider = currReceiver.AddComponent<BoxCollider>();
@@ -209,7 +212,10 @@ public class DungeonCreator : MonoBehaviour
 
             if (room != listOfRooms[listOfRooms.Count - 1])
             {
-                temp = Instantiate(teleporter, teleporterPosition2, Quaternion.identity, transform);
+                Vector3 directionToCenter = (new Vector3((bottomLeft.x + topRight.x) / 2, 0, (bottomLeft.y + topRight.y) / 2) - teleporterPosition2).normalized;
+                Quaternion teleporterRotation = Quaternion.LookRotation(directionToCenter);
+
+                temp = Instantiate(teleporter, teleporterPosition2, teleporterRotation, transform);
                 if (!temp.TryGetComponent<BoxCollider>(out BoxCollider senderCollider))
                 {
                     senderCollider = temp.AddComponent<BoxCollider>();

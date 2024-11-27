@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Glitch Materia
-  m_Shader: {fileID: 4800000, guid: b04fb950557364f54a40f473320a1b30, type: 3}
+  m_Shader: {fileID: 4800000, guid: be03943bcd19b443ea78ef3444513798, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -73,6 +73,8 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _RippleAmplitude: 10
+    - _RippleSpeed: 1
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
