@@ -25,6 +25,8 @@ public class DungeonCreator : MonoBehaviour
     public Material material;
     public Material ceilingMaterial;
 
+    public Material phaseMaterial;
+
     public GameObject wallVertical, wallHorizontal;
     public int wallScale;
 
@@ -74,7 +76,7 @@ public class DungeonCreator : MonoBehaviour
 
         // Assign Each Room an index
 
-                // FIRST ROOM SPAWN
+        // FIRST ROOM SPAWN
 
         // Instantiate the player in the middle of the first room
         var firstRoom = listOfRooms[0];
@@ -264,7 +266,7 @@ public class DungeonCreator : MonoBehaviour
         {
             // Add specific logic for Start room
             buildStartRoom(room, roomParent, roomOrientation, player);
-            
+
         }
         else
         {
@@ -311,41 +313,83 @@ public class DungeonCreator : MonoBehaviour
         else
         {
             detectPlayer.player = player;
-            Debug.LogError("Child with name 'PLayer' not found in player GameObject.");
+            Debug.LogError("Child with name 'Player' not found in player GameObject.");
+        }
+
+        // Building Well
+        Vector3 wallPosition;
+        Quaternion wellRotation = Quaternion.identity;
+        Vector3 wellScale;
+
+        if (roomOrientation == RoomOrientation.Vertical)
+        {
+            int rowLocation = rowCount - 1;
+            for (int col = 0; col < colCount; col++)
+            {
+                wallPosition = new Vector3(gridRoom.grid[rowLocation, col].Center.x, 0, gridRoom.grid[rowLocation, col].Center.y);
+                wellRotation = Quaternion.LookRotation(Vector3.forward);
+                wellScale = new Vector3(10, 2 * wallScale, 2);
+
+                GameObject wellInstance = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                wellInstance.transform.position = wallPosition;
+                Destroy(wellInstance.GetComponent<Collider>());
+                wellInstance.transform.rotation = wellRotation;
+                wellInstance.transform.localScale = wellScale;
+                wellInstance.transform.parent = roomParent.transform;
+                wellInstance.GetComponent<MeshRenderer>().material = phaseMaterial;
+
+            }
+
+        }
+        else
+        {
+            int colLocation = colCount - 2;
+            for (int row = 0; row < rowCount; row++)
+            {
+                wallPosition = new Vector3(gridRoom.grid[row, colLocation].Center.x, 0, gridRoom.grid[row, colLocation].Center.y);
+                wellRotation = Quaternion.LookRotation(Vector3.right);
+                wellScale = new Vector3(1, wallScale, 1);
+
+                GameObject wellInstance = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                wellInstance.transform.position = wallPosition;
+                wellInstance.transform.rotation = wellRotation;
+                wellInstance.transform.localScale = wellScale;
+                wellInstance.transform.parent = roomParent.transform;
+            }
         }
 
         // Build DNE Room
 
         // Instantiate the DoNotEnter GameObject
-        Vector3 doNotEnterPosition;
-        Quaternion doNotEnterRotation = Quaternion.identity;
-        Vector3 doNotEnterScale;
+        // Vector3 doNotEnterPosition;
+        // Quaternion doNotEnterRotation = Quaternion.identity;
+        // Vector3 doNotEnterScale;
 
-        if (roomOrientation == RoomOrientation.Horizontal)
-        {
-            doNotEnterPosition = new Vector3(gridRoom.grid[rowCount-1, colCount / 4].Center.x, 0, gridRoom.grid[rowCount-1, colCount / 4].Center.y);
-            doNotEnterRotation = Quaternion.LookRotation(Vector3.right);
-            doNotEnterScale = new Vector3((room.TopRightAreaCorner.x - room.BottomLeftAreaCorner.x) / 2, wallScale, 1);
-        }
-        else
-        {
-            Debug.Log("Vertical Room");
-            doNotEnterPosition = new Vector3(room.TopLeftAreaCorner.x + 16, -3, room.TopLeftAreaCorner.y - 32 );
-            doNotEnterRotation = Quaternion.LookRotation(Vector3.back);
-            doNotEnterScale = new Vector3(2.5f, 2.5f, 2.5f);
-        }
+        // if (roomOrientation == RoomOrientation.Horizontal)
+        // {
+        //     doNotEnterPosition = new Vector3(gridRoom.grid[rowCount-1, colCount / 4].Center.x, 0, gridRoom.grid[rowCount-1, colCount / 4].Center.y);
+        //     doNotEnterRotation = Quaternion.LookRotation(Vector3.right);
+        //     doNotEnterScale = new Vector3((room.TopRightAreaCorner.x - room.BottomLeftAreaCorner.x) / 2, wallScale, 1);
+        // }
+        // else
+        // {
+        //     Debug.Log("Vertical Room");
+        //     doNotEnterPosition = new Vector3(room.TopLeftAreaCorner.x + 16, -3, room.TopLeftAreaCorner.y - 32 );
+        //     doNotEnterRotation = Quaternion.LookRotation(Vector3.back);
+        //     doNotEnterScale = new Vector3(2.5f, 2.5f, 2.5f);
+        // }
 
-        GameObject doNotEnterInstance = Instantiate(doNotEnter, doNotEnterPosition, doNotEnterRotation, roomParent.transform);
-        // Normalize the GameObject before scaling
-        doNotEnterInstance.transform.localScale = Vector3.one;
-        doNotEnterInstance.transform.localScale = doNotEnterScale;
+        // GameObject doNotEnterInstance = Instantiate(doNotEnter, doNotEnterPosition, doNotEnterRotation, roomParent.transform);
+        // // Normalize the GameObject before scaling
+        // doNotEnterInstance.transform.localScale = Vector3.one;
+        // doNotEnterInstance.transform.localScale = doNotEnterScale;
 
 
         // Building Offices
         if (roomOrientation == RoomOrientation.Vertical)
         {
             xStart = rowCount / 2 - 1;
-            xEnd = rowCount;
+            xEnd = rowCount - 1;
             yStart = colCount - 1;
             yEnd = colCount / 2;
         }
@@ -353,7 +397,7 @@ public class DungeonCreator : MonoBehaviour
         {
 
             xStart = colCount / 2 - 1;
-            xEnd = colCount;
+            xEnd = colCount - 1;
             yStart = rowCount - 1;
             yEnd = rowCount / 2;
         }
@@ -392,7 +436,7 @@ public class DungeonCreator : MonoBehaviour
         {
             int colLocation = colCount / 2;
             int rowLocation = 0;
-            for (int i = colLocation; i < colCount - 1; i += 2)
+            for (int i = colLocation; i < colCount - 2; i += 2)
             {
                 clerkPosition = new Vector3(gridRoom.grid[rowLocation, i].Center.x + 1, 0, gridRoom.grid[rowLocation, i].Center.y);
                 lookAtPosition = clerkPosition + Vector3.forward * 0.1f; // Slightly offset forward
@@ -406,7 +450,7 @@ public class DungeonCreator : MonoBehaviour
             int colLocation = 0;
             int rowLocation = rowCount / 2;
 
-            for (int j = rowLocation; j < rowCount - 1; j += 2)
+            for (int j = rowLocation; j < rowCount - 2; j += 2)
             {
                 clerkPosition = new Vector3(gridRoom.grid[j, colLocation].Center.x + 1, 0, gridRoom.grid[j, colLocation].Center.y);
                 lookAtPosition = clerkPosition + Vector3.right * 0.1f; // Slightly offset to the right
@@ -511,7 +555,7 @@ public class DungeonCreator : MonoBehaviour
 
     private void CreateWall(GameObject wallParent, Vector3Int wallPosition, GameObject wallPrefab)
     {
-        Quaternion rotation = wallPrefab == wallHorizontal ? Quaternion.identity : Quaternion.Euler(0, 90, 0) ;
+        Quaternion rotation = wallPrefab == wallHorizontal ? Quaternion.identity : Quaternion.Euler(0, 90, 0);
 
         GameObject wall = Instantiate(wallPrefab, wallPosition, rotation, wallParent.transform);
         wall.transform.localScale = new Vector3(wall.transform.localScale.x, wall.transform.localScale.y * wallScale, wall.transform.localScale.z);
@@ -578,11 +622,11 @@ public class DungeonCreator : MonoBehaviour
         dungeonFloor.GetComponent<MeshRenderer>().material = material;
         dungeonFloor.AddComponent<BoxCollider>();
 
-        
-        
+
+
         dungeonFloor.tag = "Ground";
         dungeonFloor.layer = LayerMask.NameToLayer("Ground");
-        
+
 
         // Instantiate the room rug at the lower right corner
         // Scale the floor to the size of the room
