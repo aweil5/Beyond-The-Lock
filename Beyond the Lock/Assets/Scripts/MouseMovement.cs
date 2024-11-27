@@ -14,6 +14,7 @@ public class MouseMovement : MonoBehaviour
     {
         //lock cursor to middle
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     // Update is called once per frame
@@ -22,10 +23,12 @@ public class MouseMovement : MonoBehaviour
         float mouseX = Input.GetAxis("Mouse X") * mouseSensivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensivity * Time.deltaTime;
 
+        yRotation += mouseX;
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, topClamp, bottomClamp);
-        yRotation += mouseX;
-
-        transform.localRotation = Quaternion.Euler(xRotation, yRotation, 0f);
+        
+        // Rotate the camera
+        transform.rotation = Quaternion.Euler(xRotation, yRotation, 0f);
+        // orientation.localRotation = Quaternion.Euler(0f, yRotation, 0f);
     }
 }
