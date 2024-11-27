@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -10,6 +11,8 @@ public class DungeonCreator : MonoBehaviour
     public int roomWidthMin, roomLengthMin;
     public int maxIterations;
     public int corridorWidth;
+
+    public GameObject backgroundMusic;
 
     // These need to have ranges or the entire world generation will be a mess
 
@@ -55,6 +58,12 @@ public class DungeonCreator : MonoBehaviour
     public GameObject mainCam;
     public GameObject cameraPillar;
 
+    [Header("Laser Room Prefabs")]
+    public GameObject laserStartPillar;
+    public GameObject laserEndPillar;
+
+    public GameObject laserSystem;
+
 
 
     // public GameObject clerkOffice;
@@ -69,6 +78,7 @@ public class DungeonCreator : MonoBehaviour
     }
     private void CreateDungeon()
     {
+        backgroundMusic.SetActive(true);
         DungeonGenerator generator = new DungeonGenerator(dungeonWidth, dungeonLength);
 
         var listOfRooms = generator.CalculateDungeon(maxIterations, roomWidthMin, roomLengthMin, roomBottomCornerModifier, roomTopCornerModifier, roomOffset, corridorWidth);
@@ -216,6 +226,7 @@ public class DungeonCreator : MonoBehaviour
             {
                 currSender.AddComponent<Teleporter2>();
                 currSender.GetComponent<Teleporter2>().targetTeleporter = currReceiver.transform;
+                
             }
 
             // IF we want to add undirected teleportation
@@ -270,11 +281,68 @@ public class DungeonCreator : MonoBehaviour
             buildStartRoom(room, roomParent, roomOrientation, player);
 
         }
+        else if (roomType == RoomType.LaserRoom)
+        {
+            Debug.Log("Laser Room");
+            buildLaserRoom(room, roomParent, roomOrientation);
+        }
         else
         {
             return;
         }
 
+    }
+
+    private void buildLaserRoom(Node room, GameObject roomParent, RoomOrientation roomOrientation)
+    {
+        RoomGrid gridRoom = new RoomGrid((RoomNode)room);
+        int rowCount = gridRoom.grid.GetLength(0);
+        int colCount = gridRoom.grid.GetLength(1);
+
+
+        if (roomOrientation == RoomOrientation.Vertical)
+        {
+            for (int i = 0; i < rowCount; i += 2)
+            {
+                int laserCount = UnityEngine.Random.Range(1, 4);
+                for (int j = 0; j < laserCount; j++)
+                {
+                float yPosOne = UnityEngine.Random.Range(0f, 4f);
+                float yPosTwo = UnityEngine.Random.Range(0f, 4f);
+
+                Vector3 firstTurrentPosition = new Vector3(room.TopLeftAreaCorner.x, yPosOne, gridRoom.grid[i, 0].TopLeftAreaCorner.y);
+                Vector3 secondTurretPositon = new Vector3(room.TopRightAreaCorner.x, yPosTwo, gridRoom.grid[i, colCount - 1].TopRightAreaCorner.y);
+
+                GameObject laser = Instantiate(laserSystem, firstTurrentPosition, Quaternion.identity, roomParent.transform);
+
+                GameObject turret1 = laser.transform.GetChild(0).gameObject;
+                GameObject turret2 = laser.transform.GetChild(1).gameObject;
+
+                turret1.transform.position = firstTurrentPosition;
+                turret2.transform.position = secondTurretPositon;
+
+                if (j > 0)
+                {
+                    int turretChoice = UnityEngine.Random.Range(0, 2);
+                    if (turretChoice == 0)
+                    {
+                    turret1.AddComponent<MoveTurretVertical>();
+                    var component = turret1.GetComponent<MoveTurretVertical>();
+                    component.displacement = UnityEngine.Random.Range(3, 7);
+                    component.speed = UnityEngine.Random.Range(1, 3);
+                    }else{
+                    turret2.AddComponent<MoveTurretVertical>();
+                    var component = turret2.GetComponent<MoveTurretVertical>();
+                    component.displacement = UnityEngine.Random.Range(4, 9);
+                    component.speed = UnityEngine.Random.Range(2, 5);
+
+                    }
+                   
+                }
+                }
+                
+            }
+        }
     }
 
 

@@ -18,6 +18,7 @@ public class Weapon : MonoBehaviour
     {
         // Get the Rigidbody component from the parent player object
         playerRigidbody = GetComponentInParent<Rigidbody>();
+
     }
 
     // Update is called once per frame
