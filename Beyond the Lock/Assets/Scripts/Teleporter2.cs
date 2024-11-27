@@ -2,10 +2,14 @@ using UnityEngine;
 
 public class Teleporter : MonoBehaviour
 {
+
+
     public Transform targetTeleporter; // Reference to the target teleporter
 
     private void OnTriggerEnter(Collider other)
     {
+
+
         if (other.CompareTag("Player"))
         {
 
