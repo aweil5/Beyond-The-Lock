@@ -110,12 +110,23 @@ public class DungeonCreator : MonoBehaviour
         }
 
 
-        Vector3 lookAtPosition = new Vector3((bottomLeftFirst.x + topRightFirst.x) / 2, 3f, (bottomLeftFirst.y + topRightFirst.y) / 2);
+        Vector3 lookAtPosition = new Vector3((bottomLeftFirst.x + topRightFirst.x) / 2, 20f, (bottomLeftFirst.y + topRightFirst.y) / 2);
         lookRotation = Quaternion.LookRotation(lookAtPosition - playerPosition);
 
-        GameObject playerInstance = Instantiate(player, playerPosition, lookRotation, transform);
-
+        // GameObject playerInstance = Instantiate(player, playerPosition, lookRotation, transform);
         // Create teleporters that teleport a user from one room to the next
+        GameObject playerInstance = GameObject.Find("MainPlayer3");
+        if (playerInstance == null)
+        {
+            Debug.LogError("Player GameObject not found!");
+            return;
+        }
+        playerInstance.transform.position = playerPosition;
+        playerInstance.transform.rotation = lookRotation;
+
+
+
+        // Teleportation spawning
         GameObject currSender = null;
         GameObject currReceiver = null;
         GameObject temp = null;
@@ -157,15 +168,15 @@ public class DungeonCreator : MonoBehaviour
             {
                 roomOrientation = RoomOrientation.Horizontal;
                 // Place teleporters on the left and right walls
-                teleporterPosition1 = new Vector3(bottomLeft.x + 3, 0, (bottomLeft.y + topRight.y) / 2);
-                teleporterPosition2 = new Vector3(topRight.x - 3, 0, (bottomLeft.y + topRight.y) / 2);
+                teleporterPosition1 = new Vector3(bottomLeft.x + 3, 1f, (bottomLeft.y + topRight.y) / 2);
+                teleporterPosition2 = new Vector3(topRight.x - 3, 1f, (bottomLeft.y + topRight.y) / 2);
             }
             else
             {
                 roomOrientation = RoomOrientation.Vertical;
                 // Place teleporters on the top and bottom walls
-                teleporterPosition1 = new Vector3((bottomLeft.x + topRight.x) / 2, 0, bottomLeft.y + 3);
-                teleporterPosition2 = new Vector3((bottomLeft.x + topRight.x) / 2, 0, topRight.y - 3);
+                teleporterPosition1 = new Vector3((bottomLeft.x + topRight.x) / 2, 1f, bottomLeft.y + 3);
+                teleporterPosition2 = new Vector3((bottomLeft.x + topRight.x) / 2, 1f, topRight.y - 3);
             }
             // Ensure both teleporters have BoxColliders with isTrigger enabled
 
@@ -199,8 +210,8 @@ public class DungeonCreator : MonoBehaviour
 
             if (currSender != null)
             {
-                currSender.AddComponent<Teleport>();
-                currSender.GetComponent<Teleport>().receiver = currReceiver;
+                currSender.AddComponent<Teleporter2>();
+                currSender.GetComponent<Teleporter2>().targetTeleporter = currReceiver.transform;
             }
 
             // IF we want to add undirected teleportation
@@ -500,7 +511,7 @@ public class DungeonCreator : MonoBehaviour
 
     private void CreateWall(GameObject wallParent, Vector3Int wallPosition, GameObject wallPrefab)
     {
-        Quaternion rotation = wallPrefab == wallHorizontal ? Quaternion.Euler(0, 90, 0) : Quaternion.identity;
+        Quaternion rotation = wallPrefab == wallHorizontal ? Quaternion.identity : Quaternion.Euler(0, 90, 0) ;
 
         GameObject wall = Instantiate(wallPrefab, wallPosition, rotation, wallParent.transform);
         wall.transform.localScale = new Vector3(wall.transform.localScale.x, wallScale, wall.transform.localScale.z);
@@ -558,14 +569,17 @@ public class DungeonCreator : MonoBehaviour
         mesh.uv = uvs;
         mesh.triangles = triangles;
 
-        GameObject dungeonFloor = new GameObject("Mesh" + bottomLeftCorner, typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider));
+        GameObject dungeonFloor = new GameObject("Floor " + bottomLeftCorner, typeof(MeshFilter), typeof(MeshRenderer));
 
         dungeonFloor.transform.position = Vector3.zero;
         dungeonFloor.transform.localScale = Vector3.one;
 
         dungeonFloor.GetComponent<MeshFilter>().mesh = mesh;
         dungeonFloor.GetComponent<MeshRenderer>().material = material;
-        dungeonFloor.GetComponent<MeshCollider>().sharedMesh = mesh;
+        dungeonFloor.AddComponent<BoxCollider>();
+
+        
+        
         dungeonFloor.tag = "Ground";
         dungeonFloor.layer = LayerMask.NameToLayer("Ground");
         

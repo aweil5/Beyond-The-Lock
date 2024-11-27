@@ -8,6 +8,13 @@ public class Teleporter : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+
+            var playerMovement = other.GetComponent<PlayerMovement>();
+            if (playerMovement != null)
+            {
+                playerMovement.velocity = Vector3.zero; // Reset velocity if applicable
+            }
+            
             CharacterController controller = other.GetComponent<CharacterController>();
 
             if (controller != null)
@@ -16,7 +23,8 @@ public class Teleporter : MonoBehaviour
                 controller.enabled = false;
 
                 // Teleport the player slightly above the ground
-                controller.transform.position = targetTeleporter.position + Vector3.up * 0.5f;
+                // controller.transform.position = targetTeleporter.position + new Vector3(0, 50f, 0);
+                controller.transform.position = targetTeleporter.TransformPoint(new Vector3(0, 100f, 0));
 
                 // Re-enable CharacterController
                 controller.enabled = true;
@@ -24,15 +32,11 @@ public class Teleporter : MonoBehaviour
             else
             {
                 // Fallback for non-CharacterController objects
-                other.transform.position = targetTeleporter.position + Vector3.up * 0.5f;
+                other.transform.position = targetTeleporter.TransformPoint(new Vector3(0, 100f, 0));
             }
 
             // Optional: Reset velocity to prevent falling
-            var playerMovement = other.GetComponent<PlayerMovement>();
-            if (playerMovement != null)
-            {
-                playerMovement.velocity = Vector3.zero; // Reset velocity if applicable
-            }
+            
         }
     }
 }
