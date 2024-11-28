@@ -295,11 +295,48 @@ public class DungeonCreator : MonoBehaviour
             Debug.Log("Laser Room");
             buildLaserRoom(room, roomParent, roomOrientation);
         }
+        else if (roomType == RoomType.CameraRoom)
+        {
+            buildCameraRoom(room, roomParent, roomOrientation, player);
+        }
         else
         {
             return;
         }
 
+    }
+
+    private void buildCameraRoom(Node room, GameObject roomParent, RoomOrientation roomOrientation, GameObject player)
+    {
+        RoomGrid gridRoom = new RoomGrid((RoomNode)room);
+        int rowCount = gridRoom.grid.GetLength(0);
+        int colCount = gridRoom.grid.GetLength(1);
+        Vector3 roomCenter = new Vector3((room.BottomLeftAreaCorner.x + room.TopRightAreaCorner.x) / 2, 0, (room.BottomLeftAreaCorner.y + room.TopRightAreaCorner.y) / 2);
+
+
+
+        // Calculate the z position at the upper right corner
+
+        // Place a single box at the calculated position
+        Vector3 wallSize = new Vector3(1.5f, 2 * wallScale, room.TopLeftAreaCorner.y - room.BottomLeftAreaCorner.y - 30);
+
+        GameObject wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        wall.transform.position = roomCenter;
+        wall.transform.localScale = wallSize;
+        wall.transform.parent = roomParent.transform;
+        wall.GetComponent<MeshRenderer>().material = material;
+
+
+        // Instantiate two cameras in the center of the room, both facing outwards from the wall
+        Vector3 centerPosition = roomCenter + Vector3.up * wallScale;
+        Quaternion cameraRotation1 = Quaternion.LookRotation(Vector3.left) * Quaternion.Euler(-30, 0, 0);
+        Quaternion cameraRotation2 = Quaternion.LookRotation(Vector3.right) * Quaternion.Euler(-30, 0, 0);
+
+        GameObject cameraInstance1 = Instantiate(mainCam, centerPosition, cameraRotation1, roomParent.transform);
+        GameObject cameraInstance2 = Instantiate(mainCam, centerPosition, cameraRotation2, roomParent.transform);
+
+        cameraInstance1.transform.localScale = new Vector3(1, 1, 1);
+        cameraInstance2.transform.localScale = new Vector3(1, 1, 1);
     }
 
     private void buildLaserRoom(Node room, GameObject roomParent, RoomOrientation roomOrientation)
@@ -429,7 +466,7 @@ public class DungeonCreator : MonoBehaviour
 
             }
 
-            
+
 
 
         }
