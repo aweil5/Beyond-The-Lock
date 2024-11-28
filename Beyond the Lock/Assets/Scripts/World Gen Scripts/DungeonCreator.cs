@@ -14,6 +14,8 @@ public class DungeonCreator : MonoBehaviour
 
     public GameObject backgroundMusic;
 
+    public GameObject narration;
+
     // These need to have ranges or the entire world generation will be a mess
 
     [Range(0.0f, 0.3f)]
@@ -79,6 +81,7 @@ public class DungeonCreator : MonoBehaviour
     private void CreateDungeon()
     {
         // backgroundMusic.SetActive(true);
+        // narration.SetActive(true);
         DungeonGenerator generator = new DungeonGenerator(dungeonWidth, dungeonLength);
 
         var listOfRooms = generator.CalculateDungeon(maxIterations, roomWidthMin, roomLengthMin, roomBottomCornerModifier, roomTopCornerModifier, roomOffset, corridorWidth);
