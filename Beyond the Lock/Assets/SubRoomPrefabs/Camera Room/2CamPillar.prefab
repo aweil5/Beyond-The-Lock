@@ -116,6 +116,10 @@ PrefabInstance:
       propertyPath: rotationSpeed
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2495489994998815837, guid: 4d8d5806e981f4354a5e78dcb796f40f, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 7322656583498622455, guid: 28f79e7704024435eb6b72f8cd55fbf7, type: 3}
     - target: {fileID: 4492948724154478881, guid: 4d8d5806e981f4354a5e78dcb796f40f, type: 3}
       propertyPath: m_Range
       value: 10
@@ -222,6 +226,10 @@ PrefabInstance:
       propertyPath: rotationSpeed
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2495489994998815837, guid: 4d8d5806e981f4354a5e78dcb796f40f, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 1711832612333671377, guid: 1ce4a315f3c0d4251a650662e5668d2b, type: 3}
     - target: {fileID: 4492948724154478881, guid: 4d8d5806e981f4354a5e78dcb796f40f, type: 3}
       propertyPath: m_Range
       value: 10
