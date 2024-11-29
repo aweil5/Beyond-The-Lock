@@ -298,10 +298,12 @@ public class DungeonCreator : MonoBehaviour
         }
         else if (roomType == RoomType.CameraRoom)
         {
+            Debug.Log("Camera Room");
             buildCameraRoom(room, roomParent, roomOrientation, player);
         }
         else
         {
+            buildCameraRoom(room, roomParent, roomOrientation, player);
             return;
         }
 
@@ -318,13 +320,13 @@ public class DungeonCreator : MonoBehaviour
 
         // Building the Cams for the Cam Room
 
-        for (int i = 1; i < rowCount - 1; i += 5)
+        for (int i = 1; i < rowCount - 1; i += 3)
         {
             int cameraColumnPlacements = UnityEngine.Random.Range(1, 3);
             if (cameraColumnPlacements == 1)
             {
                 Vector3 cameraColumnPosition = new Vector3(roomCenter.x, 0f, gridRoom.grid[i, 0].Center.y);
-                // GameObject cameraColumn = Instantiate(threeCameraPillar, cameraColumnPosition, Quaternion.identity, roomParent.transform);
+                GameObject cameraColumn = Instantiate(twoCameraPillar, cameraColumnPosition, Quaternion.identity, roomParent.transform);
             }
             else
             {
@@ -332,10 +334,10 @@ public class DungeonCreator : MonoBehaviour
                 Vector3 firstThirdPosition = new Vector3(room.BottomLeftAreaCorner.x + (room.TopRightAreaCorner.x - room.BottomLeftAreaCorner.x) / 3, 0, room.BottomLeftAreaCorner.y + (room.TopRightAreaCorner.y - room.BottomLeftAreaCorner.y) / 3);
                 Vector3 secondThirdPosition = new Vector3(room.BottomLeftAreaCorner.x + 2 * (room.TopRightAreaCorner.x - room.BottomLeftAreaCorner.x) / 3, 0, room.BottomLeftAreaCorner.y + 2 * (room.TopRightAreaCorner.y - room.BottomLeftAreaCorner.y) / 3);
 
-                Vector3 cameraColumnPosition1 = new Vector3(firstThirdPosition.x, 5f, gridRoom.grid[i, 0].Center.y);
-                Vector3 cameraColumnPosition2 = new Vector3(secondThirdPosition.x, 5f, gridRoom.grid[i, 0].Center.y);
+                Vector3 cameraColumnPosition1 = new Vector3(firstThirdPosition.x, 0f, gridRoom.grid[i, 0].Center.y);
+                Vector3 cameraColumnPosition2 = new Vector3(secondThirdPosition.x, 0f, gridRoom.grid[i, 0].Center.y);
 
-                // GameObject cameraColumn1 = Instantiate(twoCameraPillar, cameraColumnPosition1, Quaternion.identity, roomParent.transform);
+                GameObject cameraColumn1 = Instantiate(twoCameraPillar, cameraColumnPosition1, Quaternion.identity, roomParent.transform);
                 // GameObject cameraColumn2 = Instantiate(twoCameraPillar, cameraColumnPosition2, Quaternion.identity, roomParent.transform);
             }
 
@@ -803,64 +805,99 @@ public class DungeonCreator : MonoBehaviour
         Vector3 bottomRightV = new Vector3(topRightCorner.x, 0, bottomLeftCorner.y);
         Vector3 topLeftV = new Vector3(bottomLeftCorner.x, 0, topRightCorner.y);
         Vector3 topRightV = new Vector3(topRightCorner.x, 0, topRightCorner.y);
+        
+        float width = topRightCorner.x - bottomLeftCorner.x;
+        float length = topRightCorner.y - bottomLeftCorner.y;
 
-        // Correct vertex order to ensure proper normals
-        Vector3[] vertices = new Vector3[]
-        {
-    bottomLeftV, // 0
-    bottomRightV, // 1
-    topLeftV, // 2
-    topRightV // 3
-        };
+        // Calculate center position
+        float centerX = bottomLeftCorner.x + width / 2f;
+        float centerZ = bottomLeftCorner.y + length / 2f;
 
-        // Define UVs
-        Vector2[] uvs = new Vector2[vertices.Length];
-        for (int i = 0; i < uvs.Length; i++)
+        // Create the plane
+        GameObject dungeonFloor = GameObject.CreatePrimitive(PrimitiveType.Plane);
+
+        // Set position
+        dungeonFloor.transform.position = new Vector3(centerX, 0f, centerZ);
+
+        // Scale the plane
+        dungeonFloor.transform.localScale = new Vector3(width / 10f, 1f, length / 10f);
+
+        // Assign the material
+        if (material != null)
         {
-            uvs[i] = new Vector2(vertices[i].x, vertices[i].z);
+            dungeonFloor.GetComponent<Renderer>().material = material;
+        }
+        else
+        {
+            Debug.LogError("Material is not assigned. Please assign a material.");
         }
 
-        // Correct triangle winding order
-        int[] triangles = new int[]
-        {
-    0, 2, 1,
-    2, 3, 1
-        };
-
-        // Create the mesh
-        Mesh mesh = new Mesh();
-        mesh.vertices = vertices;
-        mesh.uv = uvs;
-        mesh.triangles = triangles;
-
-        // Recalculate normals and other properties
-        mesh.RecalculateNormals();
-        mesh.RecalculateBounds();
-        mesh.RecalculateTangents();
-
-        // Optionally, manually set normals
-        // Vector3[] normals = new Vector3[vertices.Length];
-        // for (int i = 0; i < normals.Length; i++)
-        // {
-        //     normals[i] = Vector3.up;
-        // }
-        // mesh.normals = normals;
-
-        // Create the GameObject
-        GameObject dungeonFloor = new GameObject("Floor " + bottomLeftCorner, typeof(MeshFilter), typeof(MeshRenderer));
-        dungeonFloor.transform.position = Vector3.zero;
-        dungeonFloor.transform.localScale = Vector3.one;
-
-        // Assign the mesh and material
-        dungeonFloor.GetComponent<MeshFilter>().mesh = mesh;
-        dungeonFloor.GetComponent<MeshRenderer>().material = material;
-
-        // Add collider
+        // Add a BoxCollider (optional)
         dungeonFloor.AddComponent<BoxCollider>();
+
+        // Remove the MeshCollider if not needed
+        DestroyImmediate(dungeonFloor.GetComponent<MeshCollider>());
 
         // Set tag and layer
         dungeonFloor.tag = "Ground";
         dungeonFloor.layer = LayerMask.NameToLayer("Ground");
+        // Correct vertex order to ensure proper normals
+        //     Vector3[] vertices = new Vector3[]
+        //     {
+        // bottomLeftV, // 0
+        // bottomRightV, // 1
+        // topLeftV, // 2
+        // topRightV // 3
+        //     };
+
+        //     // Define UVs
+        //     Vector2[] uvs = new Vector2[vertices.Length];
+        //     for (int i = 0; i < uvs.Length; i++)
+        //     {
+        //         uvs[i] = new Vector2(vertices[i].x, vertices[i].z);
+        //     }
+
+        //     // Correct triangle winding order
+        //     int[] triangles = new int[]
+        //     {
+        // 0, 2, 1,
+        // 2, 3, 1
+        //     };
+
+        //     // Create the mesh
+        //     Mesh mesh = new Mesh();
+        //     mesh.vertices = vertices;
+        //     mesh.uv = uvs;
+        //     mesh.triangles = triangles;
+
+        //     // Recalculate normals and other properties
+        //     mesh.RecalculateNormals();
+        //     mesh.RecalculateBounds();
+        //     mesh.RecalculateTangents();
+
+        //     // Optionally, manually set normals
+        //     // Vector3[] normals = new Vector3[vertices.Length];
+        //     // for (int i = 0; i < normals.Length; i++)
+        //     // {
+        //     //     normals[i] = Vector3.up;
+        //     // }
+        //     // mesh.normals = normals;
+
+        //     // Create the GameObject
+        //     GameObject dungeonFloor = new GameObject("Floor " + bottomLeftCorner, typeof(MeshFilter), typeof(MeshRenderer));
+        //     dungeonFloor.transform.position = Vector3.zero;
+        //     dungeonFloor.transform.localScale = Vector3.one;
+
+        //     // Assign the mesh and material
+        //     dungeonFloor.GetComponent<MeshFilter>().mesh = mesh;
+        //     dungeonFloor.GetComponent<MeshRenderer>().material = material;
+
+        //     // Add collider
+        //     dungeonFloor.AddComponent<BoxCollider>();
+
+        //     // Set tag and layer
+        //     dungeonFloor.tag = "Ground";
+        //     dungeonFloor.layer = LayerMask.NameToLayer("Ground");
 
 
         // Instantiate the room rug at the lower right corner
