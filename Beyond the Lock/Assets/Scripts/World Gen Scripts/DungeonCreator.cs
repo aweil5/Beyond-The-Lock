@@ -58,7 +58,8 @@ public class DungeonCreator : MonoBehaviour
 
     [Header("Camera Room Prefabs")]
     public GameObject mainCam;
-    public GameObject cameraPillar;
+    public GameObject twoCameraPillar;
+    public GameObject threeCameraPillar;
 
     [Header("Laser Room Prefabs")]
     public GameObject laserStartPillar;
@@ -315,28 +316,31 @@ public class DungeonCreator : MonoBehaviour
 
 
 
-        // Calculate the z position at the upper right corner
+        // Building the Cams for the Cam Room
 
-        // Place a single box at the calculated position
-        Vector3 wallSize = new Vector3(1.5f, 2 * wallScale, room.TopLeftAreaCorner.y - room.BottomLeftAreaCorner.y - 30);
+        for (int i = 1; i < rowCount-1; i += 5)
+        {
+            int cameraColumnPlacements = UnityEngine.Random.Range(1, 3);
+            if (cameraColumnPlacements == 1)
+            {
+                Vector3 cameraColumnPosition = new Vector3(roomCenter.x, 0f, gridRoom.grid[i, 0].Center.y);
+                // GameObject cameraColumn = Instantiate(threeCameraPillar, cameraColumnPosition, Quaternion.identity, roomParent.transform);
+            }
+            else
+            {
 
-        GameObject wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        wall.transform.position = roomCenter;
-        wall.transform.localScale = wallSize;
-        wall.transform.parent = roomParent.transform;
-        wall.GetComponent<MeshRenderer>().material = material;
+                Vector3 firstThirdPosition = new Vector3(room.BottomLeftAreaCorner.x + (room.TopRightAreaCorner.x - room.BottomLeftAreaCorner.x) / 3, 0, room.BottomLeftAreaCorner.y + (room.TopRightAreaCorner.y - room.BottomLeftAreaCorner.y) / 3);
+                Vector3 secondThirdPosition = new Vector3(room.BottomLeftAreaCorner.x + 2 * (room.TopRightAreaCorner.x - room.BottomLeftAreaCorner.x) / 3, 0, room.BottomLeftAreaCorner.y + 2 * (room.TopRightAreaCorner.y - room.BottomLeftAreaCorner.y) / 3);
 
+                Vector3 cameraColumnPosition1 = new Vector3(firstThirdPosition.x, 5f, gridRoom.grid[i, 0].Center.y);
+                Vector3 cameraColumnPosition2 = new Vector3(secondThirdPosition.x, 5f, gridRoom.grid[i, 0].Center.y);
 
-        // Instantiate two cameras in the center of the room, both facing outwards from the wall
-        Vector3 centerPosition = roomCenter + Vector3.up * wallScale;
-        Quaternion cameraRotation1 = Quaternion.LookRotation(Vector3.left) * Quaternion.Euler(-30, 0, 0);
-        Quaternion cameraRotation2 = Quaternion.LookRotation(Vector3.right) * Quaternion.Euler(-30, 0, 0);
-
-        GameObject cameraInstance1 = Instantiate(mainCam, centerPosition, cameraRotation1, roomParent.transform);
-        GameObject cameraInstance2 = Instantiate(mainCam, centerPosition, cameraRotation2, roomParent.transform);
-
-        cameraInstance1.transform.localScale = new Vector3(1, 1, 1);
-        cameraInstance2.transform.localScale = new Vector3(1, 1, 1);
+                GameObject cameraColumn1 = Instantiate(twoCameraPillar, cameraColumnPosition1, Quaternion.identity, roomParent.transform);
+                GameObject cameraColumn2 = Instantiate(twoCameraPillar, cameraColumnPosition2, Quaternion.identity, roomParent.transform);
+            }
+            
+        }
+        
     }
 
     private void buildLaserRoom(Node room, GameObject roomParent, RoomOrientation roomOrientation)
