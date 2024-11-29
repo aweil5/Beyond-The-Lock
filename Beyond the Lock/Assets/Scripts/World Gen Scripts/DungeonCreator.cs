@@ -318,7 +318,7 @@ public class DungeonCreator : MonoBehaviour
 
         // Building the Cams for the Cam Room
 
-        for (int i = 1; i < rowCount-1; i += 5)
+        for (int i = 1; i < rowCount - 1; i += 5)
         {
             int cameraColumnPlacements = UnityEngine.Random.Range(1, 3);
             if (cameraColumnPlacements == 1)
@@ -335,12 +335,12 @@ public class DungeonCreator : MonoBehaviour
                 Vector3 cameraColumnPosition1 = new Vector3(firstThirdPosition.x, 5f, gridRoom.grid[i, 0].Center.y);
                 Vector3 cameraColumnPosition2 = new Vector3(secondThirdPosition.x, 5f, gridRoom.grid[i, 0].Center.y);
 
-                GameObject cameraColumn1 = Instantiate(twoCameraPillar, cameraColumnPosition1, Quaternion.identity, roomParent.transform);
-                GameObject cameraColumn2 = Instantiate(twoCameraPillar, cameraColumnPosition2, Quaternion.identity, roomParent.transform);
+                // GameObject cameraColumn1 = Instantiate(twoCameraPillar, cameraColumnPosition1, Quaternion.identity, roomParent.transform);
+                // GameObject cameraColumn2 = Instantiate(twoCameraPillar, cameraColumnPosition2, Quaternion.identity, roomParent.transform);
             }
-            
+
         }
-        
+
     }
 
     private void buildLaserRoom(Node room, GameObject roomParent, RoomOrientation roomOrientation)
@@ -797,54 +797,68 @@ public class DungeonCreator : MonoBehaviour
 
     private void CreateMesh(Vector2 bottomLeftCorner, Vector2 topRightCorner)
     {
-        // Learn from codeMonkey Youtube how to create mesh programattically
+
+        // Define vertices
         Vector3 bottomLeftV = new Vector3(bottomLeftCorner.x, 0, bottomLeftCorner.y);
         Vector3 bottomRightV = new Vector3(topRightCorner.x, 0, bottomLeftCorner.y);
         Vector3 topLeftV = new Vector3(bottomLeftCorner.x, 0, topRightCorner.y);
         Vector3 topRightV = new Vector3(topRightCorner.x, 0, topRightCorner.y);
 
-
-        // ORDER IMPORTANT HERE TO ENSURE VALID NORMALS
+        // Correct vertex order to ensure proper normals
         Vector3[] vertices = new Vector3[]
         {
-            topLeftV,
-            topRightV,
-            bottomLeftV,
-            bottomRightV
+    bottomLeftV, // 0
+    bottomRightV, // 1
+    topLeftV, // 2
+    topRightV // 3
         };
+
+        // Define UVs
         Vector2[] uvs = new Vector2[vertices.Length];
         for (int i = 0; i < uvs.Length; i++)
         {
             uvs[i] = new Vector2(vertices[i].x, vertices[i].z);
         }
 
-        // Create triangles in clockwise order
+        // Correct triangle winding order
         int[] triangles = new int[]
         {
-            0,
-            1,
-            2,
-            2,
-            1,
-            3,
+    0, 2, 1,
+    2, 3, 1
         };
 
+        // Create the mesh
         Mesh mesh = new Mesh();
         mesh.vertices = vertices;
         mesh.uv = uvs;
         mesh.triangles = triangles;
 
-        GameObject dungeonFloor = new GameObject("Floor " + bottomLeftCorner, typeof(MeshFilter), typeof(MeshRenderer));
+        // Recalculate normals and other properties
+        mesh.RecalculateNormals();
+        mesh.RecalculateBounds();
+        mesh.RecalculateTangents();
 
+        // Optionally, manually set normals
+        // Vector3[] normals = new Vector3[vertices.Length];
+        // for (int i = 0; i < normals.Length; i++)
+        // {
+        //     normals[i] = Vector3.up;
+        // }
+        // mesh.normals = normals;
+
+        // Create the GameObject
+        GameObject dungeonFloor = new GameObject("Floor " + bottomLeftCorner, typeof(MeshFilter), typeof(MeshRenderer));
         dungeonFloor.transform.position = Vector3.zero;
         dungeonFloor.transform.localScale = Vector3.one;
 
+        // Assign the mesh and material
         dungeonFloor.GetComponent<MeshFilter>().mesh = mesh;
         dungeonFloor.GetComponent<MeshRenderer>().material = material;
+
+        // Add collider
         dungeonFloor.AddComponent<BoxCollider>();
 
-
-
+        // Set tag and layer
         dungeonFloor.tag = "Ground";
         dungeonFloor.layer = LayerMask.NameToLayer("Ground");
 
@@ -891,11 +905,11 @@ public class DungeonCreator : MonoBehaviour
         // Add lighting
 
         // WE SHOULD MAKE THIS A FUNCTION AND THEN CHANGE LIGHTING BASED ON THE ROOM TYPE
-        GameObject lightGameObject = new GameObject("RoomLight");
-        Light lightComp = lightGameObject.AddComponent<Light>();
-        lightComp.color = Color.white;
-        lightComp.intensity = 1.0f;
-        lightGameObject.transform.position = (bottomLeftV + topRightV) / 2 + Vector3.up * 2;
+        // GameObject lightGameObject = new GameObject("RoomLight");
+        // Light lightComp = lightGameObject.AddComponent<Light>();
+        // lightComp.color = Color.white;
+        // lightComp.intensity = 1.0f;
+        // lightGameObject.transform.position = (bottomLeftV + topRightV) / 2 + Vector3.up * 2;
 
         // Add an offset to align everything to the grid
         for (int row = (int)bottomLeftV.x; row < (int)bottomRightV.x; row++)
