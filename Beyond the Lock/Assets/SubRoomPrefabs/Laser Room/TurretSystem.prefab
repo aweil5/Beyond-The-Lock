@@ -50,7 +50,7 @@ MonoBehaviour:
   turret2Origin: {fileID: 4481009611276000756}
   laserMaterial: {fileID: 2100000, guid: b0aa44c861822498fbd3ec02b00f2b32, type: 2}
   animationSpeed: 5
-  damage: 10
+  damage: 100
 --- !u!1001 &1547415372913942731
 PrefabInstance:
   m_ObjectHideFlags: 0
