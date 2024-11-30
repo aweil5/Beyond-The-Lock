@@ -14,6 +14,8 @@ public class DungeonCreator : MonoBehaviour
 
     public GameObject backgroundMusic;
 
+    public GameObject narration;
+
     // These need to have ranges or the entire world generation will be a mess
 
     [Range(0.0f, 0.3f)]
@@ -56,7 +58,8 @@ public class DungeonCreator : MonoBehaviour
 
     [Header("Camera Room Prefabs")]
     public GameObject mainCam;
-    public GameObject cameraPillar;
+    public GameObject twoCameraPillar;
+    public GameObject threeCameraPillar;
 
     [Header("Laser Room Prefabs")]
     public GameObject laserStartPillar;
@@ -79,6 +82,7 @@ public class DungeonCreator : MonoBehaviour
     private void CreateDungeon()
     {
         // backgroundMusic.SetActive(true);
+        // narration.SetActive(true);
         DungeonGenerator generator = new DungeonGenerator(dungeonWidth, dungeonLength);
 
         var listOfRooms = generator.CalculateDungeon(maxIterations, roomWidthMin, roomLengthMin, roomBottomCornerModifier, roomTopCornerModifier, roomOffset, corridorWidth);
@@ -175,7 +179,7 @@ public class DungeonCreator : MonoBehaviour
 
             Vector3 teleporterPosition1, teleporterPosition2;
 
-            
+
             if (roomWidth > roomHeight)
             {
                 float higher = 5.4f;
@@ -232,7 +236,7 @@ public class DungeonCreator : MonoBehaviour
             {
                 currSender.AddComponent<Teleporter2>();
                 currSender.GetComponent<Teleporter2>().targetTeleporter = currReceiver.transform;
-                
+
             }
 
             // IF we want to add undirected teleportation
@@ -292,9 +296,51 @@ public class DungeonCreator : MonoBehaviour
             Debug.Log("Laser Room");
             buildLaserRoom(room, roomParent, roomOrientation);
         }
+        else if (roomType == RoomType.CameraRoom)
+        {
+            Debug.Log("Camera Room");
+            buildCameraRoom(room, roomParent, roomOrientation, player);
+        }
         else
         {
+            buildCameraRoom(room, roomParent, roomOrientation, player);
             return;
+        }
+
+    }
+
+    private void buildCameraRoom(Node room, GameObject roomParent, RoomOrientation roomOrientation, GameObject player)
+    {
+        RoomGrid gridRoom = new RoomGrid((RoomNode)room);
+        int rowCount = gridRoom.grid.GetLength(0);
+        int colCount = gridRoom.grid.GetLength(1);
+        Vector3 roomCenter = new Vector3((room.BottomLeftAreaCorner.x + room.TopRightAreaCorner.x) / 2, 0, (room.BottomLeftAreaCorner.y + room.TopRightAreaCorner.y) / 2);
+
+
+
+        // Building the Cams for the Cam Room
+
+        for (int i = 1; i < rowCount - 1; i += 3)
+        {
+            int cameraColumnPlacements = UnityEngine.Random.Range(1, 3);
+            if (cameraColumnPlacements == 1)
+            {
+                Vector3 cameraColumnPosition = new Vector3(roomCenter.x, 0f, gridRoom.grid[i, 0].Center.y);
+                GameObject cameraColumn = Instantiate(twoCameraPillar, cameraColumnPosition, Quaternion.identity, roomParent.transform);
+            }
+            else
+            {
+
+                Vector3 firstThirdPosition = new Vector3(room.BottomLeftAreaCorner.x + (room.TopRightAreaCorner.x - room.BottomLeftAreaCorner.x) / 3, 0, room.BottomLeftAreaCorner.y + (room.TopRightAreaCorner.y - room.BottomLeftAreaCorner.y) / 3);
+                Vector3 secondThirdPosition = new Vector3(room.BottomLeftAreaCorner.x + 2 * (room.TopRightAreaCorner.x - room.BottomLeftAreaCorner.x) / 3, 0, room.BottomLeftAreaCorner.y + 2 * (room.TopRightAreaCorner.y - room.BottomLeftAreaCorner.y) / 3);
+
+                Vector3 cameraColumnPosition1 = new Vector3(firstThirdPosition.x, 0f, gridRoom.grid[i, 0].Center.y);
+                Vector3 cameraColumnPosition2 = new Vector3(secondThirdPosition.x, 0f, gridRoom.grid[i, 0].Center.y);
+
+                GameObject cameraColumn1 = Instantiate(twoCameraPillar, cameraColumnPosition1, Quaternion.identity, roomParent.transform);
+                // GameObject cameraColumn2 = Instantiate(twoCameraPillar, cameraColumnPosition2, Quaternion.identity, roomParent.transform);
+            }
+
         }
 
     }
@@ -304,50 +350,131 @@ public class DungeonCreator : MonoBehaviour
         RoomGrid gridRoom = new RoomGrid((RoomNode)room);
         int rowCount = gridRoom.grid.GetLength(0);
         int colCount = gridRoom.grid.GetLength(1);
-
+        Vector3 upperRightCorner = new Vector3(room.TopRightAreaCorner.x - 1, wallScale - 2, room.TopRightAreaCorner.y - 1);
+        Quaternion cameraRotation = Quaternion.LookRotation(upperRightCorner - new Vector3(room.BottomLeftAreaCorner.x, wallScale - 2, room.BottomLeftAreaCorner.y)) * Quaternion.Euler(-28, 0, 0);
+        GameObject cameraInstance = Instantiate(mainCam, upperRightCorner, cameraRotation, roomParent.transform);
+        cameraInstance.transform.localScale = new Vector3(1, 1, 1);
+        // Attach DetectPlayer component to the main player
+        CameraDetectPlayer detectPlayer = cameraInstance.GetComponentInChildren<CameraDetectPlayer>();
+        Transform playerChild = player.transform.Find("Player");
+        if (playerChild != null)
+        {
+            detectPlayer.player = playerChild.gameObject;
+        }
+        else
+        {
+            detectPlayer.player = player;
+            Debug.LogError("Child with name 'Player' not found in player GameObject.");
+        }
 
         if (roomOrientation == RoomOrientation.Vertical)
         {
-            for (int i = 0; i < rowCount; i += 2)
+            // Instantiate Common Laser System 
+            for (int i = 1; i < rowCount - 1; i++)
             {
-                int laserCount = UnityEngine.Random.Range(1, 4);
-                for (int j = 0; j < laserCount; j++)
+                if (i % 2 == 0)
                 {
-                float yPosOne = UnityEngine.Random.Range(0f, 4f);
-                float yPosTwo = UnityEngine.Random.Range(0f, 4f);
-
-                Vector3 firstTurrentPosition = new Vector3(room.TopLeftAreaCorner.x, yPosOne, gridRoom.grid[i, 0].TopLeftAreaCorner.y);
-                Vector3 secondTurretPositon = new Vector3(room.TopRightAreaCorner.x, yPosTwo, gridRoom.grid[i, colCount - 1].TopRightAreaCorner.y);
-
-                GameObject laser = Instantiate(laserSystem, firstTurrentPosition, Quaternion.identity, roomParent.transform);
-
-                GameObject turret1 = laser.transform.GetChild(0).gameObject;
-                GameObject turret2 = laser.transform.GetChild(1).gameObject;
-
-                turret1.transform.position = firstTurrentPosition;
-                turret2.transform.position = secondTurretPositon;
-
-                if (j > 0)
-                {
-                    int turretChoice = UnityEngine.Random.Range(0, 2);
-                    if (turretChoice == 0)
+                    int rowChoice = UnityEngine.Random.Range(0, 2);
+                    if (rowChoice == 0)
                     {
-                    turret1.AddComponent<MoveTurretVertical>();
-                    var component = turret1.GetComponent<MoveTurretVertical>();
-                    component.displacement = UnityEngine.Random.Range(3, 7);
-                    component.speed = UnityEngine.Random.Range(1, 3);
-                    }else{
-                    turret2.AddComponent<MoveTurretVertical>();
-                    var component = turret2.GetComponent<MoveTurretVertical>();
-                    component.displacement = UnityEngine.Random.Range(4, 9);
-                    component.speed = UnityEngine.Random.Range(2, 5);
+                        Vector3 middlePosition = new Vector3((room.BottomLeftAreaCorner.x + room.TopRightAreaCorner.x) / 2, 0, (room.BottomLeftAreaCorner.y + room.TopRightAreaCorner.y) / 2);
+                        Vector3 pillarPos = new Vector3(middlePosition.x, 0, gridRoom.grid[i, 0].TopRightAreaCorner.y);
+                        GameObject middlePillar = Instantiate(roomPillar1, pillarPos, Quaternion.identity, roomParent.transform);
+                        middlePillar.transform.localScale = new Vector3(15, wallScale, 15);
+                        // Single Column in the Middle
+                    }
+                    else
+                    {
+
+
+
+                        Vector3 firstThirdPosition = new Vector3(room.BottomLeftAreaCorner.x + (room.TopRightAreaCorner.x - room.BottomLeftAreaCorner.x) / 3, 0, room.BottomLeftAreaCorner.y + (room.TopRightAreaCorner.y - room.BottomLeftAreaCorner.y) / 3);
+                        Vector3 secondThirdPosition = new Vector3(room.BottomLeftAreaCorner.x + 2 * (room.TopRightAreaCorner.x - room.BottomLeftAreaCorner.x) / 3, 0, room.BottomLeftAreaCorner.y + 2 * (room.TopRightAreaCorner.y - room.BottomLeftAreaCorner.y) / 3);
+
+                        Vector3 positionOne = new Vector3(firstThirdPosition.x, 0, gridRoom.grid[i, 0].TopRightAreaCorner.y);
+                        Vector3 positionTwo = new Vector3(secondThirdPosition.x, 0, gridRoom.grid[i, 0].TopRightAreaCorner.y);
+                        GameObject pillarOne = Instantiate(roomPillar1, positionOne, Quaternion.identity, roomParent.transform);
+                        pillarOne.transform.localScale = new Vector3(15, wallScale, 15);
+
+                        GameObject pillarTwo = Instantiate(roomPillar1, positionTwo, Quaternion.identity, roomParent.transform);
+                        pillarTwo.transform.localScale = new Vector3(15, wallScale, 15);
 
                     }
-                   
                 }
+                else
+                {
+
+
+                    int laserCount = UnityEngine.Random.Range(1, 4);
+                    for (int j = 0; j < laserCount; j++)
+                    {
+                        float yPosOne = UnityEngine.Random.Range(0f, 5f);
+                        float yPosTwo = UnityEngine.Random.Range(0f, 5f);
+
+                        Vector3 firstTurrentPosition = new Vector3(room.TopLeftAreaCorner.x, yPosOne, gridRoom.grid[i, 0].TopLeftAreaCorner.y);
+                        Vector3 secondTurretPositon = new Vector3(room.TopRightAreaCorner.x, yPosTwo, gridRoom.grid[i, colCount - 1].TopRightAreaCorner.y);
+
+                        GameObject laser = Instantiate(laserSystem, firstTurrentPosition, Quaternion.identity, roomParent.transform);
+
+                        GameObject turret1 = laser.transform.GetChild(0).gameObject;
+                        GameObject turret2 = laser.transform.GetChild(1).gameObject;
+
+                        turret1.transform.position = firstTurrentPosition;
+                        turret2.transform.position = secondTurretPositon;
+
+
+                        // VERTICAL MOVEMENT ON FULL LASER ROWS
+                        if (j > 0)
+                        {
+                            int turretChoice = UnityEngine.Random.Range(0, 2);
+                            if (turretChoice == 0)
+                            {
+                                turret1.AddComponent<MoveTurretVertical>();
+                                var component = turret1.GetComponent<MoveTurretVertical>();
+                                component.displacement = UnityEngine.Random.Range(3, 7);
+                                component.speed = UnityEngine.Random.Range(3, 10);
+                            }
+                            else if (turretChoice == 1)
+                            {
+                                turret2.AddComponent<MoveTurretVertical>();
+                                var component = turret2.GetComponent<MoveTurretVertical>();
+                                component.displacement = UnityEngine.Random.Range(4, 9);
+                                component.speed = UnityEngine.Random.Range(3, 10);
+
+
+                            }
+                            else
+                            {
+                                turret1.AddComponent<MoveTurretVertical>();
+                                var component = turret1.GetComponent<MoveTurretVertical>();
+                                component.displacement = UnityEngine.Random.Range(3, 7);
+                                component.speed = UnityEngine.Random.Range(3, 15);
+
+                                turret2.AddComponent<MoveTurretVertical>();
+                                var component2 = turret2.GetComponent<MoveTurretVertical>();
+                                component2.displacement = UnityEngine.Random.Range(4, 9);
+                                component2.speed = UnityEngine.Random.Range(5, 10);
+
+
+                            }
+                            // turret1.AddComponent<MoveTurretHorizontal>();
+                            // var horizontalComponent = turret1.GetComponent<MoveTurretHorizontal>();
+                            // horizontalComponent.displacement = UnityEngine.Random.Range(-10, -3);
+                            // horizontalComponent.speed = UnityEngine.Random.Range(3, 15);
+
+
+
+
+
+                        }
+                    }
                 }
-                
+
             }
+
+
+
+
         }
     }
 
@@ -375,46 +502,66 @@ public class DungeonCreator : MonoBehaviour
 
         // TESTING INFO
         // Instantiate the camera in the middle of the room
-        Vector3 upperRightCorner = new Vector3(room.TopRightAreaCorner.x - 1, wallScale - 2, room.TopRightAreaCorner.y - 1);
-        Quaternion cameraRotation = Quaternion.LookRotation(upperRightCorner - new Vector3(room.BottomLeftAreaCorner.x, wallScale - 2, room.BottomLeftAreaCorner.y)) * Quaternion.Euler(-28, 0, 0);
-        GameObject cameraInstance = Instantiate(mainCam, upperRightCorner, cameraRotation, roomParent.transform);
-        cameraInstance.transform.localScale = new Vector3(1, 1, 1);
-        // Attach DetectPlayer component to the main player
-        CameraDetectPlayer detectPlayer = cameraInstance.GetComponentInChildren<CameraDetectPlayer>();
-        Transform playerChild = player.transform.Find("Player");
-        if (playerChild != null)
-        {
-            detectPlayer.player = playerChild.gameObject;
-        }
-        else
-        {
-            detectPlayer.player = player;
-            Debug.LogError("Child with name 'Player' not found in player GameObject.");
-        }
+        // Vector3 upperRightCorner = new Vector3(room.TopRightAreaCorner.x - 1, wallScale - 2, room.TopRightAreaCorner.y - 1);
+        // Quaternion cameraRotation = Quaternion.LookRotation(upperRightCorner - new Vector3(room.BottomLeftAreaCorner.x, wallScale - 2, room.BottomLeftAreaCorner.y)) * Quaternion.Euler(-28, 0, 0);
+        // GameObject cameraInstance = Instantiate(mainCam, upperRightCorner, cameraRotation, roomParent.transform);
+        // cameraInstance.transform.localScale = new Vector3(1, 1, 1);
+        // // Attach DetectPlayer component to the main player
+        // CameraDetectPlayer detectPlayer = cameraInstance.GetComponentInChildren<CameraDetectPlayer>();
+        // Transform playerChild = player.transform.Find("Player");
+        // if (playerChild != null)
+        // {
+        //     detectPlayer.player = playerChild.gameObject;
+        // }
+        // else
+        // {
+        //     detectPlayer.player = player;
+        //     Debug.LogError("Child with name 'Player' not found in player GameObject.");
+        // }
 
-        // Building Well
+        // Building Phase Wall
         Vector3 wallPosition;
         Quaternion wellRotation = Quaternion.identity;
         Vector3 wellScale;
 
         if (roomOrientation == RoomOrientation.Vertical)
         {
+            Debug.Log("Vertical Room FOr Stasrt ");
             int rowLocation = rowCount - 1;
-            for (int col = 0; col < colCount; col++)
-            {
-                wallPosition = new Vector3(gridRoom.grid[rowLocation, col].Center.x, 0, gridRoom.grid[rowLocation, col].Center.y);
-                wellRotation = Quaternion.LookRotation(Vector3.forward);
-                wellScale = new Vector3(10, 2 * wallScale, 2);
 
-                GameObject wellInstance = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                wellInstance.transform.position = wallPosition;
-                Destroy(wellInstance.GetComponent<Collider>());
-                wellInstance.transform.rotation = wellRotation;
-                wellInstance.transform.localScale = wellScale;
-                wellInstance.transform.parent = roomParent.transform;
-                wellInstance.GetComponent<MeshRenderer>().material = phaseMaterial;
+            // Calculate the middle x position
+            float middleX = (room.BottomLeftAreaCorner.x + room.TopRightAreaCorner.x) / 2;
 
-            }
+            // Calculate the z position at the upper right corner
+            float upperRightZ = room.TopRightAreaCorner.y - 12f;
+
+            // Place a single box at the calculated position
+            wallPosition = new Vector3(middleX, 0, upperRightZ);
+            wellRotation = Quaternion.LookRotation(Vector3.forward);
+            wellScale = new Vector3(room.TopRightAreaCorner.x - room.BottomLeftAreaCorner.x, 2 * wallScale, 2);
+
+            GameObject wellInstance = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            wellInstance.transform.position = wallPosition;
+            Destroy(wellInstance.GetComponent<Collider>());
+            wellInstance.transform.rotation = wellRotation;
+            wellInstance.transform.localScale = wellScale;
+            wellInstance.transform.parent = roomParent.transform;
+            wellInstance.GetComponent<MeshRenderer>().material = phaseMaterial;
+            // for (int col = 0; col < colCount; col++)
+            // {
+            //     wallPosition = new Vector3(gridRoom.grid[rowLocation, col].Center.x, 0, gridRoom.grid[rowLocation, col].Center.y);
+            //     wellRotation = Quaternion.LookRotation(Vector3.forward);
+            //     wellScale = new Vector3(10, 2 * wallScale, 2);
+
+            //     GameObject wellInstance = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            //     wellInstance.transform.position = wallPosition;
+            //     Destroy(wellInstance.GetComponent<Collider>());
+            //     wellInstance.transform.rotation = wellRotation;
+            //     wellInstance.transform.localScale = wellScale;
+            //     wellInstance.transform.parent = roomParent.transform;
+            //     wellInstance.GetComponent<MeshRenderer>().material = phaseMaterial;
+
+            // }
 
         }
         else
@@ -652,56 +799,105 @@ public class DungeonCreator : MonoBehaviour
 
     private void CreateMesh(Vector2 bottomLeftCorner, Vector2 topRightCorner)
     {
-        // Learn from codeMonkey Youtube how to create mesh programattically
+
+        // Define vertices
         Vector3 bottomLeftV = new Vector3(bottomLeftCorner.x, 0, bottomLeftCorner.y);
         Vector3 bottomRightV = new Vector3(topRightCorner.x, 0, bottomLeftCorner.y);
         Vector3 topLeftV = new Vector3(bottomLeftCorner.x, 0, topRightCorner.y);
         Vector3 topRightV = new Vector3(topRightCorner.x, 0, topRightCorner.y);
+        
+        float width = topRightCorner.x - bottomLeftCorner.x;
+        float length = topRightCorner.y - bottomLeftCorner.y;
 
+        // Calculate center position
+        float centerX = bottomLeftCorner.x + width / 2f;
+        float centerZ = bottomLeftCorner.y + length / 2f;
 
-        // ORDER IMPORTANT HERE TO ENSURE VALID NORMALS
-        Vector3[] vertices = new Vector3[]
+        // Create the plane
+        GameObject dungeonFloor = GameObject.CreatePrimitive(PrimitiveType.Plane);
+
+        // Set position
+        dungeonFloor.transform.position = new Vector3(centerX, 0f, centerZ);
+
+        // Scale the plane
+        dungeonFloor.transform.localScale = new Vector3(width / 10f, 1f, length / 10f);
+
+        // Assign the material
+        if (material != null)
         {
-            topLeftV,
-            topRightV,
-            bottomLeftV,
-            bottomRightV
-        };
-        Vector2[] uvs = new Vector2[vertices.Length];
-        for (int i = 0; i < uvs.Length; i++)
+            dungeonFloor.GetComponent<Renderer>().material = material;
+        }
+        else
         {
-            uvs[i] = new Vector2(vertices[i].x, vertices[i].z);
+            Debug.LogError("Material is not assigned. Please assign a material.");
         }
 
-        // Create triangles in clockwise order
-        int[] triangles = new int[]
-        {
-            0,
-            1,
-            2,
-            2,
-            1,
-            3,
-        };
-
-        Mesh mesh = new Mesh();
-        mesh.vertices = vertices;
-        mesh.uv = uvs;
-        mesh.triangles = triangles;
-
-        GameObject dungeonFloor = new GameObject("Floor " + bottomLeftCorner, typeof(MeshFilter), typeof(MeshRenderer));
-
-        dungeonFloor.transform.position = Vector3.zero;
-        dungeonFloor.transform.localScale = Vector3.one;
-
-        dungeonFloor.GetComponent<MeshFilter>().mesh = mesh;
-        dungeonFloor.GetComponent<MeshRenderer>().material = material;
+        // Add a BoxCollider (optional)
         dungeonFloor.AddComponent<BoxCollider>();
 
+        // Remove the MeshCollider if not needed
+        DestroyImmediate(dungeonFloor.GetComponent<MeshCollider>());
 
-
+        // Set tag and layer
         dungeonFloor.tag = "Ground";
         dungeonFloor.layer = LayerMask.NameToLayer("Ground");
+        // Correct vertex order to ensure proper normals
+        //     Vector3[] vertices = new Vector3[]
+        //     {
+        // bottomLeftV, // 0
+        // bottomRightV, // 1
+        // topLeftV, // 2
+        // topRightV // 3
+        //     };
+
+        //     // Define UVs
+        //     Vector2[] uvs = new Vector2[vertices.Length];
+        //     for (int i = 0; i < uvs.Length; i++)
+        //     {
+        //         uvs[i] = new Vector2(vertices[i].x, vertices[i].z);
+        //     }
+
+        //     // Correct triangle winding order
+        //     int[] triangles = new int[]
+        //     {
+        // 0, 2, 1,
+        // 2, 3, 1
+        //     };
+
+        //     // Create the mesh
+        //     Mesh mesh = new Mesh();
+        //     mesh.vertices = vertices;
+        //     mesh.uv = uvs;
+        //     mesh.triangles = triangles;
+
+        //     // Recalculate normals and other properties
+        //     mesh.RecalculateNormals();
+        //     mesh.RecalculateBounds();
+        //     mesh.RecalculateTangents();
+
+        //     // Optionally, manually set normals
+        //     // Vector3[] normals = new Vector3[vertices.Length];
+        //     // for (int i = 0; i < normals.Length; i++)
+        //     // {
+        //     //     normals[i] = Vector3.up;
+        //     // }
+        //     // mesh.normals = normals;
+
+        //     // Create the GameObject
+        //     GameObject dungeonFloor = new GameObject("Floor " + bottomLeftCorner, typeof(MeshFilter), typeof(MeshRenderer));
+        //     dungeonFloor.transform.position = Vector3.zero;
+        //     dungeonFloor.transform.localScale = Vector3.one;
+
+        //     // Assign the mesh and material
+        //     dungeonFloor.GetComponent<MeshFilter>().mesh = mesh;
+        //     dungeonFloor.GetComponent<MeshRenderer>().material = material;
+
+        //     // Add collider
+        //     dungeonFloor.AddComponent<BoxCollider>();
+
+        //     // Set tag and layer
+        //     dungeonFloor.tag = "Ground";
+        //     dungeonFloor.layer = LayerMask.NameToLayer("Ground");
 
 
         // Instantiate the room rug at the lower right corner
@@ -746,11 +942,11 @@ public class DungeonCreator : MonoBehaviour
         // Add lighting
 
         // WE SHOULD MAKE THIS A FUNCTION AND THEN CHANGE LIGHTING BASED ON THE ROOM TYPE
-        GameObject lightGameObject = new GameObject("RoomLight");
-        Light lightComp = lightGameObject.AddComponent<Light>();
-        lightComp.color = Color.white;
-        lightComp.intensity = 1.0f;
-        lightGameObject.transform.position = (bottomLeftV + topRightV) / 2 + Vector3.up * 2;
+        // GameObject lightGameObject = new GameObject("RoomLight");
+        // Light lightComp = lightGameObject.AddComponent<Light>();
+        // lightComp.color = Color.white;
+        // lightComp.intensity = 1.0f;
+        // lightGameObject.transform.position = (bottomLeftV + topRightV) / 2 + Vector3.up * 2;
 
         // Add an offset to align everything to the grid
         for (int row = (int)bottomLeftV.x; row < (int)bottomRightV.x; row++)
