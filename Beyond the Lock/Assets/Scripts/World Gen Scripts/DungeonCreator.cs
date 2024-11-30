@@ -352,6 +352,89 @@ public class DungeonCreator : MonoBehaviour
 
                 }
             }
+            // Now we need to build the cameras On the back wall of the room
+            float zWall = room.TopRightAreaCorner.y - 3;
+            for (int i = 1; i < colCount/2; i += 3)
+            {
+                Vector3 cameraPosition = new Vector3(gridRoom.grid[0, i].Center.x, wallScale-3, zWall);
+                Quaternion cameraRotation = Quaternion.LookRotation(cameraPosition - roomCenter);
+                GameObject cameraInstance = Instantiate(mainCam, cameraPosition, cameraRotation, roomParent.transform);
+                cameraInstance.transform.localScale = new Vector3(1, 1, 1);
+                // Attach DetectPlayer component to the main player
+                CameraDetectPlayer detectPlayer = cameraInstance.GetComponentInChildren<CameraDetectPlayer>();
+                Transform playerChild = player.transform.Find("Player");
+                if (playerChild != null)
+                {
+                    detectPlayer.player = playerChild.gameObject;
+                }
+                else
+                {
+                    detectPlayer.player = player;
+                    Debug.LogError("Child with name 'Player' not found in player GameObject.");
+                }
+
+                // Adjust the range of the Spot Light
+                Transform rotator = cameraInstance.transform.Find("rotator");
+                Transform spotLightTransform = rotator.Find("Spot Light");
+                if (spotLightTransform != null)
+                {
+                    Light spotLight = spotLightTransform.GetComponent<Light>();
+                    if (spotLight != null)
+                    {
+                        float roomSize = Mathf.Max(room.TopRightAreaCorner.x - room.BottomLeftAreaCorner.x, room.TopRightAreaCorner.y - room.BottomLeftAreaCorner.y);
+                        spotLight.range = roomSize * 0.75f;
+                    }
+                    else
+                    {
+                        Debug.LogError("Light component not found on Spot Light.");
+                    }
+                }
+                else
+                {
+                    Debug.LogError("Spot Light child not found in cameraInstance.");
+                }
+            }
+            for (int i = colCount/2; i < colCount-1; i += 3)
+            {
+                Vector3 cameraPosition = new Vector3(gridRoom.grid[0, i].Center.x, wallScale-3, zWall);
+                Quaternion cameraRotation = Quaternion.LookRotation(cameraPosition - roomCenter);
+                GameObject cameraInstance = Instantiate(mainCam, cameraPosition, cameraRotation, roomParent.transform);
+                cameraInstance.transform.localScale = new Vector3(1, 1, 1);
+                // Attach DetectPlayer component to the main player
+                CameraDetectPlayer detectPlayer = cameraInstance.GetComponentInChildren<CameraDetectPlayer>();
+                Transform playerChild = player.transform.Find("Player");
+                if (playerChild != null)
+                {
+                    detectPlayer.player = playerChild.gameObject;
+                }
+                else
+                {
+                    detectPlayer.player = player;
+                    Debug.LogError("Child with name 'Player' not found in player GameObject.");
+                }
+
+                Transform rotator = cameraInstance.transform.Find("rotator");
+                Transform spotLightTransform = rotator.Find("Spot Light");
+                if (spotLightTransform != null)
+                {
+                    Light spotLight = spotLightTransform.GetComponent<Light>();
+                    if (spotLight != null)
+                    {
+                        float roomSize = Mathf.Max(room.TopRightAreaCorner.x - room.BottomLeftAreaCorner.x, room.TopRightAreaCorner.y - room.BottomLeftAreaCorner.y);
+                        spotLight.range = roomSize * 0.75f;
+                    }
+                    else
+                    {
+                        Debug.LogError("Light component not found on Spot Light.");
+                    }
+                }
+                else
+                {
+                    Debug.LogError("Spot Light child not found in cameraInstance.");
+                }
+                
+            }
+
         }
 
     }
