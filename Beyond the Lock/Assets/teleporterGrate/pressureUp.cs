@@ -9,7 +9,7 @@ public class pressureUp : MonoBehaviour
     bool isPressed = false;
    void OnTriggerEnter(Collider col) {
     if(!isPressed) {
-    spikes.transform.position += new Vector3(0, 5, 0);
+    spikes.transform.position += new Vector3(0, .75f, 0);
      isPressed = true;
     }
     
