@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3999298959546498679}
   - component: {fileID: 4492948724154478881}
+  - component: {fileID: 2996031428645541945}
   m_Layer: 0
   m_Name: Spot Light
   m_TagString: Untagged
@@ -45,7 +46,7 @@ Light:
   m_Shape: 0
   m_Color: {r: 1, g: 0, b: 0.15399837, a: 1}
   m_Intensity: 50
-  m_Range: 100
+  m_Range: 20
   m_SpotAngle: 40
   m_InnerSpotAngle: 4
   m_CookieSize: 10
@@ -94,6 +95,18 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &2996031428645541945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 120119363646056338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8142cdfff16b4cae94111fa76fef82d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1791314804908872841
 GameObject:
   m_ObjectHideFlags: 0
