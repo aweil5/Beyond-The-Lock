@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -60,6 +61,8 @@ public class DungeonCreator : MonoBehaviour
     public GameObject mainCam;
     public GameObject twoCameraPillar;
     public GameObject threeCameraPillar;
+
+    public List<GameObject> cameraRoomItems;
 
     [Header("Laser Room Prefabs")]
     public GameObject laserStartPillar;
@@ -320,27 +323,35 @@ public class DungeonCreator : MonoBehaviour
 
         // Building the Cams for the Cam Room
 
-        for (int i = 1; i < rowCount - 1; i += 3)
+        // For vertical room but almost 100% sure this will be verticla
+        if (roomOrientation == RoomOrientation.Vertical)
         {
-            int cameraColumnPlacements = UnityEngine.Random.Range(1, 3);
-            if (cameraColumnPlacements == 1)
+            for (int i = 1; i < rowCount - 1; i++)
             {
-                Vector3 cameraColumnPosition = new Vector3(roomCenter.x, 0f, gridRoom.grid[i, 0].Center.y);
-                GameObject cameraColumn = Instantiate(twoCameraPillar, cameraColumnPosition, Quaternion.identity, roomParent.transform);
+                for (int j = 0; j < colCount; j++)
+                {
+                    int spawnChoice = UnityEngine.Random.Range(0, 3);
+                    if (spawnChoice != 1)
+                    {
+                        int itemChoice = UnityEngine.Random.Range(0, cameraRoomItems.Count);
+                        Vector3 itemPosition = new Vector3(gridRoom.grid[i, j].Center.x, 0, gridRoom.grid[i, j].Center.y);
+                        Quaternion randomRoatation = Quaternion.Euler(Quaternion.identity.x, UnityEngine.Random.Range(0, 360), Quaternion.identity.z);
+                        GameObject item = Instantiate(cameraRoomItems[itemChoice], itemPosition, Quaternion.identity, roomParent.transform);
+                        item.transform.localScale = new Vector3(1, 1, 1);
+                        item.transform.localScale = new Vector3(5, 5, 5);
+                        if (!item.TryGetComponent<MeshCollider>(out MeshCollider itemCollider))
+                        {
+                            itemCollider = item.AddComponent<MeshCollider>();
+
+                        }
+                        item.tag = "Ground";
+                        item.layer = LayerMask.NameToLayer("Ground");
+                    }
+
+
+
+                }
             }
-            else
-            {
-
-                Vector3 firstThirdPosition = new Vector3(room.BottomLeftAreaCorner.x + (room.TopRightAreaCorner.x - room.BottomLeftAreaCorner.x) / 3, 0, room.BottomLeftAreaCorner.y + (room.TopRightAreaCorner.y - room.BottomLeftAreaCorner.y) / 3);
-                Vector3 secondThirdPosition = new Vector3(room.BottomLeftAreaCorner.x + 2 * (room.TopRightAreaCorner.x - room.BottomLeftAreaCorner.x) / 3, 0, room.BottomLeftAreaCorner.y + 2 * (room.TopRightAreaCorner.y - room.BottomLeftAreaCorner.y) / 3);
-
-                Vector3 cameraColumnPosition1 = new Vector3(firstThirdPosition.x, 0f, gridRoom.grid[i, 0].Center.y);
-                Vector3 cameraColumnPosition2 = new Vector3(secondThirdPosition.x, 0f, gridRoom.grid[i, 0].Center.y);
-
-                GameObject cameraColumn1 = Instantiate(twoCameraPillar, cameraColumnPosition1, Quaternion.identity, roomParent.transform);
-                // GameObject cameraColumn2 = Instantiate(twoCameraPillar, cameraColumnPosition2, Quaternion.identity, roomParent.transform);
-            }
-
         }
 
     }
@@ -805,7 +816,7 @@ public class DungeonCreator : MonoBehaviour
         Vector3 bottomRightV = new Vector3(topRightCorner.x, 0, bottomLeftCorner.y);
         Vector3 topLeftV = new Vector3(bottomLeftCorner.x, 0, topRightCorner.y);
         Vector3 topRightV = new Vector3(topRightCorner.x, 0, topRightCorner.y);
-        
+
         float width = topRightCorner.x - bottomLeftCorner.x;
         float length = topRightCorner.y - bottomLeftCorner.y;
 
