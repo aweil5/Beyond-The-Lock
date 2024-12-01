@@ -84,7 +84,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8593993791823057407}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -118,7 +118,7 @@ GameObject:
   - component: {fileID: 2136163206754791009}
   - component: {fileID: 6599392865007183463}
   - component: {fileID: 5258296867502769596}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: 'blasterH '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -499,7 +499,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2744056017979525555}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: BulletSpawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -744,7 +744,7 @@ GameObject:
   - component: {fileID: 8563280123036209329}
   - component: {fileID: 620805112455136117}
   - component: {fileID: 3114967116100575960}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -859,6 +859,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 15
+  crouchSpeed: 6
   gravity: -18.36
   jumpHeight: 4
   groundCheck: {fileID: 8593993791823057407}
@@ -866,6 +867,7 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 128
+  gun: {fileID: 0}
   velocity: {x: 0, y: 0, z: 0}
 --- !u!114 &620805112455136117
 MonoBehaviour:
@@ -1084,7 +1086,7 @@ GameObject:
   - component: {fileID: 6015943163576545815}
   - component: {fileID: 4136805176782593446}
   - component: {fileID: 5707187965162268940}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -1176,7 +1178,7 @@ GameObject:
   - component: {fileID: 9164395261517443504}
   - component: {fileID: 7804589620085980241}
   - component: {fileID: 4470108382524091683}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}

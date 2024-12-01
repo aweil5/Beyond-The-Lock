@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Unity.AI.Navigation;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UIElements;
 
 public class DungeonCreator : MonoBehaviour
@@ -80,6 +82,15 @@ public class DungeonCreator : MonoBehaviour
     void Start()
     {
         CreateDungeon();
+
+        NavMeshSurface surface = GetComponent<NavMeshSurface>();
+        if (surface == null)
+        {
+            surface = gameObject.AddComponent<NavMeshSurface>();
+        }
+        surface.useGeometry = NavMeshCollectGeometry.PhysicsColliders;
+        surface.collectObjects = CollectObjects.All;
+        surface.BuildNavMesh();
 
     }
     private void CreateDungeon()
@@ -422,7 +433,14 @@ public class DungeonCreator : MonoBehaviour
                     spotlightDetection.detectionRange = roomSize * 0.75f;
                     spotlightDetection.spotlight = spotLight.transform;
                     spotlightDetection.detectionMask = LayerMask.GetMask("Player");
-
+                    List<Vector3> enemySpawnPoints = new List<Vector3>();
+                    int numEnemies = UnityEngine.Random.Range(1, 4);
+                    for (int i = 0; i < numEnemies; i++)
+                    {
+                        Vector3 enemySpawnPoint = new Vector3(UnityEngine.Random.Range(room.BottomLeftAreaCorner.x, room.TopRightAreaCorner.x), 5, UnityEngine.Random.Range(room.BottomLeftAreaCorner.y, room.TopRightAreaCorner.y));
+                        enemySpawnPoints.Add(enemySpawnPoint);
+                    }
+                    spotlightDetection.enemySpawnPoints = enemySpawnPoints;
                 }
                 else
                 {

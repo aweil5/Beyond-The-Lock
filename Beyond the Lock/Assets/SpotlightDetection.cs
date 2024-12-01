@@ -19,6 +19,9 @@ public class SpotlightDetection : MonoBehaviour
 
     private Boolean enemiesSpawned = false;
 
+    public List<Vector3> enemySpawnPoints = new List<Vector3>();
+    public GameObject enemyPrefab;
+
     void Start()
     {
         // If no AudioSource is assigned, try to get one on this GameObject
@@ -77,7 +80,26 @@ public class SpotlightDetection : MonoBehaviour
 
                     // Play detection sound
                     PlayDetectionSound();
+                    SpawnEnemies();
                 }
+            }
+        }
+    }
+
+    private void SpawnEnemies()
+    {
+        if (enemySpawnPoints.Count == 0)
+        {
+            Debug.LogWarning("No enemy spawn points assigned!");
+            return;
+        }
+        foreach (Vector3 spawnPoint in enemySpawnPoints)
+        {
+            GameObject enemy = Instantiate(enemyPrefab, spawnPoint, Quaternion.identity);
+            followPlayer followPlayer = enemy.GetComponent<followPlayer>();
+            if (followPlayer != null)
+            {
+                followPlayer.player = GameObject.FindGameObjectWithTag("Body To Follow").transform;
             }
         }
     }

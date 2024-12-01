@@ -7,6 +7,9 @@ TagManager:
   - Ground
   - Target
   - Wall
+  - Bullet
+  - enemy
+  - Body To Follow
   layers:
   - Default
   - TransparentFX
