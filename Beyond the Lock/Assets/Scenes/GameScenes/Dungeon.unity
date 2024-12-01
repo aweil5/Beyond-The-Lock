@@ -276,11 +276,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: MainPlayer3
       objectReference: {fileID: 0}
+    - target: {fileID: 8563280123036209329, guid: 28f79e7704024435eb6b72f8cd55fbf7, type: 3}
+      propertyPath: gun
+      value: 
+      objectReference: {fileID: 568667676}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 28f79e7704024435eb6b72f8cd55fbf7, type: 3}
+--- !u!4 &568667676 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6840022571565113090, guid: 28f79e7704024435eb6b72f8cd55fbf7, type: 3}
+  m_PrefabInstance: {fileID: 568667675}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &880362353
 GameObject:
   m_ObjectHideFlags: 0
@@ -345,6 +354,15 @@ MonoBehaviour:
   mainCam: {fileID: 4805421632163160354, guid: 4d8d5806e981f4354a5e78dcb796f40f, type: 3}
   twoCameraPillar: {fileID: 3016929230092200122, guid: c9797ab1a8a8b4d3bb19206cf126fe2f, type: 3}
   threeCameraPillar: {fileID: 961278191157563341, guid: 3d75f4f9a635c414fa24364640b3d252, type: 3}
+  cameraRoomItems:
+  - {fileID: 2620469184066610219, guid: ca3e78b1d5039448f97c68eb8bad3275, type: 3}
+  - {fileID: 919132149155446097, guid: bf4527cf748a3463c817d963f76541de, type: 3}
+  - {fileID: 919132149155446097, guid: ca0244f2b9b6548dfa38d21e61531512, type: 3}
+  - {fileID: 919132149155446097, guid: b8252a2f2fc81414a8da5575fb773a76, type: 3}
+  - {fileID: 919132149155446097, guid: 167b7bcbdad1e4770a4d45502dffeffe, type: 3}
+  - {fileID: 919132149155446097, guid: adf58c769e712427295d8d88ccdfbd97, type: 3}
+  - {fileID: 919132149155446097, guid: 8cf3648a042aa4d68b447c1e049d8d0f, type: 3}
+  - {fileID: 919132149155446097, guid: 5832df903b58b4570a2daf304255579d, type: 3}
   laserStartPillar: {fileID: 3220008262445545387, guid: c8b0f44b41394490a81b72c09da94b4a, type: 3}
   laserEndPillar: {fileID: 55928641110137302, guid: 33b70b6d958924012a54dbef26bbbee9, type: 3}
   laserSystem: {fileID: 756685665198405604, guid: dfbef0319c0e549bb8282b093a5f0378, type: 3}
