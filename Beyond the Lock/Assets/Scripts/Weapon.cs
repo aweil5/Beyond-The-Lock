@@ -1,68 +1,55 @@
 using UnityEngine;
-using System.Collections;
 
 public class Weapon : MonoBehaviour
 {
-    // Shooting
-    private bool isShooting = false; // Tracks if the weapon is currently on cooldown
-    public float shootingDelay = 2f; // Delay between shots in seconds
-
     public GameObject bulletPrefab;
-    public Transform bulletSpawn; // Ensure this Transform is positioned at the front of the gun
-    public float bulletVelocity = 30f;
-    public float bulletPrefabLifeTime = 3f;
+    public Transform bulletSpawnPoint;
+    public float bulletSpeed = 20f;
+    public float fireRate = 0.1f;
+    public float maxShootDistance = 100f;
 
-    private Rigidbody playerRigidbody;
+    private float nextFireTime = 0f;
 
-    void Start()
-    {
-        // Get the Rigidbody component from the parent player object
-        playerRigidbody = GetComponentInParent<Rigidbody>();
-
-    }
-
-    // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0) && !isShooting)
+        if (Input.GetButton("Fire1") && Time.time >= nextFireTime)
         {
-            FireWeapon();
+            ShootRaycast();
+            nextFireTime = Time.time + fireRate;
         }
     }
 
-    private void FireWeapon()
+    void ShootRaycast()
     {
-        // Instantiate Bullet with the same rotation as bulletSpawn
-        GameObject bullet = Instantiate(bulletPrefab, bulletSpawn.position, bulletSpawn.rotation);
-
-        // Apply force in the forward direction of bulletSpawn, plus player's velocity
-        Rigidbody bulletRigidbody = bullet.GetComponent<Rigidbody>();
-
-        Vector3 playerVelocity = Vector3.zero;
-        if (playerRigidbody != null)
+        RaycastHit hit;
+        if (Physics.Raycast(bulletSpawnPoint.position, bulletSpawnPoint.forward, out hit, maxShootDistance))
         {
-            playerVelocity = playerRigidbody.velocity;
+            Debug.DrawRay(bulletSpawnPoint.position, bulletSpawnPoint.forward * hit.distance, Color.red, 1f);
+
+            // Visualize bullet
+            SpawnBullet();
+
+            // Apply damage or effects
+            if (hit.collider.gameObject.TryGetComponent(out EnemyHealth enemyHealth))
+            {
+                enemyHealth.TakeDamage(10);
+            }
         }
-
-        bulletRigidbody.velocity = playerVelocity + bulletSpawn.forward * bulletVelocity;
-
-        // Destroy the Bullet After its Lifetime
-        StartCoroutine(DestroyBulletAfterTime(bullet, bulletPrefabLifeTime));
-
-        // Start cooldown
-        StartCoroutine(ShootingCooldown());
+        else
+        {
+            // No hit; spawn bullet visual traveling forward
+            SpawnBullet();
+        }
     }
 
-    private IEnumerator ShootingCooldown()
+    void SpawnBullet()
     {
-        isShooting = true; // Set shooting flag to true to prevent firing
-        yield return new WaitForSeconds(shootingDelay); // Wait for the cooldown duration
-        isShooting = false; // Reset shooting flag to allow firing again
-    }
-
-    private IEnumerator DestroyBulletAfterTime(GameObject bullet, float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        Destroy(bullet);
+        GameObject bulletVisual = Instantiate(bulletPrefab, bulletSpawnPoint.position, Quaternion.LookRotation(bulletSpawnPoint.forward));
+        Rigidbody rb = bulletVisual.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.velocity = bulletSpawnPoint.forward * bulletSpeed;
+        }
+        Destroy(bulletVisual, 2f);
     }
 }

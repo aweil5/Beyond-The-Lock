@@ -31,20 +31,19 @@ public class GunController : MonoBehaviour
 
     void Shoot()
     {
-        // Instantiate the bullet at the spawn point
+        // Visualize the shoot direction in the Scene view
+        Debug.DrawRay(bulletSpawnPoint.position, bulletSpawnPoint.forward * 10f, Color.red, 1f);
+
         GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
 
-        // Add velocity to the bullet
         Rigidbody rb = bullet.GetComponent<Rigidbody>();
         if (rb != null)
         {
             rb.velocity = bulletSpawnPoint.forward * bulletSpeed;
         }
 
-        // Optionally, destroy the bullet after some time
         Destroy(bullet, 5f);
 
-        // Play the sound effect
         StartCoroutine(PlayShotSound());
     }
 
