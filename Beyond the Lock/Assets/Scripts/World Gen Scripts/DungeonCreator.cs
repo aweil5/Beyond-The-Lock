@@ -336,7 +336,7 @@ public class DungeonCreator : MonoBehaviour
                         int itemChoice = UnityEngine.Random.Range(0, cameraRoomItems.Count);
                         Vector3 itemPosition = new Vector3(gridRoom.grid[i, j].Center.x, 0, gridRoom.grid[i, j].Center.y);
                         Quaternion randomRoatation = Quaternion.Euler(Quaternion.identity.x, UnityEngine.Random.Range(0, 360), Quaternion.identity.z);
-                        GameObject item = Instantiate(cameraRoomItems[itemChoice], itemPosition, Quaternion.identity, roomParent.transform);
+                        GameObject item = Instantiate(cameraRoomItems[itemChoice], itemPosition, randomRoatation, roomParent.transform);
                         item.transform.localScale = new Vector3(1, 1, 1);
                         item.transform.localScale = new Vector3(5, 5, 5);
                         if (!item.TryGetComponent<MeshCollider>(out MeshCollider itemCollider))
@@ -354,99 +354,29 @@ public class DungeonCreator : MonoBehaviour
             }
             // Now we need to build the cameras On the back wall of the room
             float zWall = room.TopRightAreaCorner.y - 3;
-            for (int i = 1; i < colCount/2; i += 3)
-            {
-                Vector3 cameraPosition = new Vector3(gridRoom.grid[0, i].Center.x, wallScale-3, zWall);
-                Quaternion cameraRotation = Quaternion.LookRotation(cameraPosition - roomCenter);
-                GameObject cameraInstance = Instantiate(mainCam, cameraPosition, cameraRotation, roomParent.transform);
-                cameraInstance.transform.localScale = new Vector3(1, 1, 1);
-                // Attach DetectPlayer component to the main player
-                CameraDetectPlayer detectPlayer = cameraInstance.GetComponentInChildren<CameraDetectPlayer>();
-                Transform playerChild = player.transform.Find("Player");
-                if (playerChild != null)
-                {
-                    detectPlayer.player = playerChild.gameObject;
-                }
-                else
-                {
-                    detectPlayer.player = player;
-                    Debug.LogError("Child with name 'Player' not found in player GameObject.");
-                }
+            List<Vector3> cameraPositions = new List<Vector3>();
+            Vector3 middleCam = new Vector3(roomCenter.x, wallScale - 3, zWall);
+            Vector3 leftCam = new Vector3((roomCenter.x + room.TopLeftAreaCorner.x) / 2, wallScale - 3, zWall);
+            Vector3 rightCam = new Vector3((roomCenter.x + room.TopRightAreaCorner.x) / 2, wallScale - 3, zWall);
+            // cameraPositions.Add(middleCam);
+            cameraPositions.Add(leftCam);
+            cameraPositions.Add(rightCam);
 
-                // Adjust the range of the Spot Light
-                Transform rotator = cameraInstance.transform.Find("rotator");
-                Transform spotLightTransform = rotator.Find("Spot Light");
-                if (spotLightTransform != null)
-                {
-                    Light spotLight = spotLightTransform.GetComponent<Light>();
-                    if (spotLight != null)
-                    {
-                        float roomSize = Mathf.Max(room.TopRightAreaCorner.x - room.BottomLeftAreaCorner.x, room.TopRightAreaCorner.y - room.BottomLeftAreaCorner.y);
-                        spotLight.range = roomSize * 0.75f;
-                    }
-                    else
-                    {
-                        Debug.LogError("Light component not found on Spot Light.");
-                    }
-                }
-                else
-                {
-                    Debug.LogError("Spot Light child not found in cameraInstance.");
-                }
-            }
-            for (int i = colCount/2; i < colCount-1; i += 3)
+            foreach (var cameraPosition in cameraPositions)
             {
-                Vector3 cameraPosition = new Vector3(gridRoom.grid[0, i].Center.x, wallScale-3, zWall);
-                Quaternion cameraRotation = Quaternion.LookRotation(cameraPosition - roomCenter);
-                GameObject cameraInstance = Instantiate(mainCam, cameraPosition, cameraRotation, roomParent.transform);
-                cameraInstance.transform.localScale = new Vector3(1, 1, 1);
-                // Attach DetectPlayer component to the main player
-                CameraDetectPlayer detectPlayer = cameraInstance.GetComponentInChildren<CameraDetectPlayer>();
-                Transform playerChild = player.transform.Find("Player");
-                if (playerChild != null)
-                {
-                    detectPlayer.player = playerChild.gameObject;
-                }
-                else
-                {
-                    detectPlayer.player = player;
-                    Debug.LogError("Child with name 'Player' not found in player GameObject.");
-                }
+                createCamera(cameraPosition, roomCenter, room, roomParent);
 
-                Transform rotator = cameraInstance.transform.Find("rotator");
-                Transform spotLightTransform = rotator.Find("Spot Light");
-                if (spotLightTransform != null)
-                {
-                    Light spotLight = spotLightTransform.GetComponent<Light>();
-                    if (spotLight != null)
-                    {
-                        float roomSize = Mathf.Max(room.TopRightAreaCorner.x - room.BottomLeftAreaCorner.x, room.TopRightAreaCorner.y - room.BottomLeftAreaCorner.y);
-                        spotLight.range = roomSize * 0.75f;
-                    }
-                    else
-                    {
-                        Debug.LogError("Light component not found on Spot Light.");
-                    }
-                }
-                else
-                {
-                    Debug.LogError("Spot Light child not found in cameraInstance.");
-                }
-                
             }
+
 
         }
 
     }
 
-    private void buildLaserRoom(Node room, GameObject roomParent, RoomOrientation roomOrientation)
+    private void createCamera(Vector3 cameraPosition, Vector3 roomCenter, Node room, GameObject roomParent)
     {
-        RoomGrid gridRoom = new RoomGrid((RoomNode)room);
-        int rowCount = gridRoom.grid.GetLength(0);
-        int colCount = gridRoom.grid.GetLength(1);
-        Vector3 upperRightCorner = new Vector3(room.TopRightAreaCorner.x - 1, wallScale - 2, room.TopRightAreaCorner.y - 1);
-        Quaternion cameraRotation = Quaternion.LookRotation(upperRightCorner - new Vector3(room.BottomLeftAreaCorner.x, wallScale - 2, room.BottomLeftAreaCorner.y)) * Quaternion.Euler(-28, 0, 0);
-        GameObject cameraInstance = Instantiate(mainCam, upperRightCorner, cameraRotation, roomParent.transform);
+        Quaternion cameraRotation = Quaternion.LookRotation(cameraPosition - roomCenter);
+        GameObject cameraInstance = Instantiate(mainCam, cameraPosition, cameraRotation, roomParent.transform);
         cameraInstance.transform.localScale = new Vector3(1, 1, 1);
         // Attach DetectPlayer component to the main player
         CameraDetectPlayer detectPlayer = cameraInstance.GetComponentInChildren<CameraDetectPlayer>();
@@ -460,6 +390,68 @@ public class DungeonCreator : MonoBehaviour
             detectPlayer.player = player;
             Debug.LogError("Child with name 'Player' not found in player GameObject.");
         }
+
+        Transform rotator = cameraInstance.transform.Find("rotator");
+        if (rotator == null)
+        {
+            Debug.LogError("Rotator child not found in cameraInstance.");
+            return;
+        }
+        CameraRotation camRotate = rotator.GetComponent<CameraRotation>();
+        if (camRotate == null)
+        {
+            Debug.LogError("CameraRotation component not found on rotator.");
+            return;
+        }
+        camRotate.rotationSpeed = UnityEngine.Random.Range(3, 20);
+        camRotate.maxAngle = UnityEngine.Random.Range(20, 50);
+        Transform spotLightTransform = rotator.Find("Spot Light");
+        if (spotLightTransform != null)
+        {
+            Light spotLight = spotLightTransform.GetComponent<Light>();
+            if (spotLight != null)
+            {
+                float roomSize = Mathf.Max(room.TopRightAreaCorner.x - room.BottomLeftAreaCorner.x, room.TopRightAreaCorner.y - room.BottomLeftAreaCorner.y);
+                spotLight.range = roomSize * 0.75f;
+                float angle = UnityEngine.Random.Range(30, 40);
+                spotLight.spotAngle = angle;
+                SpotlightDetection spotlightDetection = spotLightTransform.GetComponent<SpotlightDetection>();
+                if (spotlightDetection != null)
+                {
+                    spotlightDetection.spotAngle = angle;
+                    spotlightDetection.detectionRange = roomSize * 0.75f;
+                    spotlightDetection.spotlight = spotLight.transform;
+                    spotlightDetection.detectionMask = LayerMask.GetMask("Player");
+
+                }
+                else
+                {
+                    Debug.LogError("SpotlightDetection component not found on Spot Light.");
+                }
+            }
+
+
+            else
+            {
+                Debug.LogError("Light component not found on Spot Light.");
+            }
+        }
+        else
+        {
+            Debug.LogError("Spot Light child not found in cameraInstance.");
+        }
+    }
+
+    private void buildLaserRoom(Node room, GameObject roomParent, RoomOrientation roomOrientation)
+    {
+        RoomGrid gridRoom = new RoomGrid((RoomNode)room);
+        int rowCount = gridRoom.grid.GetLength(0);
+        int colCount = gridRoom.grid.GetLength(1);
+        Vector3 upperRightCorner = new Vector3(room.TopRightAreaCorner.x - 1, wallScale - 2, room.TopRightAreaCorner.y - 1);
+        Vector3 roomCenter = new Vector3((room.BottomLeftAreaCorner.x + room.TopRightAreaCorner.x) / 2, 0, (room.BottomLeftAreaCorner.y + room.TopRightAreaCorner.y) / 2);
+        createCamera(upperRightCorner, roomCenter, room, roomParent);
+        
+        
 
         if (roomOrientation == RoomOrientation.Vertical)
         {
