@@ -9,6 +9,9 @@ public class SpotlightDetection : MonoBehaviour
     public float spotAngle = 40f;     // The angle of the spotlight
     public LayerMask detectionMask;   // Set this to detect the "Player" layer
 
+    /*public GameObject npcPrefab;      // Assign the NPC prefab in the Inspector
+    public List<Vector3> npcSpawns;   // List of spawn locations for NPCs*/
+
     void Update()
     {
         DetectPlayerWithRaycast();
@@ -41,9 +44,21 @@ public class SpotlightDetection : MonoBehaviour
                         Debug.Log("Player Position: " + playerPosition);
                         
                         // Add additional custom logic here
+
+                        // Spawn NPCs at designated locations
+                        /*SpawnNPCs();*/    
                     }
                 }
             }
         }
     }
+
+    /*void SpawnNPCs()
+    {
+        foreach (Vector3 spawnLocation in npcSpawns)
+        {
+            Instantiate(npcPrefab, spawnLocation, Quaternion.identity);
+        }
+        Debug.Log("NPCs spawned at all designated locations.");
+    }*/
 }
