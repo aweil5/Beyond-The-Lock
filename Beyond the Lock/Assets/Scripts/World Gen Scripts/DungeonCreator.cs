@@ -914,7 +914,7 @@ public class DungeonCreator : MonoBehaviour
         dungeonFloor.transform.position = new Vector3(centerX, 0f, centerZ);
 
         // Scale the plane
-        dungeonFloor.transform.localScale = new Vector3(width / 10f, 1f, length / 10f);
+        dungeonFloor.transform.localScale = new Vector3(width / 10f, 4f, length / 10f);
 
         // Assign the material
         if (material != null)

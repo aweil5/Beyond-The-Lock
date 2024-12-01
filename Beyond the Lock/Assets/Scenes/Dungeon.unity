@@ -396,6 +396,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MainPlayer3
       objectReference: {fileID: 0}
+    - target: {fileID: 8563280123036209329, guid: 28f79e7704024435eb6b72f8cd55fbf7, type: 3}
+      propertyPath: gun
+      value: 
+      objectReference: {fileID: 1610134789}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -441,7 +445,7 @@ MonoBehaviour:
   roomBottomCornerModifier: 0.151
   roomTopCornerModifier: 0.9
   roomOffset: 1
-  material: {fileID: 2100000, guid: c131aa9fcbd2642f0a78a3e7e0f11045, type: 2}
+  material: {fileID: 2100000, guid: dd0956bbcc27d4bdf87921ef01b48022, type: 2}
   ceilingMaterial: {fileID: 2100000, guid: 28f909f6e7a2d4b7da8822a32e5bc5dc, type: 2}
   phaseMaterial: {fileID: 2100000, guid: d517a5fe3e26d4d9186fa8fbb618319f, type: 2}
   wallVertical: {fileID: 4744168285973638961, guid: a2fe68c7dbcf44a53bbf3e0f4c07627d, type: 3}
@@ -463,7 +467,16 @@ MonoBehaviour:
   doNotEnter: {fileID: 7653143208990837190, guid: d990cb30a2f5946b3be2e2902fb7aa4f, type: 3}
   diamond: {fileID: 123613523652395669, guid: c3f1b366006cc452fa12ffe430ce2478, type: 3}
   mainCam: {fileID: 4805421632163160354, guid: 4d8d5806e981f4354a5e78dcb796f40f, type: 3}
-  cameraPillar: {fileID: 0}
+  twoCameraPillar: {fileID: 3016929230092200122, guid: c9797ab1a8a8b4d3bb19206cf126fe2f, type: 3}
+  threeCameraPillar: {fileID: 961278191157563341, guid: 3d75f4f9a635c414fa24364640b3d252, type: 3}
+  cameraRoomItems:
+  - {fileID: 2620469184066610219, guid: ca3e78b1d5039448f97c68eb8bad3275, type: 3}
+  - {fileID: 919132149155446097, guid: bf4527cf748a3463c817d963f76541de, type: 3}
+  - {fileID: 919132149155446097, guid: 5559607f9a49c40fab2a8c173b584b18, type: 3}
+  - {fileID: 919132149155446097, guid: b8252a2f2fc81414a8da5575fb773a76, type: 3}
+  - {fileID: 919132149155446097, guid: 167b7bcbdad1e4770a4d45502dffeffe, type: 3}
+  - {fileID: 919132149155446097, guid: adf58c769e712427295d8d88ccdfbd97, type: 3}
+  - {fileID: 919132149155446097, guid: 5832df903b58b4570a2daf304255579d, type: 3}
   laserStartPillar: {fileID: 3220008262445545387, guid: c8b0f44b41394490a81b72c09da94b4a, type: 3}
   laserEndPillar: {fileID: 55928641110137302, guid: 33b70b6d958924012a54dbef26bbbee9, type: 3}
   laserSystem: {fileID: 756685665198405604, guid: dfbef0319c0e549bb8282b093a5f0378, type: 3}
@@ -619,6 +632,11 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1384801240}
   m_Enabled: 0
+--- !u!4 &1610134789 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6840022571565113090, guid: 28f79e7704024435eb6b72f8cd55fbf7, type: 3}
+  m_PrefabInstance: {fileID: 568667675}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
