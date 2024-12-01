@@ -35,7 +35,12 @@ public class SpotlightDetection : MonoBehaviour
                     if (hitInfo.collider.CompareTag("Player"))
                     {
                         Debug.Log("Player detected in spotlight!");
-                        // Add your custom logic here
+                        
+                        // Print the player's coordinates
+                        Vector3 playerPosition = hitInfo.collider.transform.position;
+                        Debug.Log("Player Position: " + playerPosition);
+                        
+                        // Add additional custom logic here
                     }
                 }
             }
