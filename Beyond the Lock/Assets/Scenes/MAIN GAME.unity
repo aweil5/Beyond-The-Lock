@@ -552,6 +552,8 @@ MonoBehaviour:
   laserStartPillar: {fileID: 3220008262445545387, guid: c8b0f44b41394490a81b72c09da94b4a, type: 3}
   laserEndPillar: {fileID: 55928641110137302, guid: 33b70b6d958924012a54dbef26bbbee9, type: 3}
   laserSystem: {fileID: 756685665198405604, guid: dfbef0319c0e549bb8282b093a5f0378, type: 3}
+  enemy: {fileID: 7302216541742878273, guid: a1907ff42b0ac45d6bce51de262a9639, type: 3}
+  randRoomItems: []
 --- !u!4 &880362355
 Transform:
   m_ObjectHideFlags: 0

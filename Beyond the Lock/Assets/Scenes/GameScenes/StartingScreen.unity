@@ -643,14 +643,15 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Welcome to Beyond the Lock, an immersive escape room experience where
-    you have been given the simple task of retrieving treasure from a vault. However,
-    this adventure is much easier said than done, as you\u2019re not the only player
-    in here holding a weapon. Be careful not to alert the guards who hold blasters
-    just like yours and are not afraid to use them. To traverse from room to room
-    and make your way to the vault, find the randomly located teleporters across
-    the rooms. You will reach the final room upon navigating and completing each
-    room. Retrieve the gem and safely escape in one piece. Good luck!"
+  m_text: Welcome to Beyond the Lock, an immersive escape room experience where you
+    have been given the simple task of retrieving treasure from a vault.  Be careful
+    not to alert the guards who hold blasters just like yours and are not afraid
+    to use them. To traverse from room to room and make your way to the vault, find
+    the randomly located teleporters across the rooms. Guards will also spawn into
+    the camera room if you are detected by a camera. The portal will also disappear
+    for 15 when detcted by a camera. You will reach the final room upon navigating
+    and completing each room. Retrieve the gem and safely escape in one piece. Good
+    luck!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
   m_sharedMaterial: {fileID: 2140032, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
