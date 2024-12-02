@@ -332,7 +332,9 @@ public class DungeonCreator : MonoBehaviour
 
     private void buildTreasureRoom(Node room, GameObject roomParent, RoomOrientation roomOrientation)
     {
-        return;
+        Vector3 roomCenter = new Vector3((room.BottomLeftAreaCorner.x + room.TopRightAreaCorner.x) / 2, 0, (room.BottomLeftAreaCorner.y + room.TopRightAreaCorner.y) / 2);
+        GameObject diamondInstance = Instantiate(diamond, roomCenter, Quaternion.identity, roomParent.transform);
+        
     }
 
     private void buildFightRoom(Node room, GameObject roomParent, RoomOrientation roomOrientation)
