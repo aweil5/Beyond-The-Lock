@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Teleporter2 : MonoBehaviour
 {
-    public Transform targetTeleporter; // Reference to the target teleporter
+    public Transform targetTeleporter; 
 
     private void OnTriggerEnter(Collider other)
     {
@@ -12,26 +12,19 @@ public class Teleporter2 : MonoBehaviour
 
             if (controller != null)
             {
-                // Disable CharacterController to avoid conflicts
                 controller.enabled = false;
-
-                // Teleport the player slightly above the ground
                 controller.transform.position = targetTeleporter.position + Vector3.up * 0.5f;
-
-                // Re-enable CharacterController
                 controller.enabled = true;
             }
             else
             {
-                // Fallback for non-CharacterController objects
+
                 other.transform.position = targetTeleporter.position + Vector3.up * 0.5f;
             }
-
-            // Optional: Reset velocity to prevent falling
             var playerMovement = other.GetComponent<PlayerMovement>();
             if (playerMovement != null)
             {
-                playerMovement.velocity = Vector3.zero; // Reset velocity if applicable
+                playerMovement.velocity = Vector3.zero; 
             }
         }
     }
