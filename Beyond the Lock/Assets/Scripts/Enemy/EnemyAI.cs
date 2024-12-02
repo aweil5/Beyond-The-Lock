@@ -11,7 +11,7 @@ public class EnemyAI : MonoBehaviour
 
     public GameObject projectile;
 
-    public float health;
+    public float health = 100f;
 
     public LayerMask whatIsGround, whatIsPlayer;
 
