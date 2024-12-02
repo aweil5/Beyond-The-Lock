@@ -21,7 +21,7 @@ public class SpotlightDetection : MonoBehaviour
     private float lastDetectionTime = -5f;
 
     public bool enemiesSpawned = false;
-    public float teleportDisableTime = 15f;
+    public float teleportDisableTime = 7.5f;
 
     public List<Vector3> enemySpawnPoints = new List<Vector3>();
     public GameObject enemyPrefab;
@@ -108,27 +108,18 @@ public class SpotlightDetection : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
 
-        if (specialCam)
+        
+        foreach (GameObject portal in portals)
         {
-            while (roomEnemies.Count > 0)
+            if (portal != null)
             {
-                StartCoroutine(ReenablePortalsAfterDelay(portals));
-                yield return new WaitForSeconds(1);
+                portal.SetActive(true);
             }
         }
-        else
-        {
-            foreach (GameObject portal in portals)
-            {
-                if (portal != null)
-                {
-                    portal.SetActive(true);
-                }
-            }
 
-            Debug.Log($"Re-enabled {portals.Count} portals.");
-            PlaySound(teleportUp);
-        }
+        Debug.Log($"Re-enabled {portals.Count} portals.");
+        PlaySound(teleportUp);
+        
     }
 
     private IEnumerator ReenablePortalsAfterDelay(List<GameObject> portals)

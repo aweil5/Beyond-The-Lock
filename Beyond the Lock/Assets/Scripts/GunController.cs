@@ -27,22 +27,29 @@ public class GunController : MonoBehaviour
 
     void Shoot()
     {
-        if (canShoot == false)
-        {
-            return;
-        }
         // Visualize the shoot direction in the Scene view
         Debug.DrawRay(bulletSpawnPoint.position, bulletSpawnPoint.forward * 10f, Color.red, 1f);
+        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+        RaycastHit hit;
+        Vector3 targetPoint;
+        if (Physics.Raycast(ray, out hit))
+        {
+            targetPoint = hit.point;
+        }
+        else
+        {
+            targetPoint = ray.GetPoint(1000f);
+        }
 
         GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
 
         Rigidbody rb = bullet.GetComponent<Rigidbody>();
         if (rb != null)
         {
-            rb.velocity = bulletSpawnPoint.forward * bulletSpeed;
+            rb.velocity = (targetPoint - bulletSpawnPoint.position).normalized * bulletSpeed;
         }
 
-        Destroy(bullet, 2f);
+        Destroy(bullet, 5f);
 
         StartCoroutine(PlayShotSound());
     }

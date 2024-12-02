@@ -144,6 +144,7 @@ MonoBehaviour:
   audioSource: {fileID: 0}
   finalDeathSound: {fileID: 8300000, guid: 7bb24b4be78464adaad5225f516af82f, type: 3}
   deathSound: {fileID: 8300000, guid: 6099e6a23fe8447fe8861698e880ed16, type: 3}
+  enemyShot: {fileID: 8300000, guid: 4e24bfa5120bb4edaa5cfa38b32111ba, type: 3}
   walkPointResetTime: 5
   deathParticles: {fileID: 7826821860972967323, guid: 366207b2c34f84e0292fe14dd5b2441b, type: 3}
 --- !u!114 &2736885660524832466

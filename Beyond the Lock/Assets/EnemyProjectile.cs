@@ -42,15 +42,12 @@ public class Projectile : MonoBehaviour
 
             
         }
-        else if (collision.gameObject.CompareTag("Target"))
-        {
-            return;
-            // Do nothing if the projectile hits another projectile
-        }
-        else
+        else if (collision.gameObject.CompareTag("Ground"))
         {
             Destroy(gameObject);
+           
         }
+
 
         // Destroy the projectile after impact
     }

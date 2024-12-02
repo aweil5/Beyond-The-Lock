@@ -55,6 +55,7 @@ public class DungeonCreator : MonoBehaviour
 
     [Header("Vault Room Prefabs")]
     public GameObject diamond;
+    public AudioClip finalRoomAudio;
 
     [Header("Camera Room Prefabs")]
     public GameObject mainCam;
@@ -301,7 +302,6 @@ public class DungeonCreator : MonoBehaviour
                 currSender.AddComponent<Teleporter2>();
                 currSender.GetComponent<Teleporter2>().targetTeleporter = currReceiver.transform;
 
-
             }
 
             // IF we want to add undirected teleportation
@@ -388,19 +388,19 @@ public class DungeonCreator : MonoBehaviour
     }
 
     private void AddLight(Vector3 position, GameObject parent, bool isCentral = false)
-{
-    // Create a new light object
-    GameObject lightGameObject = new GameObject("RoomLight");
-    lightGameObject.transform.position = position;
-    lightGameObject.transform.parent = parent.transform;
+    {
+        // Create a new light object
+        GameObject lightGameObject = new GameObject("RoomLight");
+        lightGameObject.transform.position = position;
+        lightGameObject.transform.parent = parent.transform;
 
-    // Add a Light component
-    Light lightComponent = lightGameObject.AddComponent<Light>();
-    lightComponent.type = LightType.Point; // Point light works well for indoor rooms
-    lightComponent.intensity = isCentral ? 2.5f : 1.5f; // Brighter for central light
-    lightComponent.range = 10f; // Adjust range as needed
-    lightComponent.color = Color.yellow; // Customize light color
-}
+        // Add a Light component
+        Light lightComponent = lightGameObject.AddComponent<Light>();
+        lightComponent.type = LightType.Point; // Point light works well for indoor rooms
+        lightComponent.intensity = isCentral ? 2.5f : 1.5f; // Brighter for central light
+        lightComponent.range = 10f; // Adjust range as needed
+        lightComponent.color = Color.yellow; // Customize light color
+    }
 
     private void buildFightRoom(Node room, GameObject roomParent, RoomOrientation roomOrientation)
     {
@@ -416,7 +416,7 @@ public class DungeonCreator : MonoBehaviour
             {
                 for (int j = 0; j < colCount; j++)
                 {
-                    int spawnChoice = UnityEngine.Random.Range(0, cameraRoomItems.Count + (cameraRoomItems.Count / 5));
+                    int spawnChoice = UnityEngine.Random.Range(0, cameraRoomItems.Count + (cameraRoomItems.Count / 4));
                     if (spawnChoice >= cameraRoomItems.Count)
                     {
                         enemySpawnPoints.Add(new Vector3(gridRoom.grid[i, j].Center.x, 1, gridRoom.grid[i, j].Center.y));
@@ -424,16 +424,20 @@ public class DungeonCreator : MonoBehaviour
                     }
                     else
                     {
-                        if (j - i % 2 == 0)
+
+
+                        GameObject item = Instantiate(cameraRoomItems[spawnChoice], new Vector3(gridRoom.grid[i, j].Center.x, 0, gridRoom.grid[i, j].Center.y), new Quaternion(Quaternion.identity.x, UnityEngine.Random.Range(0, 360), Quaternion.identity.z, Quaternion.identity.w), roomParent.transform);
+                        item.transform.localScale = new Vector3(1, 1, 1);
+                        item.transform.localScale = new Vector3(5, 5, 5);
+                        item.tag = "Ground";
+                        item.layer = LayerMask.NameToLayer("Ground");
+
+                        if (!item.TryGetComponent<MeshCollider>(out MeshCollider itemCollider))
                         {
-                            enemySpawnPoints.Add(new Vector3(gridRoom.grid[i, j].Center.x, 1, gridRoom.grid[i, j].Center.y));
+                            itemCollider = item.AddComponent<MeshCollider>();
                         }
-                        else
-                        {
-                            GameObject item = Instantiate(cameraRoomItems[spawnChoice], new Vector3(gridRoom.grid[i, j].Center.x, 0, gridRoom.grid[i, j].Center.y), new Quaternion(Quaternion.identity.x, UnityEngine.Random.Range(0, 360), Quaternion.identity.z, Quaternion.identity.w), roomParent.transform);
-                            item.transform.localScale = new Vector3(1, 1, 1);
-                            item.transform.localScale = new Vector3(5, 5, 5);
-                        }
+
+
 
                     }
                 }
@@ -608,10 +612,10 @@ public class DungeonCreator : MonoBehaviour
                     spotlightDetection.spotlight = spotLight.transform;
                     spotlightDetection.detectionMask = LayerMask.GetMask("Player");
                     List<Vector3> enemySpawnPoints = new List<Vector3>();
-                    int numEnemies = UnityEngine.Random.Range(1, 4);
+                    int numEnemies = UnityEngine.Random.Range(3, 9);
                     for (int i = 0; i < numEnemies; i++)
                     {
-                        Vector3 enemySpawnPoint = new Vector3(UnityEngine.Random.Range(room.BottomLeftAreaCorner.x, room.TopRightAreaCorner.x), 5, UnityEngine.Random.Range(room.BottomLeftAreaCorner.y, room.TopRightAreaCorner.y));
+                        Vector3 enemySpawnPoint = new Vector3(UnityEngine.Random.Range(room.BottomLeftAreaCorner.x + 5, room.TopRightAreaCorner.x - 5), 2, UnityEngine.Random.Range(room.BottomLeftAreaCorner.y + 5, room.TopRightAreaCorner.y - 5));
                         enemySpawnPoints.Add(enemySpawnPoint);
                     }
                     spotlightDetection.enemySpawnPoints = enemySpawnPoints;

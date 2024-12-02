@@ -31,6 +31,8 @@ public class EnemyAI : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip finalDeathSound;
     public AudioClip deathSound;
+
+    public AudioClip enemyShot;
     private void Start()
     {
         if (audioSource == null)
@@ -61,8 +63,8 @@ public class EnemyAI : MonoBehaviour
     void Update()
     {
         // Check player proximity
-        playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
-        playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
+        playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer) && !Physics.Linecast(transform.position, player.position, whatIsGround);
+        playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer) && !Physics.Linecast(transform.position, player.position, whatIsGround);
 
         // State Machine
         if (!playerInSightRange && !playerInAttackRange) Patrol();
@@ -170,6 +172,7 @@ public class EnemyAI : MonoBehaviour
             rb.AddForce(transform.up * 1f, ForceMode.Impulse);
             
             alreadyAttacked = true;
+            audioSource.PlayOneShot(enemyShot);
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
         }
     }
