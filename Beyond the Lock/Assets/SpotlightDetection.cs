@@ -13,16 +13,23 @@ public class SpotlightDetection : MonoBehaviour
     public float visibilityThreshold = 0.3f;  // 30% visibility threshold
 
     [Header("Audio Settings")]
+    public AudioClip telportDown;
+    public AudioClip teleportUp;
     public AudioClip detectionSound;  // Drag and drop the detection audio clip in the Inspector
     public AudioSource audioSource;   // Drag and drop an AudioSource component in the Inspector
     public float audioCooldownTime = 5f;  // Prevent sound from playing too frequently
     private float lastDetectionTime = -5f;
 
-    private Boolean enemiesSpawned = false;
+    public bool enemiesSpawned = false;
     private float teleportDisableTime = 30f;
 
     public List<Vector3> enemySpawnPoints = new List<Vector3>();
     public GameObject enemyPrefab;
+
+
+    public bool specialCam = false;
+    public List<GameObject> roomEnemies = new List<GameObject>();
+
 
     void Start()
     {
@@ -55,35 +62,39 @@ public class SpotlightDetection : MonoBehaviour
     {
         // Use Physics.OverlapSphere to find all objects in range
         Collider[] hits = Physics.OverlapSphere(spotlight.position, detectionRange, detectionMask);
-
-        foreach (Collider hit in hits)
+        if (!enemiesSpawned)
         {
-            // Calculate direction to the object
-            Vector3 directionToTarget = (hit.transform.position - spotlight.position).normalized;
-
-            // Check if the object is within the spotlight's cone
-            float angleToTarget = Vector3.Angle(spotlight.forward, directionToTarget);
-            if (angleToTarget <= spotAngle / 2)
+            foreach (Collider hit in hits)
             {
-                // Get the player's collider
-                Collider playerCollider = hit;
+                // Calculate direction to the object
+                Vector3 directionToTarget = (hit.transform.position - spotlight.position).normalized;
 
-                // Perform multiple raycasts to check visibility percentage
-                float visiblePercentage = CheckPlayerVisibility(playerCollider);
-
-                if (visiblePercentage > visibilityThreshold && !enemiesSpawned)
+                // Check if the object is within the spotlight's cone
+                float angleToTarget = Vector3.Angle(spotlight.forward, directionToTarget);
+                if (angleToTarget <= spotAngle / 2)
                 {
-                    enemiesSpawned = true;
-                    Debug.Log($"Player detected! Visible percentage: {visiblePercentage * 100}%");
+                    // Get the player's collider
+                    Collider playerCollider = hit;
 
-                    // Print the player's coordinates
-                    Vector3 playerPosition = playerCollider.transform.position;
-                    Debug.Log("Player Position: " + playerPosition);
+                    // Perform multiple raycasts to check visibility percentage
+                    float visiblePercentage = CheckPlayerVisibility(playerCollider);
 
-                    // Play detection sound
-                    DisablePortalsByName();
-                    PlayDetectionSound();
-                    SpawnEnemies();
+                    if (visiblePercentage > visibilityThreshold && !enemiesSpawned)
+                    {
+
+                        Debug.Log($"Player detected! Visible percentage: {visiblePercentage * 100}%");
+
+                        // Print the player's coordinates
+                        Vector3 playerPosition = playerCollider.transform.position;
+                        Debug.Log("Player Position: " + playerPosition);
+
+                        // Play detection sound
+                        PlaySound(detectionSound);
+                        DisablePortalsByName();
+                        SpawnEnemies();
+                        enemiesSpawned = true;
+
+                    }
                 }
             }
         }
@@ -91,9 +102,13 @@ public class SpotlightDetection : MonoBehaviour
 
     private void DisablePortalsByName()
     {
+        if (enemiesSpawned)
+        {
+            return;
+        }
         GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
         List<GameObject> portals = new List<GameObject>();
-
+        PlaySound(telportDown);
         foreach (GameObject obj in allObjects)
         {
             if (obj.name == "Portal(Clone)")
@@ -112,20 +127,58 @@ public class SpotlightDetection : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
 
+        if (specialCam)
+        {
+            while (roomEnemies.Count > 0)
+            {
+                StartCoroutine(ReenablePortalsAfterDelay(portals));
+                yield return new WaitForSeconds(1);
+            }
+        }
+        else
+        {
+            foreach (GameObject portal in portals)
+            {
+                if (portal != null) // Ensure the portal still exists in case it's destroyed
+                {
+                    portal.SetActive(true); // Re-enable the portal
+                }
+            }
+
+            Debug.Log($"Re-enabled {portals.Count} portals.");
+            PlaySound(teleportUp);
+        }
+
+
+
+    }
+
+    private IEnumerator ReenablePortalsAfterDelay(List<GameObject> portals)
+    {
+        while (roomEnemies.Count > 0)
+        {
+            roomEnemies.RemoveAll(enemy => enemy == null); // Clean up any destroyed enemies
+            yield return new WaitForSeconds(1);
+        }
+
         foreach (GameObject portal in portals)
         {
             if (portal != null) // Ensure the portal still exists in case it's destroyed
             {
-                portal.SetActive(true); // Re-enable the portal
+            portal.SetActive(true); // Re-enable the portal
             }
         }
 
         Debug.Log($"Re-enabled {portals.Count} portals.");
+        PlaySound(teleportUp);
     }
-
 
     private void SpawnEnemies()
     {
+        if (enemiesSpawned)
+        {
+            return;
+        }
         if (enemySpawnPoints.Count == 0)
         {
             Debug.LogWarning("No enemy spawn points assigned!");
@@ -142,16 +195,17 @@ public class SpotlightDetection : MonoBehaviour
         }
     }
 
-    void PlayDetectionSound()
+    void PlaySound(AudioClip sound)
     {
+
         // Check if enough time has passed since last detection
         if (Time.time - lastDetectionTime >= audioCooldownTime)
         {
             // Check if we have a sound and an audio source
-            if (detectionSound != null && audioSource != null)
+            if (sound != null && audioSource != null)
             {
                 // Play the detection sound
-                audioSource.PlayOneShot(detectionSound);
+                audioSource.PlayOneShot(sound);
 
                 // Update last detection time
                 lastDetectionTime = Time.time;

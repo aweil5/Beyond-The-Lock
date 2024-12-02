@@ -72,6 +72,9 @@ public class DungeonCreator : MonoBehaviour
 
     public GameObject laserSystem;
 
+    [Header("Fight Room Prefabs")]
+    public GameObject enemy;
+    public List<GameObject> randRoomItems;
 
 
     // public GameObject clerkOffice;
@@ -315,12 +318,111 @@ public class DungeonCreator : MonoBehaviour
             Debug.Log("Camera Room");
             buildCameraRoom(room, roomParent, roomOrientation, player);
         }
+        else if (roomType == RoomType.FightRoom)
+        {
+            buildFightRoom(room, roomParent, roomOrientation);
+        }
         else
         {
-            buildCameraRoom(room, roomParent, roomOrientation, player);
+            buildTreasureRoom(room, roomParent, roomOrientation);
             return;
         }
 
+    }
+
+    private void buildTreasureRoom(Node room, GameObject roomParent, RoomOrientation roomOrientation)
+    {
+        return;
+    }
+
+    private void buildFightRoom(Node room, GameObject roomParent, RoomOrientation roomOrientation)
+    {
+        RoomGrid gridRoom = new RoomGrid((RoomNode)room);
+        int rowCount = gridRoom.grid.GetLength(0);
+        int colCount = gridRoom.grid.GetLength(1);
+
+        List<GameObject> enemies = new List<GameObject>();
+        if (roomOrientation == RoomOrientation.Vertical)
+        {
+            for (int i = 2; i < rowCount - 2; i++)
+            {
+                for (int j = 0; j < colCount; j++)
+                {
+                    int spawnChoice = UnityEngine.Random.Range(0, cameraRoomItems.Count + (cameraRoomItems.Count / 5));
+                    if (spawnChoice >= cameraRoomItems.Count)
+                    {
+                        enemies.Add(Instantiate(enemy, new Vector3(gridRoom.grid[i, j].Center.x, 1, gridRoom.grid[i, j].Center.y), Quaternion.identity, roomParent.transform));
+                    }
+                    else
+                    {
+                        GameObject item = Instantiate(cameraRoomItems[spawnChoice], new Vector3(gridRoom.grid[i, j].Center.x, 0, gridRoom.grid[i, j].Center.y), new Quaternion(Quaternion.identity.x, UnityEngine.Random.Range(0, 360), Quaternion.identity.z, Quaternion.identity.w), roomParent.transform);
+                        item.transform.localScale = new Vector3(1, 1, 1);
+                        item.transform.localScale = new Vector3(5, 5, 5);
+                    }
+                }
+            }
+        }
+
+        Vector3 middleBackWall = new Vector3((room.BottomLeftAreaCorner.x + room.TopRightAreaCorner.x) / 2, wallScale-2, room.TopRightAreaCorner.y - 3);
+        Vector3 roomCenter = new Vector3((room.BottomLeftAreaCorner.x + room.TopRightAreaCorner.x) / 2, 0, (room.BottomLeftAreaCorner.y + room.TopRightAreaCorner.y) / 2);
+        GameObject cam = createCamera(middleBackWall, roomCenter, room, roomParent);
+        Transform rotator = cam.transform.Find("rotator");
+        if (rotator == null)
+        {
+            Debug.LogError("Rotator child not found in cameraInstance.");
+        }
+        CameraRotation camRotate = rotator.GetComponent<CameraRotation>();
+        if (camRotate == null)
+        {
+            Debug.LogError("CameraRotation component not found on rotator.");
+        }
+        camRotate.rotationSpeed = 0;
+        camRotate.maxAngle = 0;
+        Transform spotLightTransform = rotator.Find("Spot Light");
+        if (spotLightTransform != null)
+        {
+            Light spotLight = spotLightTransform.GetComponent<Light>();
+            if (spotLight != null)
+            {
+                float roomSize = Mathf.Max(room.TopRightAreaCorner.x - room.BottomLeftAreaCorner.x, room.TopRightAreaCorner.y - room.BottomLeftAreaCorner.y);
+                spotLight.range = roomSize;
+                float angle = 180;
+                spotLight.spotAngle = angle;
+                spotLight.intensity = 2;
+                SpotlightDetection spotlightDetection = spotLightTransform.GetComponent<SpotlightDetection>();
+                if (spotlightDetection != null)
+                {
+                    spotlightDetection.spotAngle = angle;
+                    spotlightDetection.detectionRange = roomSize;
+                    spotlightDetection.spotlight = spotLight.transform;
+                    spotlightDetection.detectionMask = LayerMask.GetMask("Player");
+                    List<Vector3> enemySpawnPoints = new List<Vector3>();
+                    // int numEnemies = UnityEngine.Random.Range(1, 4);
+                    // for (int i = 0; i < numEnemies; i++)
+                    // {
+                    //     Vector3 enemySpawnPoint = new Vector3(UnityEngine.Random.Range(room.BottomLeftAreaCorner.x, room.TopRightAreaCorner.x), 5, UnityEngine.Random.Range(room.BottomLeftAreaCorner.y, room.TopRightAreaCorner.y));
+                    //     enemySpawnPoints.Add(enemySpawnPoint);
+                    // }
+                    spotlightDetection.enemySpawnPoints = enemySpawnPoints;
+                    spotlightDetection.specialCam = true;
+                    spotlightDetection.roomEnemies = enemies;
+                }
+                else
+                {
+                    Debug.LogError("SpotlightDetection component not found on Spot Light.");
+                }
+            }
+
+
+            else
+            {
+                Debug.LogError("Light component not found on Spot Light.");
+            }
+        }
+        else
+        {
+            Debug.LogError("Spot Light child not found in cameraInstance.");
+        }
     }
 
     private void buildCameraRoom(Node room, GameObject roomParent, RoomOrientation roomOrientation, GameObject player)
@@ -372,47 +474,42 @@ public class DungeonCreator : MonoBehaviour
             // cameraPositions.Add(middleCam);
             cameraPositions.Add(leftCam);
             cameraPositions.Add(rightCam);
-
+            GameObject empty = new GameObject($"Camera Room {room.BottomLeftAreaCorner}");
+            empty.AddComponent<RoomCamGroup>();
+            List<GameObject> roomCameras = new List<GameObject>();
             foreach (var cameraPosition in cameraPositions)
             {
-                createCamera(cameraPosition, roomCenter, room, roomParent);
-
+                GameObject cam = createCamera(cameraPosition, roomCenter, room, empty);
+                if (cam != null)
+                {
+                    roomCameras.Add(cam);
+                }
             }
+            empty.GetComponent<RoomCamGroup>().roomCameras = roomCameras;
 
 
         }
 
     }
 
-    private void createCamera(Vector3 cameraPosition, Vector3 roomCenter, Node room, GameObject roomParent)
+    private GameObject createCamera(Vector3 cameraPosition, Vector3 roomCenter, Node room, GameObject roomParent)
     {
         Quaternion cameraRotation = Quaternion.LookRotation(cameraPosition - roomCenter);
         GameObject cameraInstance = Instantiate(mainCam, cameraPosition, cameraRotation, roomParent.transform);
         cameraInstance.transform.localScale = new Vector3(1, 1, 1);
         // Attach DetectPlayer component to the main player
-        CameraDetectPlayer detectPlayer = cameraInstance.GetComponentInChildren<CameraDetectPlayer>();
-        Transform playerChild = player.transform.Find("Player");
-        if (playerChild != null)
-        {
-            detectPlayer.player = playerChild.gameObject;
-        }
-        else
-        {
-            detectPlayer.player = player;
-            Debug.LogError("Child with name 'Player' not found in player GameObject.");
-        }
 
         Transform rotator = cameraInstance.transform.Find("rotator");
         if (rotator == null)
         {
             Debug.LogError("Rotator child not found in cameraInstance.");
-            return;
+            return null;
         }
         CameraRotation camRotate = rotator.GetComponent<CameraRotation>();
         if (camRotate == null)
         {
             Debug.LogError("CameraRotation component not found on rotator.");
-            return;
+            return null;
         }
         camRotate.rotationSpeed = UnityEngine.Random.Range(3, 20);
         camRotate.maxAngle = UnityEngine.Random.Range(20, 50);
@@ -458,6 +555,7 @@ public class DungeonCreator : MonoBehaviour
         {
             Debug.LogError("Spot Light child not found in cameraInstance.");
         }
+        return cameraInstance;
     }
 
     private void buildLaserRoom(Node room, GameObject roomParent, RoomOrientation roomOrientation)
@@ -468,8 +566,8 @@ public class DungeonCreator : MonoBehaviour
         Vector3 upperRightCorner = new Vector3(room.TopRightAreaCorner.x - 1, wallScale - 2, room.TopRightAreaCorner.y - 1);
         Vector3 roomCenter = new Vector3((room.BottomLeftAreaCorner.x + room.TopRightAreaCorner.x) / 2, 0, (room.BottomLeftAreaCorner.y + room.TopRightAreaCorner.y) / 2);
         createCamera(upperRightCorner, roomCenter, room, roomParent);
-        
-        
+
+
 
         if (roomOrientation == RoomOrientation.Vertical)
         {

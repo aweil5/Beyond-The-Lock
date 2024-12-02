@@ -114,9 +114,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   visibilityThreshold: 0.5
+  telportDown: {fileID: 8300000, guid: 6e36414c208104acfaed463cbca82f5d, type: 3}
+  teleportUp: {fileID: 8300000, guid: 5cd4f7181fe3a4d33bec1d284cac8b33, type: 3}
   detectionSound: {fileID: 8300000, guid: f9d67cb609bc344a4b962bfeacd996b1, type: 3}
   audioSource: {fileID: 0}
   audioCooldownTime: 5
+  enemiesSpawned: 0
   enemySpawnPoints: []
   enemyPrefab: {fileID: 7302216541742878273, guid: a1907ff42b0ac45d6bce51de262a9639, type: 3}
 --- !u!1 &1791314804908872841
@@ -716,7 +719,6 @@ GameObject:
   - component: {fileID: 6772387051100865824}
   - component: {fileID: 3434884348636001616}
   - component: {fileID: 8893829236820593497}
-  - component: {fileID: 2495489994998815837}
   m_Layer: 0
   m_Name: lens
   m_TagString: Untagged
@@ -812,21 +814,6 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
---- !u!114 &2495489994998815837
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8507602443902687666}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b140fbad5f7d416e97636a748575946, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player: {fileID: 0}
-  detectionAngle: 360
-  detectionDistance: 100
 --- !u!1001 &4412124023697364940
 PrefabInstance:
   m_ObjectHideFlags: 0
