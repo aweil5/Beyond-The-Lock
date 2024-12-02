@@ -25,6 +25,8 @@ public class PlayerHealth : MonoBehaviour
 
     private void Die()
     {
+        health = 100f;
+        healthBar.fillAmount = health / 100f;
         Time.timeScale = 1;
         SceneManager.LoadScene("DeathScreen", LoadSceneMode.Single);
     }
