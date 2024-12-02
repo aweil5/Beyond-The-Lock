@@ -102,33 +102,21 @@ public class SpotlightDetection : MonoBehaviour
 
         Debug.Log($"Disabled {portals.Count} portals.");
         StartCoroutine(ReenablePortalsAfterDelay(portals, teleportDisableTime));
+
+        // In Case the Coroutine fails
+        foreach (GameObject portal in portals)
+        {
+            if (portal != null)
+            {
+                portal.SetActive(true);
+            }
+        }
     }
 
     private IEnumerator ReenablePortalsAfterDelay(List<GameObject> portals, float delay)
     {
         yield return new WaitForSeconds(delay);
 
-        
-        foreach (GameObject portal in portals)
-        {
-            if (portal != null)
-            {
-                portal.SetActive(true);
-            }
-        }
-
-        Debug.Log($"Re-enabled {portals.Count} portals.");
-        PlaySound(teleportUp);
-        
-    }
-
-    private IEnumerator ReenablePortalsAfterDelay(List<GameObject> portals)
-    {
-        while (roomEnemies.Count > 0)
-        {
-            roomEnemies.RemoveAll(enemy => enemy == null);
-            yield return new WaitForSeconds(1);
-        }
 
         foreach (GameObject portal in portals)
         {
@@ -140,7 +128,10 @@ public class SpotlightDetection : MonoBehaviour
 
         Debug.Log($"Re-enabled {portals.Count} portals.");
         PlaySound(teleportUp);
+
     }
+
+
 
     private void SpawnEnemies()
     {

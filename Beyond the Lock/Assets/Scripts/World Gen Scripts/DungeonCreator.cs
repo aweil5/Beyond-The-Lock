@@ -350,6 +350,12 @@ public class DungeonCreator : MonoBehaviour
 
     private void buildRoomInterior(Node room, GameObject roomParent, RoomType roomType, RoomOrientation roomOrientation, GameObject player = null)
     {
+        if (roomOrientation == RoomOrientation.Horizontal)
+        {
+            // Restart the scene
+            UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+        }
+        
         if (roomType == RoomType.Start)
         {
             // Add specific logic for Start room
