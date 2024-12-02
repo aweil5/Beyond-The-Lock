@@ -120,7 +120,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 6597799768790308428}
-  player: {fileID: 0}
+  player: {fileID: 1839152311553468226, guid: 28f79e7704024435eb6b72f8cd55fbf7, type: 3}
   projectile: {fileID: 3626400931539071552, guid: dc31957ff095b48be99745379a8afddb, type: 3}
   health: 120
   whatIsGround:
@@ -136,3 +136,4 @@ MonoBehaviour:
   attackRange: 30
   playerInSightRange: 0
   playerInAttackRange: 0
+  hitboxRadius: 2

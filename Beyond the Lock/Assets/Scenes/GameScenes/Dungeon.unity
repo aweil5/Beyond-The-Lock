@@ -122,6 +122,16 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &55265745 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5999817163056316655, guid: 28f79e7704024435eb6b72f8cd55fbf7, type: 3}
+  m_PrefabInstance: {fileID: 568667675}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &107064930 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2744056017979525555, guid: 28f79e7704024435eb6b72f8cd55fbf7, type: 3}
+  m_PrefabInstance: {fileID: 568667675}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &280603905
 GameObject:
   m_ObjectHideFlags: 0
@@ -216,6 +226,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &406105573 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2700259041702666291, guid: 28f79e7704024435eb6b72f8cd55fbf7, type: 3}
+  m_PrefabInstance: {fileID: 568667675}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &568667675
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -288,16 +303,38 @@ PrefabInstance:
       propertyPath: gun
       value: 
       objectReference: {fileID: 568667676}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5258296867502769596, guid: 28f79e7704024435eb6b72f8cd55fbf7, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2700259041702666291, guid: 28f79e7704024435eb6b72f8cd55fbf7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 568667680}
   m_SourcePrefab: {fileID: 100100000, guid: 28f79e7704024435eb6b72f8cd55fbf7, type: 3}
 --- !u!4 &568667676 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6840022571565113090, guid: 28f79e7704024435eb6b72f8cd55fbf7, type: 3}
   m_PrefabInstance: {fileID: 568667675}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &568667680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 406105573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb82cea1d81d54d3da632883dec314ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletPrefab: {fileID: 3626400931539071552, guid: dc31957ff095b48be99745379a8afddb, type: 3}
+  bulletSpawnPoint: {fileID: 107064930}
+  bulletSpeed: 100
+  fireRate: 1.5
+  clipLength: 1
+  shotSound: {fileID: 55265745}
 --- !u!1 &880362353
 GameObject:
   m_ObjectHideFlags: 0

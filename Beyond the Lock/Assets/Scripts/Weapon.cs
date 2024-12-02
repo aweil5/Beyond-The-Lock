@@ -1,55 +1,64 @@
 using UnityEngine;
+using System.Collections;
 
 public class Weapon : MonoBehaviour
 {
-    public GameObject bulletPrefab;
-    public Transform bulletSpawnPoint;
-    public float bulletSpeed = 20f;
-    public float fireRate = 0.1f;
-    public float maxShootDistance = 100f;
+    public GameObject bulletPrefab; // Prefab for the bullet
+    public Transform bulletSpawnPoint; // Where bullets will spawn
+    public float bulletSpeed = 75f; // Speed of the bullet
+    public float fireRate = 1.5f; // Time between shots
 
     private float nextFireTime = 0f;
 
+    public float clipLength = 1f;
+
+    public GameObject shotSound; // Assign a GameObject with the audio source
+
+    void Start()
+    {
+
+        shotSound.SetActive(false);
+
+    }
+
     void Update()
     {
+        // Check for firing input and rate limiting
         if (Input.GetButton("Fire1") && Time.time >= nextFireTime)
         {
-            ShootRaycast();
+            Shoot();
             nextFireTime = Time.time + fireRate;
         }
     }
 
-    void ShootRaycast()
+    void Shoot()
     {
-        RaycastHit hit;
-        if (Physics.Raycast(bulletSpawnPoint.position, bulletSpawnPoint.forward, out hit, maxShootDistance))
-        {
-            Debug.DrawRay(bulletSpawnPoint.position, bulletSpawnPoint.forward * hit.distance, Color.red, 1f);
+        // Spawn the bullet
+        GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
 
-            // Visualize bullet
-            SpawnBullet();
-
-            // Apply damage or effects
-            if (hit.collider.gameObject.TryGetComponent(out EnemyHealth enemyHealth))
-            {
-                enemyHealth.TakeDamage(10);
-            }
-        }
-        else
+        // Add Rigidbody component if it doesn't already exist
+        Rigidbody rb = bullet.GetComponent<Rigidbody>();
+        if (rb == null)
         {
-            // No hit; spawn bullet visual traveling forward
-            SpawnBullet();
+            rb = bullet.AddComponent<Rigidbody>();
         }
+
+        // Apply forward force to the bullet
+        rb.AddForce(bulletSpawnPoint.forward * bulletSpeed, ForceMode.Impulse);
+
+        // Optional: Destroy the bullet after a short time to avoid clutter
+        Destroy(bullet, 5f);
+
+        StartCoroutine(PlayShotSound());
     }
 
-    void SpawnBullet()
+    private IEnumerator PlayShotSound()
     {
-        GameObject bulletVisual = Instantiate(bulletPrefab, bulletSpawnPoint.position, Quaternion.LookRotation(bulletSpawnPoint.forward));
-        Rigidbody rb = bulletVisual.GetComponent<Rigidbody>();
-        if (rb != null)
+        if (shotSound != null)
         {
-            rb.velocity = bulletSpawnPoint.forward * bulletSpeed;
+            shotSound.SetActive(true); // Activate the sound effect GameObject
+            yield return new WaitForSeconds(clipLength); // Wait for the duration of the clip
+            shotSound.SetActive(false); // Deactivate the sound effect GameObject
         }
-        Destroy(bulletVisual, 2f);
     }
 }
