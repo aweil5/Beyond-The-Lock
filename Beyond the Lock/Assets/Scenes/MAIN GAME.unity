@@ -396,11 +396,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3e2f7b6c84a6431aa354f3d5a04de9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dungeonWidth: 200
-  dungeonLength: 600
-  roomWidthMin: 100
-  roomLengthMin: 160
-  maxIterations: 25
+  dungeonWidth: 180
+  dungeonLength: 580
+  roomWidthMin: 80
+  roomLengthMin: 180
+  maxIterations: 30
   corridorWidth: 2
   roomBottomCornerModifier: 0.151
   roomTopCornerModifier: 0.9
@@ -437,6 +437,10 @@ MonoBehaviour:
   - {fileID: 919132149155446097, guid: 167b7bcbdad1e4770a4d45502dffeffe, type: 3}
   - {fileID: 919132149155446097, guid: adf58c769e712427295d8d88ccdfbd97, type: 3}
   - {fileID: 919132149155446097, guid: 5832df903b58b4570a2daf304255579d, type: 3}
+  - {fileID: 919132149155446097, guid: 5c7b7e94abe69474480ef29021728b9b, type: 3}
+  - {fileID: 919132149155446097, guid: cec9a84e58d4d4711b0496c4df6277b1, type: 3}
+  - {fileID: 919132149155446097, guid: b72e5d2176fcd4f319b539b8876a2237, type: 3}
+  - {fileID: 919132149155446097, guid: 233482aba32ca4639952d8bb9b1a9bf5, type: 3}
   laserStartPillar: {fileID: 3220008262445545387, guid: c8b0f44b41394490a81b72c09da94b4a, type: 3}
   laserEndPillar: {fileID: 55928641110137302, guid: 33b70b6d958924012a54dbef26bbbee9, type: 3}
   laserSystem: {fileID: 756685665198405604, guid: dfbef0319c0e549bb8282b093a5f0378, type: 3}

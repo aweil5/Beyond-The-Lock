@@ -126,8 +126,8 @@ MonoBehaviour:
   projectile: {fileID: 8501359430566827107, guid: 62d141bcc57b34e8ba5158f6e41e2c47, type: 3}
   health: 120
   timeBetweenAttacks: 1
-  sightRange: 40
-  attackRange: 30
+  sightRange: 35
+  attackRange: 25
   playerInSightRange: 0
   playerInAttackRange: 0
   walkPoint: {x: 0, y: 0, z: 0}
