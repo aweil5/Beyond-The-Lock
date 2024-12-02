@@ -6,6 +6,6 @@ using UnityEngine.SceneManagement;
 public class StartingScreen : MonoBehaviour
 {
     public void PlayGame(){
-        SceneManager.LoadScene("Dungeon");
+        SceneManager.LoadScene("MAIN GAME");
     }
 }

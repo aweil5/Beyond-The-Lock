@@ -17,7 +17,7 @@ public class DeathAndWinnerScreen : MonoBehaviour
         // Lock the cursor again when transitioning back to the game
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        SceneManager.LoadScene("Dungeon");
+        SceneManager.LoadScene("MAIN GAME");
     }
 
     public void MainMenu()
