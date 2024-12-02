@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class WinGame : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class WinGame : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
+            SceneManager.LoadScene("WinnerScreen", LoadSceneMode.Single);
             Debug.Log("You win!");
         }
     }
