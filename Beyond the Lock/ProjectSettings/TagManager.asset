@@ -10,6 +10,8 @@ TagManager:
   - Bullet
   - enemy
   - Body To Follow
+  - PlayerBullet
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -21,7 +23,7 @@ TagManager:
   - Ground
   - Wall
   - Player
-  - 
+  - PlayerBullet
   - 
   - 
   - 

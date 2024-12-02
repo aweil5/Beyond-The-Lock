@@ -404,6 +404,14 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 9
       objectReference: {fileID: 0}
+    - target: {fileID: 5258296867502769596, guid: 28f79e7704024435eb6b72f8cd55fbf7, type: 3}
+      propertyPath: fireRate
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5258296867502769596, guid: 28f79e7704024435eb6b72f8cd55fbf7, type: 3}
+      propertyPath: bulletSpeed
+      value: 200
+      objectReference: {fileID: 0}
     - target: {fileID: 5361634661394249683, guid: 28f79e7704024435eb6b72f8cd55fbf7, type: 3}
       propertyPath: m_Layer
       value: 0
