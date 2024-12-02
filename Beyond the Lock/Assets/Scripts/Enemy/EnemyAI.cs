@@ -1,102 +1,144 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class EnemyAI : MonoBehaviour
 {
+    // NavMesh and Movement
     public NavMeshAgent agent;
     public Transform player;
 
+    // Combat Variables
     public GameObject projectile;
-
     public float health = 100f;
-
-    public LayerMask whatIsGround, whatIsPlayer;
-
-    public Vector3 walkPoint;
-    bool walkPointSet;
-    public float walkPointRange;
-
     public float timeBetweenAttacks;
-    bool alreadyAttacked;
-
     public float sightRange, attackRange;
     public bool playerInSightRange, playerInAttackRange;
 
+    // Patrol Variables
+    public Vector3 walkPoint;
+    public float walkPointRange = 10f;
+    public float minWalkPointDistance = 5f;
+    public float maxPatrolWaitTime = 3f;
+    public LayerMask whatIsGround, whatIsPlayer;
+
+    // Internal State Trackers
+    private bool walkPointSet;
+    private bool alreadyAttacked;
+    private float waitCounter;
     public float hitboxRadius = 2f;
 
+    // Audio
+    public AudioSource audioSource;
+    public AudioClip finalDeathSound;
+    public AudioClip deathSound;
+    private void Start()
+    {
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+        }
 
+        // If still no AudioSource, add one
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        // Ensure audio settings are appropriate
+        if (audioSource != null)
+        {
+            audioSource.playOnAwake = false;
+            audioSource.loop = false;
+        }
+    }
     private void Awake()
     {
+        audioSource = GetComponent<AudioSource>();
         player = GameObject.Find("Body").transform;
         agent = GetComponent<NavMeshAgent>();
     }
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
     void Update()
     {
+        // Check player proximity
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
 
+        // State Machine
         if (!playerInSightRange && !playerInAttackRange) Patrol();
         if (playerInSightRange && !playerInAttackRange) Chase();
         if (playerInSightRange && playerInAttackRange) Attack();
-
-        // checkBulletCollision();
     }
 
-    private void checkBulletCollision()
+    public float walkPointResetTime = 5f;
+    private float walkPointTimer;
+
+    private void Patrol()
     {
-        Collider[] hits = Physics.OverlapSphere(transform.position, hitboxRadius);
-        foreach (var hitCollider in hits)
+        // Increment the walk point timer
+        walkPointTimer += Time.deltaTime;
+
+        // If no walk point is set, or timer exceeds reset time, search for a new walk point
+        if (!walkPointSet || walkPointTimer >= walkPointResetTime)
         {
-            Bullet bullet = hitCollider.GetComponent<Bullet>();
-            if (bullet != null)
+            SearchWalkPoint();
+            walkPointTimer = 0f;
+            waitCounter = Random.Range(0f, maxPatrolWaitTime);
+        }
+
+        // If waiting, count down the wait time
+        if (waitCounter > 0)
+        {
+            waitCounter -= Time.deltaTime;
+            agent.SetDestination(transform.position);
+            return;
+        }
+
+        // If a walk point is set, move towards it
+        if (walkPointSet)
+        {
+            agent.SetDestination(walkPoint);
+
+            // Calculate distance to walk point
+            Vector3 distanceToWalkPoint = transform.position - walkPoint;
+
+            // Check if enemy has reached the walk point
+            if (distanceToWalkPoint.magnitude < 1.5f)
             {
-                Debug.Log("Hit enemy");
-                TakeDamage((int)bullet.damage);
-                Destroy(hitCollider.gameObject);
-                break;
+                walkPointSet = false;
             }
         }
     }
 
-    private void Patrol()
-    {
-        if (!walkPointSet) SearchWalkPoint();
-        if (walkPointSet)
-        {
-            agent.SetDestination(walkPoint);
-        }
-
-        Vector3 distanceToWalkPoint = transform.position - walkPoint;
-        if (distanceToWalkPoint.magnitude < 1f)
-        {
-            walkPointSet = false;
-        }
-
-    }
-
     private void SearchWalkPoint()
     {
-        float randomZ = UnityEngine.Random.Range(-walkPointRange, walkPointRange);
-        float randomX = UnityEngine.Random.Range(-walkPointRange, walkPointRange);
-        walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
-        if (Physics.Raycast(walkPoint, -transform.up, 2f, whatIsGround))
+        // Try multiple times to find a valid walk point
+        for (int i = 0; i < 10; i++)
         {
-            walkPointSet = true;
+            // Generate a random point within the walk point range
+            // Use the CURRENT position as the center, not an original spawn point
+            float randomZ = Random.Range(-walkPointRange, walkPointRange);
+            float randomX = Random.Range(-walkPointRange, walkPointRange);
+
+            // Calculate the potential walk point
+            walkPoint = new Vector3(
+                transform.position.x + randomX,
+                transform.position.y,
+                transform.position.z + randomZ
+            );
+
+            // Use NavMesh to sample a valid point
+            if (NavMesh.SamplePosition(walkPoint, out NavMeshHit hit, walkPointRange, NavMesh.AllAreas))
+            {
+                walkPoint = hit.position;
+                walkPointSet = true;
+                return;
+            }
         }
 
-    }    
+        // If no valid point found after 10 attempts, reset
+        walkPointSet = false;
+    }
 
     private void Chase()
     {
@@ -105,28 +147,33 @@ public class EnemyAI : MonoBehaviour
 
     private void Attack()
     {
+        // Stop moving
         agent.SetDestination(transform.position);
 
+        // Face the player
         transform.LookAt(player);
 
         if (!alreadyAttacked)
         {
-
+            Debug.Log("Attacking player!");
             // Shooting
             GameObject bullet = Instantiate(projectile, transform.position, Quaternion.identity);
-            bullet.AddComponent<EnemyBullet>();
+            bullet.transform.LookAt(player);
 
             Rigidbody rb = bullet.GetComponent<Rigidbody>();
+            if (rb == null)
+            {
+                rb = bullet.AddComponent<Rigidbody>();
+            }
 
             rb.AddForce(transform.forward * 32f, ForceMode.Impulse);
             rb.AddForce(transform.up * 1f, ForceMode.Impulse);
-
+            
             alreadyAttacked = true;
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
-
-            
         }
     }
+
     private void ResetAttack()
     {
         alreadyAttacked = false;
@@ -135,19 +182,61 @@ public class EnemyAI : MonoBehaviour
     public void TakeDamage(int damage)
     {
         health -= damage;
-        if (health <= 0) Invoke(nameof(DestroyEnemy), 0.5f);
+        // Play death sound
+        if (deathSound != null && audioSource != null)
+        {
+            // Play the detection sound
+            audioSource.PlayOneShot(deathSound);
+        }
+
+        // Destroy the enemy after the sound has played
+        if (health <= 0)
+        {
+            audioSource.PlayOneShot(finalDeathSound);
+            DestroyEnemy();
+        }
+        
     }
+
+    public GameObject deathParticles;
+
     private void DestroyEnemy()
     {
-        Destroy(gameObject);
+        // Instantiate death particles
+        GameObject particles = null;
+        if (deathParticles != null)
+        {
+            particles = Instantiate(deathParticles, transform.position, Quaternion.identity);
+        }
+
+        if (particles != null)
+        {
+            Destroy(particles, 3);
+
+        }
+        Destroy(gameObject, finalDeathSound.length);
+
     }
-    
 
     private void OnDrawGizmosSelected()
     {
+        // Attack range
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
+
+        // Sight range
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, sightRange);
+
+        // Walk point
+        if (walkPointSet)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(walkPoint, 1f);
+        }
+
+        // Patrol range
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, walkPointRange);
     }
 }

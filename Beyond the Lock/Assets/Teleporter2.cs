@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class Teleporter2 : MonoBehaviour
 {
-    public Transform targetTeleporter; 
+    public Transform targetTeleporter;
+    public AudioClip teleportNoise;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -26,6 +27,8 @@ public class Teleporter2 : MonoBehaviour
             {
                 playerMovement.velocity = Vector3.zero; 
             }
+
+
         }
     }
 }

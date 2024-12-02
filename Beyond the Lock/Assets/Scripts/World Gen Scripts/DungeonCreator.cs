@@ -39,20 +39,11 @@ public class DungeonCreator : MonoBehaviour
 
     public GameObject teleporter;
 
-    public GameObject player;
-
     List<Vector3Int> possibleWallHorizontalPosition;
 
     List<Vector3Int> possibleWallVerticalPosition;
 
     public List<GameObject> randomWorldSpawns;
-
-    [Header("Audios")]
-
-    public AudioSource audioSource;
-    public AudioClip firstRoom;
-
-    public AudioClip teleportNoise;
 
 
     [Header("Start Room Prefabs")]
@@ -79,8 +70,11 @@ public class DungeonCreator : MonoBehaviour
     public GameObject laserSystem;
 
     [Header("Fight Room Prefabs")]
-    public GameObject enemy;
+    public GameObject enemyPrefab;
     public List<GameObject> randRoomItems;
+
+    private List<Vector3> enemySpawnPoints = new List<Vector3>();
+
 
 
     // public GameObject clerkOffice;
@@ -90,7 +84,15 @@ public class DungeonCreator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        StartCoroutine(CreateDungeonAndBuildNavMesh());
+    }
+
+    IEnumerator CreateDungeonAndBuildNavMesh()
+    {
         CreateDungeon();
+
+        // Wait for a frame to ensure all objects are instantiated
+        yield return null;
 
         NavMeshSurface surface = GetComponent<NavMeshSurface>();
         if (surface == null)
@@ -101,30 +103,45 @@ public class DungeonCreator : MonoBehaviour
         surface.collectObjects = CollectObjects.All;
         surface.BuildNavMesh();
 
+        // Wait for NavMesh to complete building
+        yield return new WaitForSeconds(0.5f);
 
-        if (audioSource == null)
+        // Verify NavMesh is built before spawning enemies
+        if (surface.navMeshData != null)
         {
-            audioSource = GetComponent<AudioSource>();
+            buildEnemies();
         }
-
-        // If still no AudioSource, add one
-        if (audioSource == null)
+        else
         {
-            audioSource = gameObject.AddComponent<AudioSource>();
+            Debug.LogError("NavMesh failed to build!");
         }
-
-        // Ensure audio settings are appropriate
-        if (audioSource != null)
-        {
-            audioSource.playOnAwake = false;
-            audioSource.loop = false;
-        }
-
-        audioSource.PlayOneShot(firstRoom);
-
-
-
     }
+
+    private void buildEnemies()
+    {
+        foreach (var position in enemySpawnPoints)
+        {
+            // Check if the position is valid on the NavMesh
+            if (NavMesh.SamplePosition(position, out NavMeshHit hit, 1f, NavMesh.AllAreas))
+            {
+                GameObject enemy = Instantiate(enemyPrefab, hit.position, Quaternion.identity);
+
+                NavMeshAgent navMeshAgent = enemy.GetComponent<NavMeshAgent>();
+                if (navMeshAgent == null)
+                {
+                    navMeshAgent = enemy.AddComponent<NavMeshAgent>();
+                    Debug.Log("Added NavMeshAgent to enemy");
+                }
+
+
+            }
+            else
+            {
+                Debug.LogWarning($"Invalid NavMesh position: {position}");
+            }
+        }
+    }
+
     private void CreateDungeon()
     {
         // backgroundMusic.SetActive(true);
@@ -195,9 +212,6 @@ public class DungeonCreator : MonoBehaviour
         RoomType roomType;
         RoomOrientation roomOrientation;
 
-        bool firstLaser = true;
-        bool firstCamera = true;
-        bool firstFight = true;
         // Instantiate Teleporters in each Room
         foreach (var room in listOfRooms)
         {
@@ -286,11 +300,8 @@ public class DungeonCreator : MonoBehaviour
             {
                 currSender.AddComponent<Teleporter2>();
                 currSender.GetComponent<Teleporter2>().targetTeleporter = currReceiver.transform;
-                
-                currSender.AddComponent<AudioPlay>();
-                currSender.GetComponent<AudioPlay>().audioSource = audioSource;
-                currSender.GetComponent<AudioPlay>().audioClip = teleportNoise;
-                
+
+
             }
 
             // IF we want to add undirected teleportation
@@ -362,7 +373,6 @@ public class DungeonCreator : MonoBehaviour
         else
         {
             buildTreasureRoom(room, roomParent, roomOrientation);
-            return;
         }
 
     }
@@ -371,8 +381,26 @@ public class DungeonCreator : MonoBehaviour
     {
         Vector3 roomCenter = new Vector3((room.BottomLeftAreaCorner.x + room.TopRightAreaCorner.x) / 2, 0, (room.BottomLeftAreaCorner.y + room.TopRightAreaCorner.y) / 2);
         GameObject diamondInstance = Instantiate(diamond, roomCenter, Quaternion.identity, roomParent.transform);
+        diamondInstance.transform.localScale = new Vector3(1, 1, 1);
+        diamondInstance.transform.localScale = new Vector3(3, 3, 3);
 
+        AddLight(roomCenter + new Vector3(0, wallScale - 2, 0), roomParent, true);
     }
+
+    private void AddLight(Vector3 position, GameObject parent, bool isCentral = false)
+{
+    // Create a new light object
+    GameObject lightGameObject = new GameObject("RoomLight");
+    lightGameObject.transform.position = position;
+    lightGameObject.transform.parent = parent.transform;
+
+    // Add a Light component
+    Light lightComponent = lightGameObject.AddComponent<Light>();
+    lightComponent.type = LightType.Point; // Point light works well for indoor rooms
+    lightComponent.intensity = isCentral ? 2.5f : 1.5f; // Brighter for central light
+    lightComponent.range = 10f; // Adjust range as needed
+    lightComponent.color = Color.yellow; // Customize light color
+}
 
     private void buildFightRoom(Node room, GameObject roomParent, RoomOrientation roomOrientation)
     {
@@ -381,6 +409,7 @@ public class DungeonCreator : MonoBehaviour
         int colCount = gridRoom.grid.GetLength(1);
 
         List<GameObject> enemies = new List<GameObject>();
+        enemySpawnPoints.Add(new Vector3(room.TopLeftAreaCorner.x + 3, 1, room.TopLeftAreaCorner.y - 3));
         if (roomOrientation == RoomOrientation.Vertical)
         {
             for (int i = 2; i < rowCount - 2; i++)
@@ -390,13 +419,22 @@ public class DungeonCreator : MonoBehaviour
                     int spawnChoice = UnityEngine.Random.Range(0, cameraRoomItems.Count + (cameraRoomItems.Count / 5));
                     if (spawnChoice >= cameraRoomItems.Count)
                     {
-                        enemies.Add(Instantiate(enemy, new Vector3(gridRoom.grid[i, j].Center.x, 1, gridRoom.grid[i, j].Center.y), Quaternion.identity, roomParent.transform));
+                        enemySpawnPoints.Add(new Vector3(gridRoom.grid[i, j].Center.x, 1, gridRoom.grid[i, j].Center.y));
+                        // enemies.Add(Instantiate(enemy, new Vector3(gridRoom.grid[i, j].Center.x, 1, gridRoom.grid[i, j].Center.y), Quaternion.identity, roomParent.transform));
                     }
                     else
                     {
-                        GameObject item = Instantiate(cameraRoomItems[spawnChoice], new Vector3(gridRoom.grid[i, j].Center.x, 0, gridRoom.grid[i, j].Center.y), new Quaternion(Quaternion.identity.x, UnityEngine.Random.Range(0, 360), Quaternion.identity.z, Quaternion.identity.w), roomParent.transform);
-                        item.transform.localScale = new Vector3(1, 1, 1);
-                        item.transform.localScale = new Vector3(5, 5, 5);
+                        if (j - i % 2 == 0)
+                        {
+                            enemySpawnPoints.Add(new Vector3(gridRoom.grid[i, j].Center.x, 1, gridRoom.grid[i, j].Center.y));
+                        }
+                        else
+                        {
+                            GameObject item = Instantiate(cameraRoomItems[spawnChoice], new Vector3(gridRoom.grid[i, j].Center.x, 0, gridRoom.grid[i, j].Center.y), new Quaternion(Quaternion.identity.x, UnityEngine.Random.Range(0, 360), Quaternion.identity.z, Quaternion.identity.w), roomParent.transform);
+                            item.transform.localScale = new Vector3(1, 1, 1);
+                            item.transform.localScale = new Vector3(5, 5, 5);
+                        }
+
                     }
                 }
             }
@@ -444,7 +482,7 @@ public class DungeonCreator : MonoBehaviour
                     // }
                     spotlightDetection.enemySpawnPoints = enemySpawnPoints;
                     spotlightDetection.specialCam = true;
-                    spotlightDetection.roomEnemies = enemies;
+                    spotlightDetection.roomEnemies = null;
                 }
                 else
                 {

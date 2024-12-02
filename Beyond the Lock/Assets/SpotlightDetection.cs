@@ -21,7 +21,7 @@ public class SpotlightDetection : MonoBehaviour
     private float lastDetectionTime = -5f;
 
     public bool enemiesSpawned = false;
-    private float teleportDisableTime = 30f;
+    public float teleportDisableTime = 15f;
 
     public List<Vector3> enemySpawnPoints = new List<Vector3>();
     public GameObject enemyPrefab;
@@ -165,11 +165,7 @@ public class SpotlightDetection : MonoBehaviour
         foreach (Vector3 spawnPoint in enemySpawnPoints)
         {
             GameObject enemy = Instantiate(enemyPrefab, spawnPoint, Quaternion.identity);
-            followPlayer followPlayer = enemy.GetComponent<followPlayer>();
-            if (followPlayer != null)
-            {
-                followPlayer.player = GameObject.FindGameObjectWithTag("Body To Follow").transform;
-            }
+
         }
     }
 

@@ -7,6 +7,7 @@ public class Teleporter : MonoBehaviour
 
     public Transform targetTeleporter; 
     public Boolean canTeleport = true;
+    public AudioClip teleportSound;
     private void OnTriggerEnter(Collider other)
     {
         if (!enabled) return; 
@@ -14,6 +15,7 @@ public class Teleporter : MonoBehaviour
 
         if (other.CompareTag("Player") && canTeleport)
         {
+            AudioSource.PlayClipAtPoint(teleportSound, transform.position);
 
             var playerMovement = other.GetComponent<PlayerMovement>();
             if (playerMovement != null)
