@@ -13,7 +13,6 @@ public class CameraDetectPlayer : MonoBehaviour
 
     private void Start()
     {
-        // Get the Renderer component and save the original color
         cameraRenderer = GetComponent<Renderer>();
         if (cameraRenderer != null)
         {
@@ -54,11 +53,9 @@ public class CameraDetectPlayer : MonoBehaviour
         // Check if the player is within the detection angle
         if (angleToPlayer <= detectionAngle / 2)
         {
-            // Perform a raycast to check if there's a clear line of sight
             RaycastHit hit;
             if (Physics.Raycast(transform.position, directionToPlayer.normalized, out hit, detectionDistance))
             {
-                // Return true if the raycast hits the player
                 return hit.transform == player;
             }
         }
