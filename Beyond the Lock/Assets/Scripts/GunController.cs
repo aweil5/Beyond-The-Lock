@@ -13,11 +13,7 @@ public class GunController : MonoBehaviour
 
     public GameObject shotSound; // Assign a GameObject with the audio source
 
-    void Start() {
-        
-            shotSound.SetActive(false);
-        
-    }
+    bool canShoot = true;
 
     void Update()
     {
@@ -31,6 +27,10 @@ public class GunController : MonoBehaviour
 
     void Shoot()
     {
+        if (canShoot == false)
+        {
+            return;
+        }
         // Visualize the shoot direction in the Scene view
         Debug.DrawRay(bulletSpawnPoint.position, bulletSpawnPoint.forward * 10f, Color.red, 1f);
 
@@ -42,7 +42,7 @@ public class GunController : MonoBehaviour
             rb.velocity = bulletSpawnPoint.forward * bulletSpeed;
         }
 
-        Destroy(bullet, 5f);
+        Destroy(bullet, 2f);
 
         StartCoroutine(PlayShotSound());
     }
@@ -51,8 +51,11 @@ public class GunController : MonoBehaviour
     {
         if (shotSound != null)
         {
-            shotSound.SetActive(true); // Activate the sound effect GameObject
+            shotSound.SetActive(true);
+            canShoot = false;
+             // Activate the sound effect GameObject
             yield return new WaitForSeconds(clipLength); // Wait for the duration of the clip
+            canShoot = true;
             shotSound.SetActive(false); // Deactivate the sound effect GameObject
         }
     }
