@@ -15,9 +15,8 @@ public class DungeonCreator : MonoBehaviour
     public int maxIterations;
     public int corridorWidth;
 
-    public GameObject backgroundMusic;
 
-    public GameObject narration;
+
 
     // These need to have ranges or the entire world generation will be a mess
 
@@ -47,6 +46,13 @@ public class DungeonCreator : MonoBehaviour
     List<Vector3Int> possibleWallVerticalPosition;
 
     public List<GameObject> randomWorldSpawns;
+
+    [Header("Audios")]
+
+    public AudioSource audioSource;
+    public AudioClip firstRoom;
+
+    public AudioClip teleportNoise;
 
 
     [Header("Start Room Prefabs")]
@@ -94,6 +100,29 @@ public class DungeonCreator : MonoBehaviour
         surface.useGeometry = NavMeshCollectGeometry.PhysicsColliders;
         surface.collectObjects = CollectObjects.All;
         surface.BuildNavMesh();
+
+
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+        }
+
+        // If still no AudioSource, add one
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        // Ensure audio settings are appropriate
+        if (audioSource != null)
+        {
+            audioSource.playOnAwake = false;
+            audioSource.loop = false;
+        }
+
+        audioSource.PlayOneShot(firstRoom);
+
+
 
     }
     private void CreateDungeon()
@@ -165,6 +194,10 @@ public class DungeonCreator : MonoBehaviour
         GameObject temp = null;
         RoomType roomType;
         RoomOrientation roomOrientation;
+
+        bool firstLaser = true;
+        bool firstCamera = true;
+        bool firstFight = true;
         // Instantiate Teleporters in each Room
         foreach (var room in listOfRooms)
         {
@@ -253,7 +286,11 @@ public class DungeonCreator : MonoBehaviour
             {
                 currSender.AddComponent<Teleporter2>();
                 currSender.GetComponent<Teleporter2>().targetTeleporter = currReceiver.transform;
-
+                
+                currSender.AddComponent<AudioPlay>();
+                currSender.GetComponent<AudioPlay>().audioSource = audioSource;
+                currSender.GetComponent<AudioPlay>().audioClip = teleportNoise;
+                
             }
 
             // IF we want to add undirected teleportation
@@ -334,7 +371,7 @@ public class DungeonCreator : MonoBehaviour
     {
         Vector3 roomCenter = new Vector3((room.BottomLeftAreaCorner.x + room.TopRightAreaCorner.x) / 2, 0, (room.BottomLeftAreaCorner.y + room.TopRightAreaCorner.y) / 2);
         GameObject diamondInstance = Instantiate(diamond, roomCenter, Quaternion.identity, roomParent.transform);
-        
+
     }
 
     private void buildFightRoom(Node room, GameObject roomParent, RoomOrientation roomOrientation)
@@ -365,7 +402,7 @@ public class DungeonCreator : MonoBehaviour
             }
         }
 
-        Vector3 middleBackWall = new Vector3((room.BottomLeftAreaCorner.x + room.TopRightAreaCorner.x) / 2, wallScale-2, room.TopRightAreaCorner.y - 3);
+        Vector3 middleBackWall = new Vector3((room.BottomLeftAreaCorner.x + room.TopRightAreaCorner.x) / 2, wallScale - 2, room.TopRightAreaCorner.y - 3);
         Vector3 roomCenter = new Vector3((room.BottomLeftAreaCorner.x + room.TopRightAreaCorner.x) / 2, 0, (room.BottomLeftAreaCorner.y + room.TopRightAreaCorner.y) / 2);
         GameObject cam = createCamera(middleBackWall, roomCenter, room, roomParent);
         Transform rotator = cam.transform.Find("rotator");
