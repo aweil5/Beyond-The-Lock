@@ -21,10 +21,8 @@ public class EnemyBullet : MonoBehaviour
             Destroy(gameObject);
         }
 
-        // Destroy the bullet if it hits something else (e.g., walls)
-        if (!collision.gameObject.CompareTag("Enemy"))
-        {
-            Destroy(gameObject);
-        }
+        
+        Destroy(gameObject);
+        
     }
 }

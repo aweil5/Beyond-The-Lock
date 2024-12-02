@@ -121,6 +121,7 @@ public class EnemyAI : MonoBehaviour
     {
         Destroy(gameObject);
     }
+    
 
     private void OnDrawGizmosSelected()
     {

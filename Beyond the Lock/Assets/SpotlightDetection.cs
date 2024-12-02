@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SpotlightDetection : MonoBehaviour
@@ -18,6 +19,7 @@ public class SpotlightDetection : MonoBehaviour
     private float lastDetectionTime = -5f;
 
     private Boolean enemiesSpawned = false;
+    private float teleportDisableTime = 30f;
 
     public List<Vector3> enemySpawnPoints = new List<Vector3>();
     public GameObject enemyPrefab;
@@ -73,18 +75,54 @@ public class SpotlightDetection : MonoBehaviour
                 {
                     enemiesSpawned = true;
                     Debug.Log($"Player detected! Visible percentage: {visiblePercentage * 100}%");
-                    
+
                     // Print the player's coordinates
                     Vector3 playerPosition = playerCollider.transform.position;
                     Debug.Log("Player Position: " + playerPosition);
 
                     // Play detection sound
+                    DisablePortalsByName();
                     PlayDetectionSound();
                     SpawnEnemies();
                 }
             }
         }
     }
+
+    private void DisablePortalsByName()
+    {
+        GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
+        List<GameObject> portals = new List<GameObject>();
+
+        foreach (GameObject obj in allObjects)
+        {
+            if (obj.name == "Portal(Clone)")
+            {
+                portals.Add(obj);
+                obj.SetActive(false); // Disable the portal
+            }
+        }
+
+        Debug.Log($"Disabled {portals.Count} portals.");
+
+        StartCoroutine(ReenablePortalsAfterDelay(portals, teleportDisableTime));
+    }
+
+    private IEnumerator ReenablePortalsAfterDelay(List<GameObject> portals, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        foreach (GameObject portal in portals)
+        {
+            if (portal != null) // Ensure the portal still exists in case it's destroyed
+            {
+                portal.SetActive(true); // Re-enable the portal
+            }
+        }
+
+        Debug.Log($"Re-enabled {portals.Count} portals.");
+    }
+
 
     private void SpawnEnemies()
     {
@@ -136,7 +174,7 @@ public class SpotlightDetection : MonoBehaviour
         {
             // Get the bounds of the box collider
             Bounds bounds = boxCollider.bounds;
-            
+
             // Define sample points across the player's collider
             Vector3[] samplePoints = new Vector3[]
             {
@@ -159,10 +197,10 @@ public class SpotlightDetection : MonoBehaviour
             {
                 Vector3 directionToPoint = (point - spotlight.position).normalized;
                 Ray ray = new Ray(spotlight.position, directionToPoint);
-                
+
                 // Raycast with a slightly extended distance to ensure we hit the player
                 float rayDistance = Vector3.Distance(spotlight.position, point) + 0.1f;
-                
+
                 if (Physics.Raycast(ray, out RaycastHit hitInfo1, rayDistance))
                 {
                     // Check if this raycast hit the player collider
@@ -176,7 +214,7 @@ public class SpotlightDetection : MonoBehaviour
             // Calculate visibility percentage
             return (float)visiblePoints / totalPoints;
         }
-        
+
         // Fallback for other collider types (less accurate)
         Ray centerRay = new Ray(spotlight.position, (playerCollider.bounds.center - spotlight.position).normalized);
         if (Physics.Raycast(centerRay, out RaycastHit hitInfo, detectionRange))

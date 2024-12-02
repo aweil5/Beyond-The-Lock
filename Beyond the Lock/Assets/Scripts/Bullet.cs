@@ -10,11 +10,12 @@ public class Bullet : MonoBehaviour
         if (collision.gameObject.CompareTag("Target"))
         {
             // Get the enemy's health script
-            EnemyHealth enemyHealth = collision.gameObject.GetComponent<EnemyHealth>();
+            EnemyAI enemyHealth = collision.gameObject.GetComponent<EnemyAI>();
 
             if (enemyHealth != null)
             {
-                enemyHealth.TakeDamage(damage); // Deal damage to the enemy
+                Debug.Log("Hit enemy");
+                enemyHealth.TakeDamage(100); // Deal damage to the enemy
             }
 
             // Destroy the bullet

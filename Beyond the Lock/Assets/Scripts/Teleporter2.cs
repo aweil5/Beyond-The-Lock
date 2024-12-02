@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Teleporter : MonoBehaviour
@@ -5,12 +6,13 @@ public class Teleporter : MonoBehaviour
 
 
     public Transform targetTeleporter; // Reference to the target teleporter
-
+    public Boolean canTeleport = true;
     private void OnTriggerEnter(Collider other)
     {
+        if (!enabled) return; // Skip if the script is disabled
 
 
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && canTeleport)
         {
 
             var playerMovement = other.GetComponent<PlayerMovement>();
