@@ -9,6 +9,7 @@ public class Bullet : MonoBehaviour
         // Check if the bullet hits an enemy
         if (collision.gameObject.CompareTag("Target"))
         {
+            Debug.Log("Hit target");
             // Get the enemy's health script
             EnemyAI enemyHealth = collision.gameObject.GetComponent<EnemyAI>();
 

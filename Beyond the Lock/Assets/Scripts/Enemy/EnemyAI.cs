@@ -25,6 +25,8 @@ public class EnemyAI : MonoBehaviour
     public float sightRange, attackRange;
     public bool playerInSightRange, playerInAttackRange;
 
+    public float hitboxRadius = 2f;
+
 
     private void Awake()
     {
@@ -48,6 +50,24 @@ public class EnemyAI : MonoBehaviour
         if (!playerInSightRange && !playerInAttackRange) Patrol();
         if (playerInSightRange && !playerInAttackRange) Chase();
         if (playerInSightRange && playerInAttackRange) Attack();
+
+        // checkBulletCollision();
+    }
+
+    private void checkBulletCollision()
+    {
+        Collider[] hits = Physics.OverlapSphere(transform.position, hitboxRadius);
+        foreach (var hitCollider in hits)
+        {
+            Bullet bullet = hitCollider.GetComponent<Bullet>();
+            if (bullet != null)
+            {
+                Debug.Log("Hit enemy");
+                TakeDamage((int)bullet.damage);
+                Destroy(hitCollider.gameObject);
+                break;
+            }
+        }
     }
 
     private void Patrol()
