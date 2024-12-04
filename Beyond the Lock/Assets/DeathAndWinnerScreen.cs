@@ -15,7 +15,8 @@ public class DeathAndWinnerScreen : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        SceneManager.LoadScene("MAIN GAME");
+
+        SceneManager.LoadScene("MAIN GAME", LoadSceneMode.Single);
     }
 
     public void MainMenu()

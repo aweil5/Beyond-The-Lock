@@ -56,20 +56,50 @@ public class EnemyAI : MonoBehaviour
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
-        player = GameObject.Find("Body").transform;
+        player = GameObject.Find("Main Camera").transform;
+        if (player == null)
+        {
+            player = GameObject.Find("Player").transform;
+        }
         agent = GetComponent<NavMeshAgent>();
     }
 
     void Update()
     {
         // Check player proximity
-        playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer) && !Physics.Linecast(transform.position, player.position, whatIsGround);
-        playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer) && !Physics.Linecast(transform.position, player.position, whatIsGround);
+        playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer) &&
+    IsDirectLineOfSight(transform.position, player.position, whatIsGround, sightRange);
+
+        playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer) &&
+            IsDirectLineOfSight(transform.position, player.position, whatIsGround, attackRange);
 
         // State Machine
         if (!playerInSightRange && !playerInAttackRange) Patrol();
         if (playerInSightRange && !playerInAttackRange) Chase();
         if (playerInSightRange && playerInAttackRange) Attack();
+    }
+    private bool IsDirectLineOfSight(Vector3 origin, Vector3 target, LayerMask obstacleLayer, float maxDistance)
+    {
+        Vector3 direction = target - origin;
+        float distance = direction.magnitude;
+
+        // Only check if within max distance
+        if (distance > maxDistance)
+            return false;
+
+        // Normalize the direction
+        direction.Normalize();
+
+        // Perform raycast
+        RaycastHit hit;
+        if (Physics.Raycast(origin, direction, out hit, distance, obstacleLayer))
+        {
+            // If raycast hits something before reaching the target, there's no direct line of sight
+            return false;
+        }
+
+        // No obstacles found
+        return true;
     }
 
     public float walkPointResetTime = 5f;
@@ -153,14 +183,17 @@ public class EnemyAI : MonoBehaviour
         agent.SetDestination(transform.position);
 
         // Face the player
-        transform.LookAt(player);
+        Vector3 direction = (player.position - transform.position).normalized;
+        Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 20f);
+
 
         if (!alreadyAttacked)
         {
             Debug.Log("Attacking player!");
             // Shooting
-            GameObject bullet = Instantiate(projectile, transform.position, Quaternion.identity);
-            bullet.transform.LookAt(player);
+            GameObject bullet = Instantiate(projectile, transform.position + transform.forward, Quaternion.identity);
+            bullet.transform.LookAt(new Vector3(player.position.x, bullet.transform.position.y, player.position.z));
 
             Rigidbody rb = bullet.GetComponent<Rigidbody>();
             if (rb == null)
@@ -169,8 +202,8 @@ public class EnemyAI : MonoBehaviour
             }
 
             rb.AddForce(transform.forward * 32f, ForceMode.Impulse);
-            rb.AddForce(transform.up * 1f, ForceMode.Impulse);
-            
+            rb.AddForce(transform.up, ForceMode.Impulse);
+
             alreadyAttacked = true;
             audioSource.PlayOneShot(enemyShot);
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
@@ -198,7 +231,7 @@ public class EnemyAI : MonoBehaviour
             audioSource.PlayOneShot(finalDeathSound);
             DestroyEnemy();
         }
-        
+
     }
 
     public GameObject deathParticles;

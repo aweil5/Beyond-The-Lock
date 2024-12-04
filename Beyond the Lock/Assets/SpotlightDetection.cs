@@ -103,14 +103,14 @@ public class SpotlightDetection : MonoBehaviour
         Debug.Log($"Disabled {portals.Count} portals.");
         StartCoroutine(ReenablePortalsAfterDelay(portals, teleportDisableTime));
 
-        // In Case the Coroutine fails
-        foreach (GameObject portal in portals)
-        {
-            if (portal != null)
-            {
-                portal.SetActive(true);
-            }
-        }
+        // // In Case the Coroutine fails
+        // foreach (GameObject portal in portals)
+        // {
+        //     if (portal != null)
+        //     {
+        //         portal.SetActive(true);
+        //     }
+        // }
     }
 
     private IEnumerator ReenablePortalsAfterDelay(List<GameObject> portals, float delay)

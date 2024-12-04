@@ -422,7 +422,7 @@ public class DungeonCreator : MonoBehaviour
             {
                 for (int j = 0; j < colCount; j++)
                 {
-                    int spawnChoice = UnityEngine.Random.Range(0, cameraRoomItems.Count + (cameraRoomItems.Count / 4));
+                    int spawnChoice = UnityEngine.Random.Range(0, cameraRoomItems.Count + (cameraRoomItems.Count / 10));
                     if (spawnChoice >= cameraRoomItems.Count)
                     {
                         enemySpawnPoints.Add(new Vector3(gridRoom.grid[i, j].Center.x, 1, gridRoom.grid[i, j].Center.y));
