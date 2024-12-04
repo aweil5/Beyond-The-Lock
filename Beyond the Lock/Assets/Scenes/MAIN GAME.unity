@@ -414,8 +414,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dungeonWidth: 180
   dungeonLength: 580
-  roomWidthMin: 70
-  roomLengthMin: 160
+  roomWidthMin: 60
+  roomLengthMin: 140
   maxIterations: 30
   corridorWidth: 2
   roomBottomCornerModifier: 0.151

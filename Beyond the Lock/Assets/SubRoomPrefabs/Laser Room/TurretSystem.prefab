@@ -51,6 +51,8 @@ MonoBehaviour:
   laserMaterial: {fileID: 2100000, guid: b0aa44c861822498fbd3ec02b00f2b32, type: 2}
   animationSpeed: 5
   damage: 100
+  audioSource: {fileID: 0}
+  laserSound: {fileID: 8300000, guid: c747fb75e68dd40b680be29760034792, type: 3}
 --- !u!1001 &1547415372913942731
 PrefabInstance:
   m_ObjectHideFlags: 0

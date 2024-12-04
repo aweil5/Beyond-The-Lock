@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 
 public class LaserBetweenTurrets : MonoBehaviour
@@ -11,8 +13,27 @@ public class LaserBetweenTurrets : MonoBehaviour
     private LineRenderer lineRenderer;
     private Vector2 textureOffset = Vector2.zero;
 
+    public AudioSource audioSource;
+    public AudioClip laserSound;
+
     void Start()
     {
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+        }
+
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        if (audioSource != null)
+        {
+            audioSource.playOnAwake = false;
+            audioSource.loop = false;
+        }
+
        
         lineRenderer = GetComponent<LineRenderer>();
         if (lineRenderer == null)
@@ -50,7 +71,8 @@ public class LaserBetweenTurrets : MonoBehaviour
                     PlayerHealth playerHealth = hit.collider.GetComponent<PlayerHealth>();
                     if (playerHealth != null)
                     {
-                        playerHealth.TakeDamage(damage * Time.deltaTime); 
+                        playerHealth.TakeDamage(damage * Time.deltaTime);
+                        StartCoroutine(playSoundeffect());
                     }
                 }
             }
@@ -61,6 +83,15 @@ public class LaserBetweenTurrets : MonoBehaviour
         {
             textureOffset.x += Time.deltaTime * animationSpeed;
             laserMaterial.SetTextureOffset("_MainTex", textureOffset);
+        }
+    }
+
+    private IEnumerator playSoundeffect()
+    {
+        if (audioSource != null && laserSound != null)
+        {
+            audioSource.PlayOneShot(laserSound);
+            yield return new WaitForSeconds(laserSound.length);
         }
     }
 }

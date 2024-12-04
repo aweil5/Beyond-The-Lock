@@ -4,7 +4,7 @@ using UnityEngine;
 public class PressureUp : MonoBehaviour
 {
     public GameObject spikes; // The spikes object to raise
-    public float damageAmount = 5f; // Damage dealt by the spikes
+    public float damageAmount = 10f; // Damage dealt by the spikes
     private bool isPressed = false;
 
     private Vector3 originalPosition; // Store the initial position of the spikes
@@ -24,20 +24,22 @@ public class PressureUp : MonoBehaviour
         if (!isPressed)
         {
             // Raise the spikes
-            spikes.transform.position += new Vector3(0, 0.75f, 0);
+            spikes.transform.position += new Vector3(0, 2f, 0);
             isPressed = true;
-
+            Debug.Log("Spikes raised!");
             // Check if the colliding object has the "Player" tag
-            if (col.CompareTag("Player")) // Make sure the player is tagged as "Player"
+            
+            Debug.Log("Player detected from the SPIKES!");
+            // Access the PlayerHealth component attached to the Player
+            PlayerHealth playerHealth = col.GetComponentInParent<PlayerHealth>();
+            if (playerHealth != null)
             {
-                // Access the PlayerHealth component attached to the Player
-                PlayerHealth playerHealth = col.GetComponent<PlayerHealth>();
-                if (playerHealth != null)
-                {
-                    // Call the TakeDamage method
-                    playerHealth.TakeDamage(damageAmount);
-                }
+                // Call the TakeDamage method
+                playerHealth.TakeDamage(damageAmount);
+            }else{
+                Debug.Log("PlayerHealth is null");
             }
+            
 
             // Start coroutine to retract spikes after 1 second
             StartCoroutine(RetractSpikes());
