@@ -317,60 +317,51 @@ public class DungeonCreator : MonoBehaviour
                 currSender.AddComponent<Teleporter2>();
                 currSender.GetComponent<Teleporter2>().targetTeleporter = currReceiver.transform;
 
-                if (room == listOfRooms[1])
-                {
-                    currSender.AddComponent<RunStopWatch>();
-                }
-                if (room == listOfRooms[listOfRooms.Count - 1])
-                {
-                    currSender.AddComponent<EndStopWatch>();
-
-                }
             }
 
-                // IF we want to add undirected teleportation
-                // if (currReceiver != null)
-                // {
-                //     currReceiver.AddComponent<Teleport>();
-                //     currReceiver.GetComponent<Teleport>().reciever = temp;
-                // }
+            // IF we want to add undirected teleportation
+            // if (currReceiver != null)
+            // {
+            //     currReceiver.AddComponent<Teleport>();
+            //     currReceiver.GetComponent<Teleport>().reciever = temp;
+            // }
 
-                currSender = temp;
-
-
-                // NOW WE ARE GOING TO SPAWN ITEMS IN THE ROOMS
-
-            }
+            currSender = temp;
 
 
-
-
-
-            // // Instantiate the player camera and set its transform to the player
-            // GameObject playerCamInstance = Instantiate(playerCam, playerPosition, Quaternion.identity, transform);
-            // playerCamInstance.transform.SetParent(playerInstance.transform);
-
-
-            GameObject wallParent = new GameObject("Walls");
-            GameObject randomItemParent = new GameObject("RandomItems");
-            wallParent.transform.parent = transform;
-            // INSTEAD OF DOORS WE WILL DO TELEPORTERS LATER
-
-
-            possibleWallHorizontalPosition = new List<Vector3Int>();
-
-            possibleWallVerticalPosition = new List<Vector3Int>();
-            for (int i = 0; i < listOfRooms.Count; i++)
-            {
-                CreateMesh(listOfRooms[i].BottomLeftAreaCorner, listOfRooms[i].TopRightAreaCorner);
-            }
-            CreateWalls(wallParent);
-
-
-
-
+            // NOW WE ARE GOING TO SPAWN ITEMS IN THE ROOMS
 
         }
+
+
+
+
+
+        // // Instantiate the player camera and set its transform to the player
+        // GameObject playerCamInstance = Instantiate(playerCam, playerPosition, Quaternion.identity, transform);
+        // playerCamInstance.transform.SetParent(playerInstance.transform);
+
+
+        GameObject wallParent = new GameObject("Walls");
+        GameObject randomItemParent = new GameObject("RandomItems");
+        wallParent.transform.parent = transform;
+        // INSTEAD OF DOORS WE WILL DO TELEPORTERS LATER
+
+
+        possibleWallHorizontalPosition = new List<Vector3Int>();
+
+        possibleWallVerticalPosition = new List<Vector3Int>();
+        for (int i = 0; i < listOfRooms.Count; i++)
+        {
+            CreateMesh(listOfRooms[i].BottomLeftAreaCorner, listOfRooms[i].TopRightAreaCorner);
+        }
+        CreateWalls(wallParent);
+
+
+
+
+
+    }
 
     private void buildRoomInterior(Node room, GameObject roomParent, RoomType roomType, RoomOrientation roomOrientation, GameObject player = null)
     {
@@ -379,7 +370,7 @@ public class DungeonCreator : MonoBehaviour
             // Restart the scene
             UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
         }
-
+        
         if (roomType == RoomType.Start)
         {
             // Add specific logic for Start room
