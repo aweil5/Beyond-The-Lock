@@ -196,13 +196,28 @@ public class DungeonCreator : MonoBehaviour
         // GameObject playerInstance = Instantiate(player, playerPosition, lookRotation, transform);
         // Create teleporters that teleport a user from one room to the next
         GameObject playerInstance = GameObject.Find("MainPlayer3");
+        GameObject playerSpawn = new GameObject("Player Spawn Reciever");
+        playerSpawn.transform.position = playerPosition;
+        playerSpawn.transform.rotation = lookRotation;
+        GameObject firstTeleporter = GameObject.Find("UserSpawnPortal");
+        if (firstTeleporter != null)
+        {
+            // currSender.AddComponent<Teleporter2>();
+            //     currSender.GetComponent<Teleporter2>().targetTeleporter = currReceiver.transform;
+            firstTeleporter.AddComponent<Teleporter2>();
+            firstTeleporter.GetComponent<Teleporter2>().targetTeleporter = playerSpawn.transform;
+        }
+        else
+        {
+            Debug.LogError("UserSpawnPortal not found!");
+        }
         if (playerInstance == null)
         {
             Debug.LogError("Player GameObject not found!");
             return;
         }
-        playerInstance.transform.position = playerPosition;
-        playerInstance.transform.rotation = lookRotation;
+        // playerInstance.transform.position = playerPosition;
+        // playerInstance.transform.rotation = lookRotation;
 
 
 
