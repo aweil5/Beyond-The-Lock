@@ -317,6 +317,16 @@ public class DungeonCreator : MonoBehaviour
                 currSender.AddComponent<Teleporter2>();
                 currSender.GetComponent<Teleporter2>().targetTeleporter = currReceiver.transform;
 
+                if (room == listOfRooms[1])
+                {
+                    currSender.AddComponent<StartStopwatch>();
+
+                }
+                if (room == listOfRooms[listOfRooms.Count - 1])
+                {
+                    currSender.AddComponent<EndStopWatch>();
+                }
+
             }
 
             // IF we want to add undirected teleportation
